@@ -1,8 +1,15 @@
 package com.dyhpoon.fodex.model;
 
+import android.content.ContentUris;
+import android.net.Uri;
 import android.os.Parcel;
+import android.provider.MediaStore;
+import android.util.Log;
 
 import com.felipecsl.asymmetricgridview.library.model.AsymmetricItem;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
 
 /**
  * Created by darrenpoon on 9/12/14.
@@ -33,6 +40,16 @@ public class MediaPhotoItem implements AsymmetricItem {
 
     public String getDate() {
         return this.mDate;
+    }
+
+    public void preloadImage(ImageSize imageSize) {
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(false)
+                .resetViewBeforeLoading(true)
+                .build();
+        Uri uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Integer.parseInt(mId));
+        ImageLoader.getInstance().loadImage(uri.toString(), imageSize, options, null);
     }
 
     @Override

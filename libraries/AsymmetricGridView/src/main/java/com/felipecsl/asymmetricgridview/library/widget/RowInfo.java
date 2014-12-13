@@ -8,7 +8,7 @@ import com.felipecsl.asymmetricgridview.library.model.AsymmetricItem;
 import java.util.ArrayList;
 import java.util.List;
 
-class RowInfo<T extends AsymmetricItem> implements Parcelable {
+public class RowInfo<T extends AsymmetricItem> implements Parcelable {
 
     private final List<T> items;
     private final int rowHeight;

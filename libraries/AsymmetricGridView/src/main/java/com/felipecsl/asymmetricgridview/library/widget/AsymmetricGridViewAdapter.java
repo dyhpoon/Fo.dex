@@ -55,7 +55,15 @@ public abstract class AsymmetricGridViewAdapter<T extends AsymmetricItem>
     }
 
     public T getItem(int position) {
-        return items.get(position);
+        try {
+            return items.get(position);
+        } catch (IndexOutOfBoundsException ex) {
+            return null;
+        }
+    }
+
+    public int getIndexOfItem(T object) {
+        return items.indexOf(object);
     }
 
     public long getItemId(int position) {
@@ -78,6 +86,10 @@ public abstract class AsymmetricGridViewAdapter<T extends AsymmetricItem>
         // when the item spans multiple columns, we need to account for the horizontal padding
         // and add that to the total final width
         return Math.min(rowWidth + ((columnSpan - 1) * listView.getRequestedHorizontalSpacing()), Utils.getScreenWidth(context));
+    }
+
+    public RowInfo<T> getRowInfo(int position) {
+        return itemsPerRow.get(position);
     }
 
     @Override

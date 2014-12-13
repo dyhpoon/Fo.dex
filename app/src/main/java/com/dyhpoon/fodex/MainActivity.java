@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 
 import com.dyhpoon.fodex.model.PageItem;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.cache.memory.impl.LRULimitedMemoryCache;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -122,7 +123,7 @@ public class MainActivity extends Activity
 
     public void setupImageLoader() {
         DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
+                .cacheInMemory(false)
                 .cacheOnDisk(false)
                 .resetViewBeforeLoading(true)
                 .build();
@@ -130,9 +131,8 @@ public class MainActivity extends Activity
                 .defaultDisplayImageOptions(options)
                 .tasksProcessingOrder(QueueProcessingType.LIFO)
                 .denyCacheImageMultipleSizesInMemory()
-                .memoryCache(new LruMemoryCache(25 * 1024 * 1024))
-                .memoryCacheSize(25 * 1024 * 1024)
-                .writeDebugLogs()
+                .memoryCache(new LRULimitedMemoryCache(35 * 1024 * 1024))
+                .memoryCacheSize(35 * 1024 * 1024)
                 .build();
         ImageLoader.getInstance().init(configs);
     }
