@@ -50,7 +50,7 @@ public abstract class AsymmetricGridViewAdapter<T extends AsymmetricItem>
 
     public abstract View getActualView(final int position, final View convertView, final ViewGroup parent);
 
-    protected int getRowHeight(final AsymmetricItem item) {
+    public int getRowHeight(final AsymmetricItem item) {
         return getRowHeight(item.getRowSpan());
     }
 
@@ -77,7 +77,7 @@ public abstract class AsymmetricGridViewAdapter<T extends AsymmetricItem>
         return rowHeight + ((rowSpan - 1) * listView.getDividerHeight());
     }
 
-    protected int getRowWidth(final AsymmetricItem item) {
+    public int getRowWidth(final AsymmetricItem item) {
         return getRowWidth(item.getColumnSpan());
     }
 

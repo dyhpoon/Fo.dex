@@ -12,14 +12,15 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 
+import com.dyhpoon.fodex.controller.GridViewPreloadImageTask;
 import com.dyhpoon.fodex.model.MediaPhotoItem;
+import com.dyhpoon.fodex.model.ScrollDirectionType;
 import com.dyhpoon.fodex.view.AsyncLoadBitmapGridItem;
 import com.felipecsl.asymmetricgridview.library.Utils;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridView;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter;
-import com.felipecsl.asymmetricgridview.library.widget.RowInfo;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +32,10 @@ public class RecentPhotosPageFragment extends Fragment {
 
     private AsymmetricGridView mGridView;
 
+    private int mLastFirstVisibleItem = 0;
+    private ScrollDirectionType mScrollDirection = ScrollDirectionType.DOWN;
+
     private int THREAD_POOL_SIZE = 3;
-    private int PRELOAD_IMAGE_COUNT = 10;
     private List<AsyncTask> mBackgroundTasks;
 
     @Nullable
@@ -43,6 +46,33 @@ public class RecentPhotosPageFragment extends Fragment {
         mGridView = (AsymmetricGridView) view.findViewById(R.id.gridView);
         mGridView.setRequestedColumnCount(3);
         mGridView.setRequestedHorizontalSpacing(Utils.dpToPx(getActivity(), 3));
+        mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // do nothing
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (view == mGridView) {
+                    final int currentFirstVisibleItem = mGridView.getFirstVisiblePosition();
+
+                    ScrollDirectionType direction = ScrollDirectionType.NONE;
+                    if (currentFirstVisibleItem > mLastFirstVisibleItem) {
+                        direction = ScrollDirectionType.DOWN;
+                    } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
+                        direction = ScrollDirectionType.UP;
+                    }
+
+                    if (mScrollDirection != direction && direction != ScrollDirectionType.NONE) {
+                        cancelPreloadImages();
+                        mScrollDirection = direction;
+                    }
+
+                    mLastFirstVisibleItem = currentFirstVisibleItem;
+                }
+            }
+        });
         mGridView.setAdapter(new AsymmetricGridViewAdapter<MediaPhotoItem>(getActivity(), mGridView, new ArrayList<MediaPhotoItem>()) {
             @Override
             public View getActualView(int position, View convertView, ViewGroup parent) {
@@ -61,59 +91,34 @@ public class RecentPhotosPageFragment extends Fragment {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
-                if (getBackgroundTasks().size() >= THREAD_POOL_SIZE) {
-                    AsyncTask task = getBackgroundTasks().get(0);
-                    task.cancel(true);
-                    getBackgroundTasks().remove(0);
-                }
-                getBackgroundTasks().add(new PreloadImageTask().execute());
+                preloadImages(mScrollDirection);
                 return view;
-            }
-
-            class PreloadImageTask extends AsyncTask<Void, Void, Void> {
-                @Override
-                protected Void doInBackground(Void... params) {
-                    // preload images above the screen
-                    RowInfo<MediaPhotoItem> firstRowInfo = getRowInfo(mGridView.getFirstVisiblePosition());
-                    if (firstRowInfo != null) {
-                        List<MediaPhotoItem> firstRowItems = firstRowInfo.getItems();
-                        MediaPhotoItem firstItem = firstRowItems.get(0);
-                        int firstIndex = getIndexOfItem(firstItem);
-                        for (int i = 1; i < PRELOAD_IMAGE_COUNT; i++) {
-                            int index = firstIndex - i;
-                            MediaPhotoItem previousItem = getItem(index);
-                            if (previousItem != null)
-                                previousItem.preloadImage(new ImageSize(getRowWidth(previousItem), getRowHeight(previousItem)));
-                        }
-                    }
-
-                    // preload images below the screen
-                    RowInfo<MediaPhotoItem> lastRowInfo = getRowInfo(mGridView.getLastVisiblePosition());
-                    if (lastRowInfo != null) {
-                        List<MediaPhotoItem> lastRowItems = lastRowInfo.getItems();
-                        MediaPhotoItem lastItem = lastRowItems.get(lastRowItems.size() - 1);
-                        int lastIndex = getIndexOfItem(lastItem);
-                        for (int i = 1; i < PRELOAD_IMAGE_COUNT; i++) {
-                            int index = lastIndex + i;
-                            MediaPhotoItem preloadItem = getItem(index);
-                            if (preloadItem != null) {
-                                preloadItem.preloadImage(new ImageSize(getRowWidth(preloadItem), getRowHeight(preloadItem)));
-                            }
-                        }
-                    }
-
-                    return null;
-                }
             }
         });
 
         return view;
     }
 
-    private List<AsyncTask> getBackgroundTasks() {
+    private void preloadImages(ScrollDirectionType scrollDirection) {
         if (mBackgroundTasks == null)
             mBackgroundTasks = new ArrayList<AsyncTask>(THREAD_POOL_SIZE);
-        return mBackgroundTasks;
+
+        if (mBackgroundTasks.size() >= THREAD_POOL_SIZE) {
+            AsyncTask task = mBackgroundTasks.get(0);
+            task.cancel(true);
+            mBackgroundTasks.remove(0);
+        }
+        mBackgroundTasks.add(new GridViewPreloadImageTask(mGridView).execute(scrollDirection));
+    }
+
+    private void cancelPreloadImages() {
+        if (mBackgroundTasks == null)
+            mBackgroundTasks = new ArrayList<AsyncTask>(THREAD_POOL_SIZE);
+
+        for (AsyncTask task : mBackgroundTasks) {
+            task.cancel(true);
+        }
+        mBackgroundTasks.clear();
     }
 
     public void update() {
