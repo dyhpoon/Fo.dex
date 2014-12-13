@@ -11,6 +11,13 @@ import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 
 import com.dyhpoon.fodex.model.PageItem;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.utils.StorageUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,6 +36,8 @@ public class MainActivity extends Activity
      */
     private CharSequence mTitle;
 
+    private Fragment firstFragment, secondFragment, thirdFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +53,7 @@ public class MainActivity extends Activity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        this.setupImageLoader();
     }
 
     @Override
@@ -52,6 +62,13 @@ public class MainActivity extends Activity
         Fragment fragment = null;
         try {
             fragment = (Fragment) getPages().get(position).getFragmentClass().newInstance();
+            if (position == 0) {
+                firstFragment = fragment;
+            } else if (position == 1) {
+                secondFragment = fragment;
+            } else {
+                thirdFragment = fragment;
+            }
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.container, fragment)
@@ -96,10 +113,28 @@ public class MainActivity extends Activity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            ((RecentPhotosPageFragment) secondFragment).update();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void setupImageLoader() {
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(false)
+                .resetViewBeforeLoading(true)
+                .build();
+        ImageLoaderConfiguration configs = new ImageLoaderConfiguration.Builder(this)
+                .defaultDisplayImageOptions(options)
+                .tasksProcessingOrder(QueueProcessingType.LIFO)
+                .denyCacheImageMultipleSizesInMemory()
+                .memoryCache(new LruMemoryCache(25 * 1024 * 1024))
+                .memoryCacheSize(25 * 1024 * 1024)
+                .writeDebugLogs()
+                .build();
+        ImageLoader.getInstance().init(configs);
     }
 
     private List<PageItem> getPages() {

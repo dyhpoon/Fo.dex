@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <size android:width="3dip" />
+    <solid android:color="#ffffff" />
+</shape><!-- From: file:/Users/darrenpoon/dev/android/Fodex/libraries/AsymmetricGridView/src/main/res/drawable/item_divider_horizontal.xml --><!-- From: file:/Users/darrenpoon/dev/android/Fodex/libraries/AsymmetricGridView/build/intermediates/bundles/debug/res/drawable/item_divider_horizontal.xml -->
