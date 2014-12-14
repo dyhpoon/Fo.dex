@@ -132,8 +132,7 @@ public class MainActivity extends Activity
                 .defaultDisplayImageOptions(options)
                 .tasksProcessingOrder(QueueProcessingType.LIFO)
                 .denyCacheImageMultipleSizesInMemory()
-                .memoryCache(new LRULimitedMemoryCache(35 * 1024 * 1024))
-                .memoryCacheSize(35 * 1024 * 1024)
+                .memoryCache(new LRULimitedMemoryCache(16 * 1024 * 1024))
                 .build();
         ImageLoader.getInstance().init(configs);
     }

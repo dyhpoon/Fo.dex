@@ -35,7 +35,7 @@ public class RecentPhotosPageFragment extends Fragment {
     private int mLastFirstVisibleItem = 0;
     private ScrollDirectionType mScrollDirection = ScrollDirectionType.DOWN;
 
-    private int THREAD_POOL_SIZE = 3;
+    final private static int THREAD_POOL_SIZE = 3;
     private List<AsyncTask> mBackgroundTasks;
 
     @Nullable

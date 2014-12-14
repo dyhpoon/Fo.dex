@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -89,8 +90,20 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mDrawerListView = (ListView) inflater.inflate(
-                R.layout.fragment_navigation_drawer, container, false);
+        View drawer = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+
+        setupDrawerImageView(drawer);
+        setupDrawerListView(drawer);
+
+        return drawer;
+    }
+
+    private void setupDrawerImageView(View parent) {
+        ImageView imageView = (ImageView) parent.findViewById(R.id.drawer_image_view);
+    }
+
+    private void setupDrawerListView(View parent) {
+        mDrawerListView = (ListView) parent.findViewById(R.id.drawer_list_view);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -107,7 +120,6 @@ public class NavigationDrawerFragment extends Fragment {
                         getString(R.string.title_downloaded_photos),
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
-        return mDrawerListView;
     }
 
     public boolean isDrawerOpen() {
