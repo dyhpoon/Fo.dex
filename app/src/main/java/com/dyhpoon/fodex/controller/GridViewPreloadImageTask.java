@@ -37,7 +37,7 @@ public class GridViewPreloadImageTask extends AsyncTask<ScrollDirectionType, Voi
                 List<MediaPhotoItem> firstRowItems = firstRowInfo.getItems();
                 MediaPhotoItem firstItem = firstRowItems.get(0);
                 int firstIndex = mAdapter.getIndexOfItem(firstItem);
-                for (int i = 1; i < PRELOAD_IMAGE_COUNT; i++) {
+                for (int i = 0; i < PRELOAD_IMAGE_COUNT; i++) {
                     int index = firstIndex - i;
                     MediaPhotoItem previousItem = (MediaPhotoItem) mAdapter.getItem(index);
                     if (previousItem != null)
@@ -53,7 +53,7 @@ public class GridViewPreloadImageTask extends AsyncTask<ScrollDirectionType, Voi
                 List<MediaPhotoItem> lastRowItems = lastRowInfo.getItems();
                 MediaPhotoItem lastItem = lastRowItems.get(lastRowItems.size() - 1);
                 int lastIndex = mAdapter.getIndexOfItem(lastItem);
-                for (int i = 1; i < PRELOAD_IMAGE_COUNT; i++) {
+                for (int i = 0; i < PRELOAD_IMAGE_COUNT; i++) {
                     int index = lastIndex + i;
                     MediaPhotoItem preloadItem = (MediaPhotoItem) mAdapter.getItem(index);
                     if (preloadItem != null)

@@ -123,11 +123,12 @@ public class MainActivity extends Activity
 
     public void setupImageLoader() {
         DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .cacheInMemory(false)
+                .cacheInMemory(true)
                 .cacheOnDisk(false)
                 .resetViewBeforeLoading(true)
                 .build();
         ImageLoaderConfiguration configs = new ImageLoaderConfiguration.Builder(this)
+                .threadPoolSize(5)
                 .defaultDisplayImageOptions(options)
                 .tasksProcessingOrder(QueueProcessingType.LIFO)
                 .denyCacheImageMultipleSizesInMemory()

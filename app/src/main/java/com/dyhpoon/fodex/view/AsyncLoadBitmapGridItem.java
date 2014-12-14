@@ -36,5 +36,4 @@ public class AsyncLoadBitmapGridItem extends LinearLayout {
         mImageLoader.displayImage(uri.toString(), mImageView);
     }
 
-
 }

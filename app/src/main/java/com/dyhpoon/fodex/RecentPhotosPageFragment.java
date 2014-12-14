@@ -164,5 +164,6 @@ public class RecentPhotosPageFragment extends Fragment {
         }
         cursor.close();
         ((AsymmetricGridViewAdapter) mGridView.getAdapter()).appendItems(items);
+        preloadImages(ScrollDirectionType.DOWN);
     }
 }
