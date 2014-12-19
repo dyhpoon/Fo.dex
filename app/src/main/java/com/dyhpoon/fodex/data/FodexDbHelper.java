@@ -38,12 +38,12 @@ public class FodexDbHelper extends SQLiteOpenHelper {
                 "UNIQUE (" + TagEntry.COLUMN_TAG_NAME + ") ON CONFLICT IGNORE" +
                 " );";
 
-        final String SQL_CREATE_IMAGE_TAG_TABLE = "CREATE TABLE" + ImageTagEntry.TABLE_NAME + " (" +
+        final String SQL_CREATE_IMAGE_TAG_TABLE = "CREATE TABLE " + ImageTagEntry.TABLE_NAME + " (" +
                 ImageTagEntry._ID + " INTEGER PRIMARY KEY, " +
                 ImageTagEntry.COLUMN_IT_TAG_ID + " INTEGER NOT NULL, " +
                 ImageTagEntry.COLUMN_IT_IMAGE_ID + " INTEGER NOT NULL, " +
                 "FOREIGN KEY (" + ImageTagEntry.COLUMN_IT_TAG_ID + ") REFERENCES " + TagEntry.TABLE_NAME + "(" + TagEntry._ID + ")," +
-                "FOREIGN KEY (" + ImageTagEntry.COLUMN_IT_IMAGE_ID + ") REFERENCES " + ImageEntry.TABLE_NAME + "(" + ImageEntry._ID + ")," +
+                "FOREIGN KEY (" + ImageTagEntry.COLUMN_IT_IMAGE_ID + ") REFERENCES " + ImageEntry.TABLE_NAME + "(" + ImageEntry._ID + ")" +
                 " );";
 
         db.execSQL(SQL_CREATE_IMAGE_TABLE);
