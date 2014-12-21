@@ -4,19 +4,23 @@ import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
-import android.util.Log;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 /**
  * Created by darrenpoon on 14/12/14.
  */
 public class FodexContract {
+
+    public static final String ERR_INVALID_URI = "The Uri provided is invalid: ";
 
     // Name of the Content Provider
     public static final String CONTENT_AUTHORITY = "com.dyhpoon.fodex.provider";
@@ -47,6 +51,10 @@ public class FodexContract {
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_IMAGE).build();
 
+        // Type
+        public static final String CONTENT_ITEM_TYPE = "fodex.cursor.item/" + CONTENT_AUTHORITY + "/" + PATH_IMAGE;
+        public static final String CONTENT_DIR_TYPE = "fodex.cursor.dir/" + CONTENT_AUTHORITY + "/" + PATH_IMAGE;
+
         // Table Name
         public static final String TABLE_NAME = "image";
 
@@ -61,27 +69,36 @@ public class FodexContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        // content://com.dyhpoon.fodex.provider/image/gh390hg223g
+        // content://com.dyhpoon.fodex.provider/image/hash/gh390hg223g
         public static Uri buildHash(String hash) {
-            return CONTENT_URI.buildUpon().appendPath(hash).build();
-        }
-
-        // content://com.dyhpoon.fodex.provider/image/gh390hg223g?date=20141219
-        public static Uri buildHashWithDate(String hash, String date) {
             return CONTENT_URI.buildUpon()
+                    .appendPath(COLUMN_IMAGE_HASH)
                     .appendPath(hash)
-                    .appendQueryParameter(COLUMN_IMAGE_DATE, date)
                     .build();
         }
 
-        // content://com.dyhpoon.fodex.provider/image/gh390hg223g => gh390hg223g
-        public static String getHashFromUri(Uri uri) {
-            return uri.getPathSegments().get(1);
+        // content://com.dyhpoon.fodex.provider/image/hash/gh390hg223g/date/20141219
+        public static Uri buildHashWithDate(String hash, String date) {
+            return CONTENT_URI.buildUpon()
+                    .appendPath(COLUMN_IMAGE_HASH)
+                    .appendPath(hash)
+                    .appendPath(COLUMN_IMAGE_DATE)
+                    .appendPath(date)
+                    .build();
         }
 
-        // content://com.dyhpoon.fodex.provider/image/gh390hg223g?date=20141219 => 20141219
+        // content://com.dyhpoon.fodex.provider/image/hash/gh390hg223g => gh390hg223g
+        public static String getHashFromUri(Uri uri) {
+            if (!uri.getPathSegments().get(0).equals(TABLE_NAME) || !uri.getPathSegments().get(1).equals(COLUMN_IMAGE_HASH))
+                throw new IllegalArgumentException(ERR_INVALID_URI + uri);
+            return uri.getPathSegments().get(2);
+        }
+
+        // content://com.dyhpoon.fodex.provider/image/hash/gh390hg223g/date/20141219 => 20141219
         public static String getDateFromUri(Uri uri) {
-            return uri.getQueryParameter(COLUMN_IMAGE_DATE);
+            if (!uri.getPathSegments().get(0).equals(TABLE_NAME) || !uri.getPathSegments().get(1).equals(COLUMN_IMAGE_HASH) || !uri.getPathSegments().get(3).equals(COLUMN_IMAGE_DATE))
+                throw new IllegalArgumentException(ERR_INVALID_URI + uri);
+            return uri.getPathSegments().get(4);
         }
 
     }
@@ -91,11 +108,19 @@ public class FodexContract {
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TAG).build();
 
+        // Type
+        public static final String CONTENT_ITEM_TYPE = "fodex.cursor.item/" + CONTENT_AUTHORITY + "/" + PATH_TAG;
+        public static final String CONTENT_DIR_TYPE = "fodex.cursor.dir/" + CONTENT_AUTHORITY + "/" + PATH_TAG;
+
         // Table Name
         public static final String TABLE_NAME = "tag";
 
         // Columns
         public static final String COLUMN_TAG_NAME = "name";
+
+        // Path Segments
+        public static final String PATH_SEGMENT_SEARCH = "search";
+        public static final String PATH_SEGMENT_KEYWORD = "keywords";
 
         // Building Uris
         // content://com.dyhpoon.fodex.provider/tag/1
@@ -103,28 +128,19 @@ public class FodexContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        // content://com.dyhpoon.fodex.provider/tag/morning
+        // content://com.dyhpoon.fodex.provider/tag/search/morning
         public static Uri buildTagName(String tagName) {
-            return CONTENT_URI.buildUpon().appendPath(tagName).build();
-        }
-
-        // content://com.dyhpoon.fodex.provider/tag?name=morning+evening
-        public static  Uri buildMultipleTagNames(List<String> names) {
-            String appendedString = TextUtils.join("+", names);
             return CONTENT_URI.buildUpon()
-                    .appendQueryParameter(COLUMN_TAG_NAME, appendedString)
+                    .appendPath(PATH_SEGMENT_SEARCH)
+                    .appendPath(tagName)
                     .build();
         }
 
-        // content://com.dyhpoon.fodex.provider/tag/morning => morning
+        // content://com.dyhpoon.fodex.provider/tag/search/morning => morning
         public static String getTagName(Uri uri) {
-            return uri.getPathSegments().get(1);
-        }
-
-        // content://com.dyhpoon.fodex.provider/tag?name=morning+evening => [morning, evening]
-        public static List<String> getMultipleTagNames(Uri uri) {
-            String fetchedString = uri.getQueryParameter(COLUMN_TAG_NAME);
-            return Arrays.asList(TextUtils.split(fetchedString, "\\+"));
+            if (!uri.getPathSegments().get(0).equals(TABLE_NAME) || !uri.getPathSegments().get(1).equals(PATH_SEGMENT_SEARCH))
+                throw new IllegalArgumentException(ERR_INVALID_URI + uri);
+            return uri.getPathSegments().get(2);
         }
 
     }
@@ -138,6 +154,55 @@ public class FodexContract {
         // Columns
         public static final String COLUMN_IT_IMAGE_ID = "image_id";
         public static final String COLUMN_IT_TAG_ID = "tag_id";
+
+        // Building Uris
+        // content://com.dyhpoon.fodex.provider/tag/keywords/morning+evening
+        public static Uri buildTagNames(List<String> names) {
+            String appendedString = serializeNames(names, "+");
+            return TagEntry.CONTENT_URI.buildUpon()
+                    .appendPath(TagEntry.PATH_SEGMENT_KEYWORD)
+                    .appendPath(appendedString)
+                    .build();
+        }
+
+        // content://com.dyhpoon.fodex.provider/tag/keywords/morning+evening => [morning, evening]
+        public static List<String> getTagNames(Uri uri) {
+            if (!uri.getPathSegments().get(0).equals(TagEntry.TABLE_NAME) || !uri.getPathSegments().get(1).equals(TagEntry.PATH_SEGMENT_KEYWORD))
+                throw new IllegalArgumentException(ERR_INVALID_URI + uri);
+            String fetchedString = uri.getPathSegments().get(2);
+            return deserializeNames(fetchedString, "\\+");
+        }
+
+        private static String serializeNames(List<String> names, CharSequence delimiter) {
+            HashSet<String> encodedNames = new HashSet<String>();
+            for (String name : names) {
+                String encodedName = null;
+                try {
+                    encodedName = URLEncoder.encode(name, "utf-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                if (encodedName != null && encodedName.length() > 0)
+                    encodedNames.add(encodedName);
+            }
+            return TextUtils.join(delimiter, encodedNames);
+        }
+
+        private static List<String> deserializeNames(String string, String expression) {
+            String[] names = TextUtils.split(string, expression);
+            HashSet<String> decodedNames = new HashSet<String>();
+            for (String name : names) {
+                String decodedName = null;
+                try {
+                    decodedName = URLDecoder.decode(name, "utf-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                if (decodedName != null && decodedName.length() > 0)
+                    decodedNames.add(decodedName);
+            }
+            return new ArrayList<String>(decodedNames);
+        }
 
     }
 }

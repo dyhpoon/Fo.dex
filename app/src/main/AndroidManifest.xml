@@ -18,6 +18,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:authorities="com.dyhpoon.fodex.provider"
+            android:name=".data.FodexProvider"/>
     </application>
 
 </manifest>

@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
-import android.util.Log;
 
 import com.dyhpoon.fodex.data.FodexContract.ImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.TagEntry;
@@ -20,7 +19,6 @@ import java.util.Set;
 public class DatabaseTest extends AndroidTestCase {
 
     public void testCreateDatabase() {
-        Log.v("HELLO", "createa");
         mContext.deleteDatabase(FodexDbHelper.DATABASE_NAME);
         SQLiteDatabase database = new FodexDbHelper(this.mContext).getWritableDatabase();
         assertEquals(true, database.isOpen());

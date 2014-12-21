@@ -29,7 +29,7 @@ public class FodexDbHelper extends SQLiteOpenHelper {
                 ImageEntry.COLUMN_IMAGE_URI + " TEXT UNIQUE NOT NULL, " +
                 ImageEntry.COLUMN_IMAGE_HASH + " TEXT NOT NULL, " +
                 ImageEntry.COLUMN_IMAGE_DATE + " TEXT NOT NULL, " +
-                "UNIQUE (" + ImageEntry.COLUMN_IMAGE_URI + ") ON CONFLICT REPLACE" +
+                "UNIQUE (" + ImageEntry.COLUMN_IMAGE_URI + ") ON CONFLICT IGNORE" +
                 " );";
 
         final String SQL_CREATE_TAG_TABLE = "CREATE TABLE " + TagEntry.TABLE_NAME + " (" +
