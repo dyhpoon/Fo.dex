@@ -13,6 +13,7 @@ import com.dyhpoon.fodex.data.FodexContract.TagEntry;
 import com.dyhpoon.fodex.data.FodexContract.ImageTagEntry;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by darrenpoon on 20/12/14.
@@ -116,11 +117,28 @@ public class FodexProvider extends ContentProvider {
                         sortOrder);
                 break;
             case TAG_KEYWORDS:
+                /*
+SELECT image._id, image.uri, image.hash, image.date
+FROM image_tag
+INNER JOIN image ON image._id = image_tag.image_id
+INNER JOIN tag ON tag._id = image_tag.tag_id
+WHERE tag.name in ("hello")
+group by image._id
+having count(tag.name) = 1
+
+SELECT image._id, image.uri, image.hash, image.date
+FROM image_tag
+INNER JOIN image ON image._id = image_tag.image_id
+INNER JOIN tag ON tag._id = image_tag.tag_id
+WHERE tag.name in ("hello", "bye")
+group by image._id
+having count(tag.name) = 2
+                 */
                 final SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 
                 builder.setTables(ImageTagEntry.TABLE_NAME +
-                        " INNER JOIN " + TagEntry.TABLE_NAME + " ON " + TagEntry.TABLE_NAME + "." + TagEntry._ID + " = " + ImageTagEntry.TABLE_NAME + "." + ImageTagEntry._ID +
-                        " INNER JOIN " + ImageEntry.TABLE_NAME + " ON " + ImageEntry.TABLE_NAME + "." + ImageEntry._ID + " = " + ImageTagEntry.TABLE_NAME + "." + ImageTagEntry._ID);
+                        " INNER JOIN " + TagEntry.TABLE_NAME + " ON " + TagEntry.TABLE_NAME + "." + TagEntry._ID + " = " + ImageTagEntry.TABLE_NAME + "." + ImageTagEntry.COLUMN_IT_TAG_ID +
+                        " INNER JOIN " + ImageEntry.TABLE_NAME + " ON " + ImageEntry.TABLE_NAME + "." + ImageEntry._ID + " = " + ImageTagEntry.TABLE_NAME + "." + ImageTagEntry.COLUMN_IT_IMAGE_ID);
 
                 builder.setProjectionMap(new HashMap<String, String>(){{
                     put(ImageEntry.TABLE_NAME + "." + ImageEntry._ID, ImageEntry.TABLE_NAME + "." + ImageEntry._ID);
@@ -129,13 +147,28 @@ public class FodexProvider extends ContentProvider {
                     put(ImageEntry.COLUMN_IMAGE_DATE, ImageEntry.COLUMN_IMAGE_DATE);
                 }});
 
+                List<String> tagNames = ImageTagEntry.getTagNames(uri);
+                if (tagNames.size() > 0) {
+                    builder.appendWhere(TagEntry.TABLE_NAME + "." + TagEntry.COLUMN_TAG_NAME + " in (");
+                    for (int i = 0; i < tagNames.size(); i++) {
+                        String tagName = tagNames.get(i);
+                        if (i == tagNames.size() - 1) {
+                            builder.appendWhereEscapeString(tagName);
+                        } else {
+                            builder.appendWhereEscapeString(tagName);
+                            builder.appendWhere(",");
+                        }
+                    }
+                    builder.appendWhere(")");
+                }
+
                 cursor = builder.query(
                         mOpenHelper.getWritableDatabase(),
                         projection,
                         selection,
                         selectionArgs,
-                        null,
-                        null,
+                        ImageEntry.TABLE_NAME + "." + ImageEntry._ID,
+                        "count(" + TagEntry.TABLE_NAME + "." + TagEntry.COLUMN_TAG_NAME + ") = " + Integer.toString(tagNames.size()),
                         sortOrder);
                 break;
             default:
