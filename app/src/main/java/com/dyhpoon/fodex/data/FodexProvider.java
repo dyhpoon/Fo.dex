@@ -23,12 +23,14 @@ public class FodexProvider extends ContentProvider {
     private static final UriMatcher mUriMatcher = buildUriMatcher();
     private FodexDbHelper mOpenHelper;
 
-    private static final int IMAGE_ID = 100;
-    private static final int IMAGE_HASH = 101;
-    private static final int IMAGE_HASH_WITH_DATE = 102;
-    private static final int TAG_ID = 200;
-    private static final int TAG_SEARCH = 201;
-    private static final int TAG_KEYWORDS = 202;
+    private static final int IMAGE = 100;
+    private static final int IMAGE_ID = 101;
+    private static final int IMAGE_HASH = 102;
+    private static final int IMAGE_HASH_WITH_DATE = 103;
+    private static final int TAG = 200;
+    private static final int TAG_ID = 201;
+    private static final int TAG_SEARCH = 202;
+    private static final int TAG_KEYWORDS = 203;
 
     private static final String ERR_UNSUPPORTED_URI = "Unsupported uri: ";
 
@@ -37,6 +39,8 @@ public class FodexProvider extends ContentProvider {
         final String authority = FodexContract.CONTENT_AUTHORITY;
 
         final String imagePath = FodexContract.PATH_IMAGE;
+        // content://com.dyhpoon.fodex.provider/image
+        matcher.addURI(authority, imagePath, IMAGE);
         // content://com.dyhpoon.fodex.provider/image/1
         matcher.addURI(authority, imagePath + "/#", IMAGE_ID);
         // content://com.dyhpoon.fodex.provider/image/hash/gh390hg223g
@@ -45,6 +49,8 @@ public class FodexProvider extends ContentProvider {
         matcher.addURI(authority, imagePath + "/" + ImageEntry.COLUMN_IMAGE_HASH + "/*/" + ImageEntry.COLUMN_IMAGE_DATE + "/*", IMAGE_HASH_WITH_DATE);
 
         final String tagPath = FodexContract.PATH_TAG;
+        // content://com.dyhpoon.fodex.provider/tag
+        matcher.addURI(authority, tagPath, TAG);
         // content://com.dyhpoon.fodex.provider/tag/1
         matcher.addURI(authority, tagPath + "/#", TAG_ID);
         // content://com.dyhpoon.fodex.provider/tag/search/morning
@@ -65,6 +71,16 @@ public class FodexProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor cursor;
         switch (mUriMatcher.match(uri)) {
+            case IMAGE:
+                cursor = mOpenHelper.getReadableDatabase().query(
+                        ImageEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
             case IMAGE_ID:
                 cursor = mOpenHelper.getReadableDatabase().query(
                         ImageEntry.TABLE_NAME,
@@ -91,6 +107,16 @@ public class FodexProvider extends ContentProvider {
                         projection,
                         ImageEntry.COLUMN_IMAGE_HASH + " = '" + ImageEntry.getHashFromUri(uri) + "'" +
                         "AND " + ImageEntry.COLUMN_IMAGE_DATE+ " = '" + ImageEntry.getDateFromUri(uri) + "'",
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case TAG:
+                cursor = mOpenHelper.getReadableDatabase().query(
+                        TagEntry.TABLE_NAME,
+                        projection,
+                        selection,
                         selectionArgs,
                         null,
                         null,
@@ -180,12 +206,16 @@ having count(tag.name) = 2
     @Override
     public String getType(Uri uri) {
         switch (mUriMatcher.match(uri)) {
+            case IMAGE:
+                return ImageEntry.CONTENT_DIR_TYPE;
             case IMAGE_ID:
                 return ImageEntry.CONTENT_ITEM_TYPE;
             case IMAGE_HASH:
                 return ImageEntry.CONTENT_ITEM_TYPE;
             case IMAGE_HASH_WITH_DATE:
                 return ImageEntry.CONTENT_ITEM_TYPE;
+            case TAG:
+                return TagEntry.CONTENT_DIR_TYPE;
             case TAG_ID:
                 return TagEntry.CONTENT_ITEM_TYPE;
             case TAG_SEARCH:

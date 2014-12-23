@@ -53,6 +53,18 @@ public class ProviderTest extends AndroidTestCase {
         mDatabase.close();
     }
 
+    public void testImageUri() {
+        Cursor imageCursor = mContext.getContentResolver().query(
+                ImageEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+        assertEquals(imageCursor.getCount(), 1);
+        validateCursor(imageCursor, mImageValues);
+        imageCursor.close();
+    }
+
     public void testImageIdUri() {
         Cursor imageCursor = mContext.getContentResolver().query(
                 ImageEntry.buildImageUri(mImageRowId),
@@ -89,6 +101,18 @@ public class ProviderTest extends AndroidTestCase {
         assertEquals(imageHashDateCursor.getCount(), 1);
         validateCursor(imageHashDateCursor, mImageValues);
         imageHashDateCursor.close();
+    }
+
+    public void testTagUri() {
+        Cursor tagCursor = mContext.getContentResolver().query(
+                TagEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+        assertEquals(tagCursor.getCount(), 1);
+        validateCursor(tagCursor, mTagValues);
+        tagCursor.close();
     }
 
     public void testTagIdUri() {
