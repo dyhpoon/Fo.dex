@@ -117,6 +117,7 @@ public class FodexContract {
 
         // Columns
         public static final String COLUMN_TAG_NAME = "name";
+        public static final String COLUMN_TAG_VISIBLE = "visible";
 
         // Path Segments
         public static final String PATH_SEGMENT_SEARCH = "search";
