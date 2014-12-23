@@ -1,9 +1,12 @@
 package com.dyhpoon.fodex;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.test.AndroidTestCase;
+import android.util.Log;
 
 import com.dyhpoon.fodex.data.FodexContract.ImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.ImageTagEntry;
@@ -30,6 +33,7 @@ public class ProviderTest extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        // TODO: test insert
         mContext.deleteDatabase(FodexDbHelper.DATABASE_NAME);
 
         mDatabase = new FodexDbHelper(this.mContext).getWritableDatabase();
@@ -60,7 +64,7 @@ public class ProviderTest extends AndroidTestCase {
                 null,
                 null,
                 null);
-        assertEquals(imageCursor.getCount(), 1);
+        assertEquals(1, imageCursor.getCount());
         validateCursor(imageCursor, mImageValues);
         imageCursor.close();
     }
@@ -72,7 +76,7 @@ public class ProviderTest extends AndroidTestCase {
                 null,
                 null,
                 null);
-        assertEquals(imageCursor.getCount(), 1);
+        assertEquals(1, imageCursor.getCount());
         validateCursor(imageCursor, mImageValues);
         imageCursor.close();
     }
@@ -84,7 +88,7 @@ public class ProviderTest extends AndroidTestCase {
                 null,
                 null,
                 null);
-        assertEquals(imageHashCursor.getCount(), 1);
+        assertEquals(1, imageHashCursor.getCount());
         validateCursor(imageHashCursor, mImageValues);
         imageHashCursor.close();
     }
@@ -98,7 +102,7 @@ public class ProviderTest extends AndroidTestCase {
                 null,
                 null,
                 null);
-        assertEquals(imageHashDateCursor.getCount(), 1);
+        assertEquals(1, imageHashDateCursor.getCount());
         validateCursor(imageHashDateCursor, mImageValues);
         imageHashDateCursor.close();
     }
@@ -110,7 +114,7 @@ public class ProviderTest extends AndroidTestCase {
                 null,
                 null,
                 null);
-        assertEquals(tagCursor.getCount(), 1);
+        assertEquals(1, tagCursor.getCount());
         validateCursor(tagCursor, mTagValues);
         tagCursor.close();
     }
@@ -122,7 +126,7 @@ public class ProviderTest extends AndroidTestCase {
                 null,
                 null,
                 null);
-        assertEquals(tagCursor.getCount(), 1);
+        assertEquals(1, tagCursor.getCount());
         validateCursor(tagCursor, mTagValues);
         tagCursor.close();
     }
@@ -134,19 +138,43 @@ public class ProviderTest extends AndroidTestCase {
                 null,
                 null,
                 null);
-        assertEquals(tagNameCursor.getCount(), 1);
+        assertEquals(1, tagNameCursor.getCount());
         validateCursor(tagNameCursor, mTagValues);
         tagNameCursor.close();
     }
 
     public void testImageTagUri() {
         Cursor imageTagCursor = mContext.getContentResolver().query(
+                ImageTagEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+        assertEquals(1, imageTagCursor.getCount());
+        validateCursor(imageTagCursor, mImageTagValues);
+        imageTagCursor.close();
+    }
+
+    public void testImageTagIdUri() {
+        Cursor imageTagCursor = mContext.getContentResolver().query(
+                ImageTagEntry.buildImageTagUri(mImageTagRowId),
+                null,
+                null,
+                null,
+                null);
+        assertEquals(1, imageTagCursor.getCount());
+        validateCursor(imageTagCursor, mImageTagValues);
+        imageTagCursor.close();
+    }
+
+    public void testImageTagWithTagNamesUri() {
+        Cursor imageTagCursor = mContext.getContentResolver().query(
                 ImageTagEntry.buildTagNames(Arrays.asList(mTagValues.getAsString(TagEntry.COLUMN_TAG_NAME))),
                 null,
                 null,
                 null,
                 null);
-        assertEquals(imageTagCursor.getCount(), 1);
+        assertEquals(1, imageTagCursor.getCount());
         validateCursor(imageTagCursor, mImageValues);
         imageTagCursor.close();
     }

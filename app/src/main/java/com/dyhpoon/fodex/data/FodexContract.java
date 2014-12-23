@@ -31,6 +31,7 @@ public class FodexContract {
     // Possible path
     public static final String PATH_IMAGE = "image";
     public static final String PATH_TAG = "tag";
+    public static final String PATH_IMAGE_TAG = "image_tag";
 
     // Date Format
     public static final String DATE_FORMAT = "yyyMMdd";
@@ -149,6 +150,12 @@ public class FodexContract {
     /* Inner class defines the table contents of index table */
     public static final class ImageTagEntry implements BaseColumns {
 
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_IMAGE_TAG).build();
+
+        // Type
+        public static final String CONTENT_ITEM_TYPE = "fodex.cursor.item/" + CONTENT_AUTHORITY + "/" + PATH_IMAGE_TAG;
+        public static final String CONTENT_DIR_TYPE = "fodex.cursor.dir/" + CONTENT_AUTHORITY + "/" + PATH_IMAGE_TAG;
+
         // Table name
         public static final String TABLE_NAME = "image_tag";
 
@@ -157,6 +164,11 @@ public class FodexContract {
         public static final String COLUMN_IT_TAG_ID = "tag_id";
 
         // Building Uris
+        // content://com.dyhpoon.fodex.provider/image_tag/1
+        public static Uri buildImageTagUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
         // content://com.dyhpoon.fodex.provider/tag/keywords/morning+evening
         public static Uri buildTagNames(List<String> names) {
             String appendedString = serializeNames(names, "+");
