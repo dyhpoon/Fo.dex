@@ -298,16 +298,113 @@ having count(tag.name) = 2
                 throw new UnsupportedOperationException(ERR_UNSUPPORTED_URI + uri);
 
         }
+        getContext().getContentResolver().notifyChange(uri, null);
         return returnUri;
     }
 
     @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        final SQLiteDatabase database = mOpenHelper.getWritableDatabase();
+        switch (mUriMatcher.match(uri)) {
+            case IMAGE: {
+                database.beginTransaction();
+                int returnCount = 0;
+                try {
+                    for (ContentValues value : values) {
+                        long _id = database.insert(ImageEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    database.setTransactionSuccessful();
+                } finally {
+                    database.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            }
+            case TAG: {
+                database.beginTransaction();
+                int returnCount = 0;
+                try {
+                    for (ContentValues value : values) {
+                        long _id = database.insert(TagEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    database.setTransactionSuccessful();
+                } finally {
+                    database.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            }
+            case IMAGE_TAG: {
+                database.beginTransaction();
+                int returnCount = 0;
+                try {
+                    for (ContentValues value : values) {
+                        long _id = database.insert(ImageTagEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    database.setTransactionSuccessful();
+                } finally {
+                    database.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            }
+            default:
+                return super.bulkInsert(uri, values);
+        }
+    }
+
+    @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        final SQLiteDatabase database = mOpenHelper.getWritableDatabase();
+        int rowsDeleted;
+        switch (mUriMatcher.match(uri)) {
+            case IMAGE:
+                rowsDeleted = database.delete(ImageEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case TAG:
+                rowsDeleted = database.delete(TagEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case IMAGE_TAG:
+                rowsDeleted = database.delete(ImageTagEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException(ERR_UNSUPPORTED_URI + uri);
+        }
+        if (selection == null || rowsDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsDeleted;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        final SQLiteDatabase database = mOpenHelper.getWritableDatabase();
+        int rowsUpdated;
+        switch (mUriMatcher.match(uri)) {
+            case IMAGE:
+                rowsUpdated = database.update(ImageEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case TAG:
+                rowsUpdated = database.update(TagEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case IMAGE_TAG:
+                rowsUpdated = database.update(ImageTagEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException(ERR_UNSUPPORTED_URI + uri);
+        }
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsUpdated;
     }
 }

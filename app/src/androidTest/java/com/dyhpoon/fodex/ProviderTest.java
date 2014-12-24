@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.test.AndroidTestCase;
-import android.util.Log;
 
 import com.dyhpoon.fodex.data.FodexContract.ImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.ImageTagEntry;
@@ -25,7 +24,6 @@ public class ProviderTest extends AndroidTestCase {
     private long mImageRowId = -1;
     private long mTagRowId = -1;
     private long mImageTagRowId = -1;
-    private SQLiteDatabase mDatabase;
     private ContentValues mImageValues = createImageValues();
     private ContentValues mTagValues = createTagValues();
     private ContentValues mImageTagValues;
@@ -33,28 +31,27 @@ public class ProviderTest extends AndroidTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        // TODO: test insert
-        mContext.deleteDatabase(FodexDbHelper.DATABASE_NAME);
+        // TODO: test update
+        // TODO: test delete
+        // TODO: test bulk insert
+        mContext.getContentResolver().delete(ImageTagEntry.CONTENT_URI, null, null);
+        mContext.getContentResolver().delete(TagEntry.CONTENT_URI, null, null);
+        mContext.getContentResolver().delete(ImageEntry.CONTENT_URI, null, null);
 
-        mDatabase = new FodexDbHelper(this.mContext).getWritableDatabase();
-
-        mImageRowId = mDatabase.insert(ImageEntry.TABLE_NAME, null, mImageValues);
+        Uri imageUri = mContext.getContentResolver().insert(ImageEntry.CONTENT_URI, mImageValues);
+        mImageRowId = ContentUris.parseId(imageUri);
         assertTrue(mImageRowId != -1);
 
-        mTagRowId = mDatabase.insert(TagEntry.TABLE_NAME, null, mTagValues);
+        Uri tagUri = mContext.getContentResolver().insert(TagEntry.CONTENT_URI, mTagValues);
+        mTagRowId = ContentUris.parseId(tagUri);
         assertTrue(mTagRowId != -1);
 
         mImageTagValues = createImageTagValues(mImageRowId, mTagRowId);
         assertNotNull(mImageTagValues);
 
-        mImageTagRowId = mDatabase.insert(ImageTagEntry.TABLE_NAME, null, mImageTagValues);
+        Uri imageTagUri = mContext.getContentResolver().insert(ImageTagEntry.CONTENT_URI, mImageTagValues);
+        mImageTagRowId = ContentUris.parseId(imageTagUri);
         assertTrue(mImageRowId != -1);
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        mDatabase.close();
     }
 
     public void testImageUri() {

@@ -44,7 +44,8 @@ public class FodexDbHelper extends SQLiteOpenHelper {
                 ImageTagEntry.COLUMN_IT_TAG_ID + " INTEGER NOT NULL, " +
                 ImageTagEntry.COLUMN_IT_IMAGE_ID + " INTEGER NOT NULL, " +
                 "FOREIGN KEY (" + ImageTagEntry.COLUMN_IT_TAG_ID + ") REFERENCES " + TagEntry.TABLE_NAME + "(" + TagEntry._ID + ")," +
-                "FOREIGN KEY (" + ImageTagEntry.COLUMN_IT_IMAGE_ID + ") REFERENCES " + ImageEntry.TABLE_NAME + "(" + ImageEntry._ID + ")" +
+                "FOREIGN KEY (" + ImageTagEntry.COLUMN_IT_IMAGE_ID + ") REFERENCES " + ImageEntry.TABLE_NAME + "(" + ImageEntry._ID + ")," +
+                "UNIQUE (" + ImageTagEntry.COLUMN_IT_TAG_ID + ", " + ImageTagEntry.COLUMN_IT_IMAGE_ID  + ") ON CONFLICT IGNORE" +
                 " );";
 
         db.execSQL(SQL_CREATE_IMAGE_TABLE);
