@@ -30,3 +30,4 @@ out/
 # Ignore gradle files
 .gradle/
 build/
+**/build/
