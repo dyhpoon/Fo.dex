@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.dyhpoon.fodex" >
+    package="com.dyhpoon.fodex">
+
+    // Only for Handsets
+    <compatible-screens>
+        <!-- all small size screens -->
+        <screen android:screenDensity="ldpi" android:screenSize="small" />
+        <screen android:screenDensity="mdpi" android:screenSize="small" />
+        <screen android:screenDensity="hdpi" android:screenSize="small" />
+        <screen android:screenDensity="xhdpi" android:screenSize="small" />
+        <!-- all normal size screens -->
+        <screen android:screenDensity="ldpi" android:screenSize="normal" />
+        <screen android:screenDensity="mdpi" android:screenSize="normal" />
+        <screen android:screenDensity="hdpi" android:screenSize="normal" />
+        <screen android:screenDensity="xhdpi" android:screenSize="normal" />
+    </compatible-screens>
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -8,10 +22,10 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name="com.dyhpoon.fodex.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,8 +33,8 @@
             </intent-filter>
         </activity>
         <provider
-            android:authorities="com.dyhpoon.fodex.provider"
-            android:name=".data.FodexProvider"/>
+            android:name=".data.FodexProvider"
+            android:authorities="com.dyhpoon.fodex.provider" />
     </application>
 
 </manifest>
