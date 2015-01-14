@@ -45,7 +45,7 @@ public class RecentPhotosPageFragment extends Fragment {
 
         mGridView = (AsymmetricGridView) view.findViewById(R.id.gridView);
         mGridView.setRequestedColumnCount(3);
-        mGridView.setRequestedHorizontalSpacing(Utils.dpToPx(getActivity(), 3));
+        mGridView.setRequestedHorizontalSpacing(Utils.dpToPx(getActivity(), 2));
         mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
