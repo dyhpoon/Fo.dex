@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
@@ -76,6 +77,7 @@ public class MainActivity extends ActionBarActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            ((RecentPhotosPageFragment)firstFragment).update();
             return true;
         }
 
@@ -100,8 +102,8 @@ public class MainActivity extends ActionBarActivity
 
     private List<PageItem> getPages() {
         return Arrays.asList(
-                new PageItem(getString(R.string.title_all_photos), AllPhotosPageFragment.class),
                 new PageItem(getString(R.string.title_recent_photos), RecentPhotosPageFragment.class),
+                new PageItem(getString(R.string.title_all_photos), AllPhotosPageFragment.class),
                 new PageItem(getString(R.string.title_downloaded_photos), DownloadedPhotosPageFragment.class)
         );
     }

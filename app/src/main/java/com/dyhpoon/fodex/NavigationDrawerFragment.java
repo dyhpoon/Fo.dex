@@ -3,6 +3,7 @@ package com.dyhpoon.fodex;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,8 +20,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -105,6 +108,7 @@ public class NavigationDrawerFragment extends Fragment {
                 selectItem(position);
             }
         });
+        mDrawerListView.setAdapter(new NavigationAdapter());
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
     }
 
@@ -275,5 +279,63 @@ public class NavigationDrawerFragment extends Fragment {
          * Called when an item in the navigation drawer is selected.
          */
         void onNavigationDrawerItemSelected(int position);
+    }
+
+    private class NavigationAdapter extends BaseAdapter {
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view;
+            if (convertView == null) {
+                // inflate layout
+                LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.list_item_navigation_drawer, null);
+
+                // setup view holder
+                ViewHolder viewHolder = new ViewHolder();
+                viewHolder.iconImageView = (ImageView) view.findViewById(R.id.icon);
+                viewHolder.titleTextView = (TextView) view.findViewById(R.id.title);
+                view.setTag(viewHolder);
+            } else {
+                view = convertView;
+            }
+
+            ViewHolder viewHolder = (ViewHolder) view.getTag();
+            switch (position) {
+                case 0:
+                    viewHolder.iconImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_access_time));
+                    viewHolder.titleTextView.setText(getString(R.string.title_recent_photos));
+                    break;
+                case 1:
+                    viewHolder.iconImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_access_time));
+                    viewHolder.titleTextView.setText(getString(R.string.title_downloaded_photos));
+                    break;
+                default:
+                    viewHolder.iconImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_access_time));
+                    viewHolder.titleTextView.setText(getString(R.string.title_all_photos));
+                    break;
+            }
+
+            return view;
+        }
+    }
+
+    private class ViewHolder {
+        ImageView iconImageView;
+        TextView titleTextView;
     }
 }
