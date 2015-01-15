@@ -18,6 +18,7 @@ import com.dyhpoon.fodex.view.ImageGridItem;
 import com.felipecsl.asymmetricgridview.library.Utils;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridView;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter;
+import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,10 @@ public class RecentPhotosPageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_page_recent_photos, container, false);
 
-        mGridView = (AsymmetricGridView) view.findViewById(R.id.gridView);
+
+        mGridView = (AsymmetricGridView) view.findViewById(R.id.grid_view);
+        FloatingActionButton floatingButton = (FloatingActionButton) view.findViewById(R.id.floating_button);
+
         mGridView.setRequestedColumnCount(3);
         mGridView.setRequestedHorizontalSpacing(Utils.dpToPx(getActivity(), 2));
         mGridView.setAdapter(new AsymmetricGridViewAdapter<MediaPhotoItem>(getActivity(), mGridView, new ArrayList<MediaPhotoItem>()) {
@@ -56,6 +60,14 @@ public class RecentPhotosPageFragment extends Fragment {
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 return view;
+            }
+        });
+
+        floatingButton.attachToListView(mGridView);
+        floatingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO
             }
         });
 
