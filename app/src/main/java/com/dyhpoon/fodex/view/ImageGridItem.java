@@ -13,12 +13,12 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 /**
  * Created by darrenpoon on 9/12/14.
  */
-public class AsyncLoadBitmapGridItem extends LinearLayout {
+public class ImageGridItem extends LinearLayout {
 
     private ImageView mImageView;
     private ImageLoader mImageLoader;
 
-    public AsyncLoadBitmapGridItem(Context context) {
+    public ImageGridItem(Context context) {
         super(context);
 
         mImageLoader = ImageLoader.getInstance();

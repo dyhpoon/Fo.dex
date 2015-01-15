@@ -1,4 +1,4 @@
-package com.dyhpoon.fodex;
+package com.dyhpoon.fodex.controller.fragment;
 
 
 import android.app.Activity;
@@ -25,6 +25,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.dyhpoon.fodex.R;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.

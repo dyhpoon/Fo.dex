@@ -1,4 +1,4 @@
-package com.dyhpoon.fodex;
+package com.dyhpoon.fodex.controller.fragment;
 
 import android.app.Fragment;
 

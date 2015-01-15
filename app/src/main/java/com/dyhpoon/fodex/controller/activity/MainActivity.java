@@ -1,4 +1,4 @@
-package com.dyhpoon.fodex;
+package com.dyhpoon.fodex.controller.activity;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -6,20 +6,21 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 
+import com.dyhpoon.fodex.R;
+import com.dyhpoon.fodex.controller.fragment.AllPhotosPageFragment;
+import com.dyhpoon.fodex.controller.fragment.DownloadedPhotosPageFragment;
+import com.dyhpoon.fodex.controller.fragment.NavigationDrawerFragment;
+import com.dyhpoon.fodex.controller.fragment.RecentPhotosPageFragment;
 import com.dyhpoon.fodex.model.PageItem;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.memory.impl.LRULimitedMemoryCache;
-import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.utils.StorageUtils;
 
 import java.util.Arrays;
 import java.util.List;
