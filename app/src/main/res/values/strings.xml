@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Fo.dex</string>
+    <string name="app_name" translatable="false">Fo.dex</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_example">Example action</string>
-    <string name="action_settings">Settings</string>
 
     <string name="title_all_photos">All Photos</string>
     <string name="title_recent_photos">Recent Photos</string>
     <string name="title_downloaded_photos">Downloaded Photos</string>
+    <string name="title_settings">Settings</string>
+
+    <string name="hashtags">Hashtags</string>
 
 </resources>

@@ -74,8 +74,14 @@ public class RecentPhotosPageFragment extends Fragment {
         return view;
     }
 
-    public void update() {
-        ContentResolver resolver = getActivity().getContentResolver();
+    @Override
+    public void onResume() {
+        super.onResume();
+        presentContent();
+    }
+
+    private void presentContent() {
+        ContentResolver resolver =  getActivity().getContentResolver();
         String[] projection = new String[] {
                 MediaStore.Images.Media._ID,
                 MediaStore.Images.Media.DATA,
