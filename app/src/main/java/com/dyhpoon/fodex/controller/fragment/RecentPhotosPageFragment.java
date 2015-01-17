@@ -6,15 +6,13 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-import com.dyhpoon.fodex.model.MediaPhotoItem;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by darrenpoon on 8/12/14.
  */
-public class RecentPhotosPageFragment extends FodexBaseFragment {
+public class RecentPhotosPageFragment extends FodexBaseFragment <RecentPhotosPageFragment.PhotoMedia> {
 
     @Override
     protected void onClickFloatingActionButton() {
@@ -22,14 +20,14 @@ public class RecentPhotosPageFragment extends FodexBaseFragment {
     }
 
     @Override
-    protected Uri imageUriForItems(int position, MediaPhotoItem item) {
+    protected Uri imageUriForItems(int position, PhotoMedia item) {
         return ContentUris.withAppendedId(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                Integer.parseInt(item.getId()));
+                Integer.parseInt(item.id));
     }
 
     @Override
-    protected List<MediaPhotoItem> itemsForAdapters() {
+    protected List<PhotoMedia> itemsForAdapters() {
         ContentResolver resolver = getActivity().getContentResolver();
         String[] projection = new String[]{
                 MediaStore.Images.Media._ID,
@@ -44,7 +42,7 @@ public class RecentPhotosPageFragment extends FodexBaseFragment {
                 null
         );
 
-        List<MediaPhotoItem> items = new ArrayList<MediaPhotoItem>();
+        List<PhotoMedia> items = new ArrayList<PhotoMedia>();
         if (cursor.moveToLast()) {
             final int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
             final int dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
@@ -55,23 +53,24 @@ public class RecentPhotosPageFragment extends FodexBaseFragment {
                 final String data = cursor.getString(dataColumn);
                 final String date = cursor.getString(dateColumn);
 
-                int index = items.size() % 10;
-                int columnSpan;
-                switch (index) {
-                    case 0:
-                    case 6:
-                        columnSpan = 2;
-                        break;
-                    default:
-                        columnSpan = 1;
-                        break;
-                }
-                items.add(new MediaPhotoItem(id, columnSpan, 1, data, date));
+                items.add(new PhotoMedia(id, data, date));
             } while (cursor.moveToPrevious());
 
         }
         cursor.close();
         return items;
+    }
+
+    public class PhotoMedia {
+        public String id;
+        public String data;
+        public String date;
+
+        public PhotoMedia(String id, String data, String date) {
+            this.id = id;
+            this.data = data;
+            this.date = date;
+        }
     }
 
 }
