@@ -4,6 +4,7 @@ package com.dyhpoon.fodex.controller.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -319,15 +320,15 @@ public class NavigationDrawerFragment extends Fragment {
             ViewHolder viewHolder = (ViewHolder) view.getTag();
             switch (position) {
                 case 0:
-                    viewHolder.iconImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_access_time));
+                    viewHolder.iconImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_clock));
                     viewHolder.titleTextView.setText(getString(R.string.title_recent_photos));
                     break;
                 case 1:
-                    viewHolder.iconImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_access_time));
+                    viewHolder.iconImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_clock));
                     viewHolder.titleTextView.setText(getString(R.string.title_downloaded_photos));
                     break;
                 default:
-                    viewHolder.iconImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_access_time));
+                    viewHolder.iconImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_clock));
                     viewHolder.titleTextView.setText(getString(R.string.title_all_photos));
                     break;
             }
