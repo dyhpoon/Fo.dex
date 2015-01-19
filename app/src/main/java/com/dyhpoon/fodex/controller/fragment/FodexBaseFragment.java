@@ -76,7 +76,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
 
         List<LayoutSpecItem> layoutItems = new ArrayList<LayoutSpecItem>();
         for (int i = 0; i < userObjects.size(); i++) {
-            int index = userObjects.size() % 10;
+            int index = i % 10;
             int columnSpan;
             switch (index) {
                 case 0:
