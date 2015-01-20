@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -28,6 +29,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dyhpoon.fodex.R;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -285,9 +289,18 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     private class NavigationAdapter extends BaseAdapter {
+
+        final List<DrawerItemInfo> drawerItems = Arrays.asList(
+                new DrawerItemInfo(getString(R.string.title_recent_photos), getResources().getDrawable(R.drawable.ic_clock)),
+                new DrawerItemInfo(getString(R.string.title_all_photos), getResources().getDrawable(R.drawable.ic_clock)),
+                new DrawerItemInfo(getString(R.string.title_indexed_photos), getResources().getDrawable(R.drawable.ic_clock)),
+                new DrawerItemInfo(getString(R.string.title_unindexed_photos), getResources().getDrawable(R.drawable.ic_clock)),
+                new DrawerItemInfo(getString(R.string.title_settings), getResources().getDrawable(R.drawable.ic_clock))
+        );
+
         @Override
         public int getCount() {
-            return 3;
+            return drawerItems.size();
         }
 
         @Override
@@ -320,17 +333,16 @@ public class NavigationDrawerFragment extends Fragment {
             ViewHolder viewHolder = (ViewHolder) view.getTag();
             switch (position) {
                 case 0:
-                    viewHolder.iconImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_clock));
-                    viewHolder.titleTextView.setText(getString(R.string.title_recent_photos));
-                    break;
                 case 1:
-                    viewHolder.iconImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_clock));
-                    viewHolder.titleTextView.setText(getString(R.string.title_downloaded_photos));
+                case 2:
+                case 3:
+                case 4:
+                    DrawerItemInfo info = drawerItems.get(position);
+                    viewHolder.iconImageView.setImageDrawable(info.drawable);
+                    viewHolder.titleTextView.setText(info.title);
                     break;
                 default:
-                    viewHolder.iconImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_clock));
-                    viewHolder.titleTextView.setText(getString(R.string.title_all_photos));
-                    break;
+                    throw new RuntimeException("Undefined list item type");
             }
 
             return view;
@@ -340,5 +352,15 @@ public class NavigationDrawerFragment extends Fragment {
     private class ViewHolder {
         ImageView iconImageView;
         TextView titleTextView;
+    }
+
+    private class DrawerItemInfo {
+        String title;
+        Drawable drawable;
+
+        public DrawerItemInfo(String title, Drawable drawable) {
+            this.title = title;
+            this.drawable = drawable;
+        }
     }
 }

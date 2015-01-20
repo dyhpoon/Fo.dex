@@ -17,7 +17,6 @@ import android.widget.EditText;
 import com.crashlytics.android.Crashlytics;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.controller.fragment.AllPhotosPageFragment;
-import com.dyhpoon.fodex.controller.fragment.DownloadedPhotosPageFragment;
 import com.dyhpoon.fodex.controller.fragment.NavigationDrawerFragment;
 import com.dyhpoon.fodex.controller.fragment.RecentPhotosPageFragment;
 import com.dyhpoon.fodex.model.PageItem;
@@ -132,8 +131,7 @@ public class MainActivity extends ActionBarActivity
     private List<PageItem> getPages() {
         return Arrays.asList(
                 new PageItem(getString(R.string.title_recent_photos), RecentPhotosPageFragment.class),
-                new PageItem(getString(R.string.title_all_photos), AllPhotosPageFragment.class),
-                new PageItem(getString(R.string.title_downloaded_photos), DownloadedPhotosPageFragment.class)
+                new PageItem(getString(R.string.title_all_photos), AllPhotosPageFragment.class)
         );
     }
 
