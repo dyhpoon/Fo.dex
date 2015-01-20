@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.EditText;
 
+import com.crashlytics.android.Crashlytics;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.controller.fragment.AllPhotosPageFragment;
 import com.dyhpoon.fodex.controller.fragment.DownloadedPhotosPageFragment;
@@ -26,6 +27,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
+import io.fabric.sdk.android.Fabric;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,6 +46,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
         mToolbar = (Toolbar) findViewById(R.id.app_bar);

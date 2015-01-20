@@ -36,6 +36,10 @@
         <provider
             android:name=".data.FodexProvider"
             android:authorities="com.dyhpoon.fodex.provider" />
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="2a2e349920a9b0113302bc093def54421149f6e8" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
