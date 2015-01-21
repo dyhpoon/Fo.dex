@@ -16,10 +16,10 @@ import android.widget.EditText;
 
 import com.crashlytics.android.Crashlytics;
 import com.dyhpoon.fodex.R;
-import com.dyhpoon.fodex.controller.fragment.AllPhotosPageFragment;
-import com.dyhpoon.fodex.controller.fragment.NavigationDrawerFragment;
-import com.dyhpoon.fodex.controller.fragment.RecentPhotosPageFragment;
-import com.dyhpoon.fodex.model.PageItem;
+import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerCallbacks;
+import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerFragment;
+import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerData;
+import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerData.DrawerInfo;
 import com.nostra13.universalimageloader.cache.memory.impl.LRULimitedMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -27,12 +27,10 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import io.fabric.sdk.android.Fabric;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerCallbacks {
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
@@ -40,7 +38,6 @@ public class MainActivity extends ActionBarActivity
     private CharSequence mTitle;
     private Toolbar mToolbar;
     private NavigationDrawerFragment mNavigationDrawerFragment;
-    private Fragment firstFragment, secondFragment, thirdFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,26 +125,13 @@ public class MainActivity extends ActionBarActivity
         ImageLoader.getInstance().init(configs);
     }
 
-    private List<PageItem> getPages() {
-        return Arrays.asList(
-                new PageItem(getString(R.string.title_recent_photos), RecentPhotosPageFragment.class),
-                new PageItem(getString(R.string.title_all_photos), AllPhotosPageFragment.class)
-        );
-    }
-
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
+    public void onNavigationDrawerPageItemSelected(int position) {
         // update the main content by replacing fragments
         Fragment fragment = null;
         try {
-            fragment = (Fragment) getPages().get(position).getFragmentClass().newInstance();
-            if (position == 0) {
-                firstFragment = fragment;
-            } else if (position == 1) {
-                secondFragment = fragment;
-            } else {
-                thirdFragment = fragment;
-            }
+            DrawerInfo info = NavigationDrawerData.getPageItem(this, position);
+            fragment = (Fragment) info.classType.newInstance();
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.container, fragment)
@@ -159,8 +143,13 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
+    @Override
+    public void onNavigationDrawerUtilityItemSelected(int position) {
+        // TODO: start Setting Activity.
+    }
+
     public void onSectionAttached(int number) {
-        mTitle = getPages().get(number - 1).getTitle();
+        mTitle = NavigationDrawerData.getPageItem(this, number - 1).title;
     }
 
 }

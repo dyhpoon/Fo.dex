@@ -1,11 +1,8 @@
-package com.dyhpoon.fodex.controller.fragment;
+package com.dyhpoon.fodex.navigationDrawer;
 
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -22,16 +19,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dyhpoon.fodex.R;
 
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -101,9 +93,7 @@ public class NavigationDrawerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View drawer = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
-
         setupDrawerListView(drawer);
-
         return drawer;
     }
 
@@ -115,7 +105,7 @@ public class NavigationDrawerFragment extends Fragment {
                 selectItem(position);
             }
         });
-        mDrawerListView.setAdapter(new NavigationAdapter());
+        mDrawerListView.setAdapter(new NavigationDrawerAdapter(getActivity()));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
     }
 
@@ -204,8 +194,14 @@ public class NavigationDrawerFragment extends Fragment {
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
+
+        int pageItemCount = NavigationDrawerData.getPageItems(getActivity()).size();
         if (mCallbacks != null) {
-            mCallbacks.onNavigationDrawerItemSelected(position);
+            if (position < pageItemCount) {
+                mCallbacks.onNavigationDrawerPageItemSelected(position);
+            } else {
+                mCallbacks.onNavigationDrawerUtilityItemSelected(position - pageItemCount);
+            }
         }
     }
 
@@ -274,93 +270,4 @@ public class NavigationDrawerFragment extends Fragment {
         actionBar.setTitle(R.string.app_name);
     }
 
-    private ActionBar getActionBar() {
-        return ((ActionBarActivity)getActivity()).getSupportActionBar();
-    }
-
-    /**
-     * Callbacks interface that all activities using this fragment must implement.
-     */
-    public static interface NavigationDrawerCallbacks {
-        /**
-         * Called when an item in the navigation drawer is selected.
-         */
-        void onNavigationDrawerItemSelected(int position);
-    }
-
-    private class NavigationAdapter extends BaseAdapter {
-
-        final List<DrawerItemInfo> drawerItems = Arrays.asList(
-                new DrawerItemInfo(getString(R.string.title_recent_photos), getResources().getDrawable(R.drawable.ic_clock)),
-                new DrawerItemInfo(getString(R.string.title_all_photos), getResources().getDrawable(R.drawable.ic_clock)),
-                new DrawerItemInfo(getString(R.string.title_indexed_photos), getResources().getDrawable(R.drawable.ic_clock)),
-                new DrawerItemInfo(getString(R.string.title_unindexed_photos), getResources().getDrawable(R.drawable.ic_clock)),
-                new DrawerItemInfo(getString(R.string.title_settings), getResources().getDrawable(R.drawable.ic_clock))
-        );
-
-        @Override
-        public int getCount() {
-            return drawerItems.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View view;
-            if (convertView == null) {
-                // inflate layout
-                LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.list_item_navigation_drawer, null);
-
-                // setup view holder
-                ViewHolder viewHolder = new ViewHolder();
-                viewHolder.iconImageView = (ImageView) view.findViewById(R.id.icon);
-                viewHolder.titleTextView = (TextView) view.findViewById(R.id.title);
-                view.setTag(viewHolder);
-            } else {
-                view = convertView;
-            }
-
-            ViewHolder viewHolder = (ViewHolder) view.getTag();
-            switch (position) {
-                case 0:
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                    DrawerItemInfo info = drawerItems.get(position);
-                    viewHolder.iconImageView.setImageDrawable(info.drawable);
-                    viewHolder.titleTextView.setText(info.title);
-                    break;
-                default:
-                    throw new RuntimeException("Undefined list item type");
-            }
-
-            return view;
-        }
-    }
-
-    private class ViewHolder {
-        ImageView iconImageView;
-        TextView titleTextView;
-    }
-
-    private class DrawerItemInfo {
-        String title;
-        Drawable drawable;
-
-        public DrawerItemInfo(String title, Drawable drawable) {
-            this.title = title;
-            this.drawable = drawable;
-        }
-    }
 }
