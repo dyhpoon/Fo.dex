@@ -1,7 +1,6 @@
 package com.dyhpoon.fodex.navigationDrawer;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.controller.fragment.AllPhotosPageFragment;
@@ -14,25 +13,36 @@ import java.util.List;
  */
 public class NavigationDrawerData {
 
-    private static List<DrawerInfo> mPageItems;
-    private static List<DrawerInfo> mUtilityItems;
+    private static List<NavigationDrawerInfo> mPageItems;
+    private static List<NavigationDrawerInfo> mUtilityItems;
 
-    public static List<DrawerInfo> getPageItems(Context context) {
+    private static final String PREFIX = NavigationDrawerData.class.getName() + "_";
+    public static final String TAG_ALL_PHOTOS       = PREFIX + "ALL_PHOTOS";
+    public static final String TAG_RECENT_PHOTOS    = PREFIX + "RECENT_PHOTOS";
+    public static final String TAG_INDEXED_PHOTOS   = PREFIX + "INDEXED_PHOTOS";
+    public static final String TAG_UNINDEXED_PHOTOS = PREFIX + "UNINDEXED_PHOTOS";
+    public static final String TAG_SETTINGS         = PREFIX + "SETTINGS";
+
+    public static List<NavigationDrawerInfo> getPageItems(Context context) {
         if (mPageItems == null) {
             mPageItems = Arrays.asList(
-                    new DrawerInfo(
+                    new NavigationDrawerInfo(
+                            TAG_ALL_PHOTOS,
                             context.getString(R.string.title_all_photos),
                             context.getResources().getDrawable(R.drawable.ic_all),
                             AllPhotosPageFragment.class),
-                    new DrawerInfo(
+                    new NavigationDrawerInfo(
+                            TAG_RECENT_PHOTOS,
                             context.getString(R.string.title_recent_photos),
                             context.getResources().getDrawable(R.drawable.ic_clock),
                             AllPhotosPageFragment.class),
-                    new DrawerInfo(
+                    new NavigationDrawerInfo(
+                            TAG_INDEXED_PHOTOS,
                             context.getString(R.string.title_indexed_photos),
                             context.getResources().getDrawable(R.drawable.ic_indexed),
                             AllPhotosPageFragment.class),
-                    new DrawerInfo(
+                    new NavigationDrawerInfo(
+                            TAG_UNINDEXED_PHOTOS,
                             context.getString(R.string.title_unindexed_photos),
                             context.getResources().getDrawable(R.drawable.ic_unindexed),
                             AllPhotosPageFragment.class)
@@ -41,10 +51,15 @@ public class NavigationDrawerData {
         return mPageItems;
     }
 
-    public static List<DrawerInfo> getUtilityItems(Context context) {
+    public static NavigationDrawerInfo getPageItem(Context context, int position) {
+        return getPageItems(context).get(position);
+    }
+
+    public static List<NavigationDrawerInfo> getUtilityItems(Context context) {
         if (mUtilityItems == null) {
             mUtilityItems = Arrays.asList(
-                    new DrawerInfo(
+                    new NavigationDrawerInfo(
+                            TAG_SETTINGS,
                             context.getString(R.string.title_settings),
                             context.getResources().getDrawable(R.drawable.ic_settings),
                             AllPhotosPageFragment.class)
@@ -53,24 +68,8 @@ public class NavigationDrawerData {
         return mUtilityItems;
     }
 
-    public static DrawerInfo getPageItem(Context context, int position) {
-        return getPageItems(context).get(position);
-    }
-
-    public static DrawerInfo getUtilityItem(Context context, int position) {
+    public static NavigationDrawerInfo getUtilityItem(Context context, int position) {
         return getUtilityItems(context).get(position);
-    }
-
-    public static class DrawerInfo {
-        public String title;
-        public Drawable drawable;
-        public Class classType;
-
-        public DrawerInfo(String title, Drawable drawable, Class classType) {
-            this.title = title;
-            this.drawable = drawable;
-            this.classType = classType;
-        }
     }
 
 }

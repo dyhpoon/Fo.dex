@@ -19,7 +19,7 @@ import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerCallbacks;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerFragment;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerData;
-import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerData.DrawerInfo;
+import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerInfo;
 import com.nostra13.universalimageloader.cache.memory.impl.LRULimitedMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -130,7 +130,7 @@ public class MainActivity extends ActionBarActivity
         // update the main content by replacing fragments
         Fragment fragment = null;
         try {
-            DrawerInfo info = NavigationDrawerData.getPageItem(this, position);
+            NavigationDrawerInfo info = NavigationDrawerData.getPageItem(this, position);
             fragment = (Fragment) info.classType.newInstance();
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()

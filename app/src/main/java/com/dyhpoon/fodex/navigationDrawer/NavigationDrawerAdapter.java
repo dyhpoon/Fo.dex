@@ -60,14 +60,14 @@ public class NavigationDrawerAdapter extends BaseAdapter {
 
         // Page items (ex: All Photos, Recent Photos ...)
         if (position < pageCount) {
-            NavigationDrawerData.DrawerInfo info =
+            NavigationDrawerInfo info =
                     NavigationDrawerData.getPageItem(mContext, position);
             viewHolder.iconImageView.setImageDrawable(info.drawable);
             viewHolder.titleTextView.setText(info.title);
         }
         // Utility items (ex: Settings)
         else if (position - pageCount < utilityCount) {
-            NavigationDrawerData.DrawerInfo info =
+            NavigationDrawerInfo info =
                     NavigationDrawerData.getUtilityItem(mContext, position - pageCount);
             viewHolder.iconImageView.setImageDrawable(info.drawable);
             viewHolder.titleTextView.setText(info.title);
