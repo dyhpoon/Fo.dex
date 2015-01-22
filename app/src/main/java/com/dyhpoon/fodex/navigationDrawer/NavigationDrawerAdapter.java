@@ -5,8 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.dyhpoon.fodex.R;
 
@@ -17,6 +15,13 @@ public class NavigationDrawerAdapter extends BaseAdapter {
 
     private Context mContext;
 
+    private static final int TYPE_LIST_ITEM = 0;
+    private static final int TYPE_LIST_DIVIDER = 1;
+
+    private enum ViewType {
+        PAGE, UTILITY, DIVIDER
+    }
+
     public NavigationDrawerAdapter(Context context) {
         mContext = context;
     }
@@ -24,7 +29,34 @@ public class NavigationDrawerAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         return NavigationDrawerData.getPageItems(mContext).size()
-                + NavigationDrawerData.getUtilityItems(mContext).size();
+                + NavigationDrawerData.getUtilityItems(mContext).size()
+                + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        int pageCount = NavigationDrawerData.getPageItems(mContext).size();
+        return (position == pageCount)
+                ? TYPE_LIST_DIVIDER
+                : TYPE_LIST_ITEM;
+    }
+
+    @Override
+    public boolean areAllItemsEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        int pageCount = NavigationDrawerData.getPageItems(mContext).size();
+        return (position == pageCount)
+                ? false
+                : true;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
     }
 
     @Override
@@ -39,49 +71,59 @@ public class NavigationDrawerAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view;
-        if (convertView == null) {
-            // inflate layout
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.list_item_navigation_drawer, null);
-
-            // setup view holder
-            ViewHolder viewHolder = new ViewHolder();
-            viewHolder.iconImageView = (ImageView) view.findViewById(R.id.icon);
-            viewHolder.titleTextView = (TextView) view.findViewById(R.id.title);
-            view.setTag(viewHolder);
-        } else {
-            view = convertView;
-        }
-
-        ViewHolder viewHolder = (ViewHolder) view.getTag();
         int pageCount = NavigationDrawerData.getPageItems(mContext).size();
         int utilityCount = NavigationDrawerData.getUtilityItems(mContext).size();
 
-        // Page items (ex: All Photos, Recent Photos ...)
-        if (position < pageCount) {
-            NavigationDrawerInfo info =
-                    NavigationDrawerData.getPageItem(mContext, position);
-            viewHolder.iconImageView.setImageDrawable(info.drawable);
-            viewHolder.titleTextView.setText(info.title);
-        }
-        // Utility items (ex: Settings)
-        else if (position - pageCount < utilityCount) {
-            NavigationDrawerInfo info =
-                    NavigationDrawerData.getUtilityItem(mContext, position - pageCount);
-            viewHolder.iconImageView.setImageDrawable(info.drawable);
-            viewHolder.titleTextView.setText(info.title);
-        }
-        else {
-            throw new RuntimeException("Undefined DrawerInfo");
+        // find the type of view
+        ViewType type;
+        if (position < pageCount) type = ViewType.PAGE;
+        else if (position == pageCount) type = ViewType.DIVIDER;
+        else if (position - pageCount - 1 < utilityCount) type = ViewType.UTILITY;
+        else throw new RuntimeException("Unhandled Navigation drawer view type");
+
+        switch (type) {
+            // Page items (ex: All Photos, Recent Photos ...)
+            case PAGE: {
+                if (convertView == null) convertView = inflateListItem();
+
+                NavigationDrawerItem navItem = (NavigationDrawerItem)convertView;
+                NavigationDrawerInfo info =
+                        NavigationDrawerData.getPageItem(mContext, position);
+                navItem.iconImageView.setImageDrawable(info.drawable);
+                navItem.titleTextView.setText(info.title);
+                break;
+            }
+
+            // Divider
+            case UTILITY: {
+                if (convertView == null) convertView = inflateListItem();
+
+                NavigationDrawerItem navItem = (NavigationDrawerItem)convertView;
+                NavigationDrawerInfo info =
+                        NavigationDrawerData.getUtilityItem(mContext, position - pageCount - 1);
+                navItem.iconImageView.setImageDrawable(info.drawable);
+                navItem.titleTextView.setText(info.title);
+                break;
+            }
+
+            // Utility items (ex: Settings)
+            case DIVIDER: {
+                if (convertView == null) convertView = inflateListDivider();
+                break;
+            }
         }
 
+        return convertView;
+    }
+
+    private View inflateListItem() {
+        NavigationDrawerItem view = new NavigationDrawerItem(mContext);
         return view;
     }
 
-    private class ViewHolder {
-        ImageView iconImageView;
-        TextView titleTextView;
+    private View inflateListDivider() {
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        return inflater.inflate(R.layout.list_item_divider, null);
     }
 
 }
