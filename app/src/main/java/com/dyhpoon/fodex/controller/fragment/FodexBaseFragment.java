@@ -28,7 +28,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
     private AsymmetricGridView mGridView;
     private FloatingActionButton mFloatingActionButton;
 
-    private static final int GRID_VIEW_HORIZONTAL_SPACING = 2;
+    private static final int GRID_VIEW_HORIZONTAL_SPACING = 3;
     private static final int GRID_VIEW_COLUMNS_COUNT = 3;
 
     /**
