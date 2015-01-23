@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.ViewGroup;
+import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,15 +14,11 @@ import com.dyhpoon.fodex.R;
 /**
  * Created by darrenpoon on 22/1/15.
  */
-public class NavigationDrawerItem extends LinearLayout {
+public class NavigationDrawerItem extends LinearLayout implements Checkable {
 
     public ImageView iconImageView;
     public TextView titleTextView;
-    private State mState = State.UNSELECTED;
-
-    public enum State {
-        SELECTED, UNSELECTED,
-    }
+    private boolean mChecked = false;
 
     public NavigationDrawerItem(Context context) {
         super(context);
@@ -56,20 +53,42 @@ public class NavigationDrawerItem extends LinearLayout {
         iconImageView.setColorFilter(color);
         titleTextView = (TextView) findViewById(R.id.title);
         titleTextView.setTextColor(color);
-
-        setState(mState);
     }
 
-    public void setState(State state) {
-        if (state == mState) return;
+    @Override
+    public void setChecked(boolean checked) {
+        if (mChecked == checked) return;
 
-        int color = (state == State.SELECTED)
-                ? getResources().getColor(R.color.colorPrimaryText)
-                : getResources().getColor(R.color.colorPrimary);
+        int color = (checked)
+                ? getResources().getColor(R.color.colorPrimary)
+                : getResources().getColor(R.color.colorPrimaryText);
         iconImageView.setColorFilter(color);
         titleTextView.setTextColor(color);
 
-        mState = state;
+        mChecked = checked;
     }
 
+    // for details, see http://stackoverflow.com/questions/3742979/how-to-get-a-android-listview-item-selector-to-use-state-checked
+    @Override
+    public boolean isChecked() {
+        return mChecked;
+    }
+
+    @Override
+    public void toggle() {
+        setChecked(!mChecked);
+    }
+
+    @Override
+    protected int[] onCreateDrawableState(int extraSpace) {
+        final int[] drawableState = super.onCreateDrawableState(extraSpace);
+        setChecked(mChecked);
+        return drawableState;
+    }
+
+    @Override
+    public boolean performClick() {
+        toggle();
+        return super.performClick();
+    }
 }
