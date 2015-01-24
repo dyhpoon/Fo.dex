@@ -3,16 +3,15 @@ package com.dyhpoon.fodex.controller.fragment;
 import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.dyhpoon.fodex.R;
+import com.dyhpoon.fodex.model.FodexLayoutSpecItem;
 import com.dyhpoon.fodex.view.ImageGridItem;
 import com.felipecsl.asymmetricgridview.library.Utils;
-import com.felipecsl.asymmetricgridview.library.model.AsymmetricItem;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridView;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter;
 import com.melnykov.fab.FloatingActionButton;
@@ -74,7 +73,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
         List<T>userObjects = itemsForAdapters();
         if (userObjects == null) throw new AssertionError("expect itemsForAdapters to be not null.");
 
-        List<LayoutSpecItem> layoutItems = new ArrayList<LayoutSpecItem>();
+        List<FodexLayoutSpecItem> layoutItems = new ArrayList<FodexLayoutSpecItem>();
         for (int i = 0; i < userObjects.size(); i++) {
             int index = i % 10;
             int columnSpan;
@@ -87,7 +86,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
                     columnSpan = 1;
                     break;
             }
-            layoutItems.add(i, new LayoutSpecItem(columnSpan, 1, userObjects.get(i)));
+            layoutItems.add(i, new FodexLayoutSpecItem(columnSpan, 1, userObjects.get(i)));
         }
         ((AsymmetricGridViewAdapter)mGridView.getAdapter()).appendItems(layoutItems);
     }
@@ -95,11 +94,11 @@ public abstract class FodexBaseFragment <T> extends Fragment {
     private void setupAsymmetricGridView() {
         mGridView.setRequestedColumnCount(GRID_VIEW_COLUMNS_COUNT);
         mGridView.setRequestedHorizontalSpacing(Utils.dpToPx(getActivity(), GRID_VIEW_HORIZONTAL_SPACING));
-        mGridView.setAdapter(new AsymmetricGridViewAdapter<LayoutSpecItem>(getActivity(), mGridView, new ArrayList<LayoutSpecItem>()) {
+        mGridView.setAdapter(new AsymmetricGridViewAdapter<FodexLayoutSpecItem>(getActivity(), mGridView, new ArrayList<FodexLayoutSpecItem>()) {
             @Override
             public View getActualView(int position, View convertView, ViewGroup parent) {
                 ImageGridItem gridItem;
-                LayoutSpecItem item = getItem(position);
+                FodexLayoutSpecItem item = getItem(position);
                 if (convertView == null) {
                     gridItem = new ImageGridItem(getActivity());
                 } else {
@@ -126,39 +125,6 @@ public abstract class FodexBaseFragment <T> extends Fragment {
                 onClickFloatingActionButton();
             }
         });
-    }
-
-    private class LayoutSpecItem implements AsymmetricItem {
-        public int columnSpan;
-        public int rowSpan;
-        public Object object;
-
-        public LayoutSpecItem(final int columnSpan, final int rowSpan, final Object object) {
-            this.columnSpan = columnSpan;
-            this.rowSpan = rowSpan;
-            this.object = object;
-        }
-
-        @Override
-        public int getColumnSpan() {
-            return this.columnSpan;
-        }
-
-        @Override
-        public int getRowSpan() {
-            return this.rowSpan;
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(this.columnSpan);
-            dest.writeInt(this.rowSpan);
-        }
     }
 
 }
