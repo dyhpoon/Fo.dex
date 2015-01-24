@@ -1,4 +1,4 @@
-package com.dyhpoon.fodex.controller.fragment;
+package com.dyhpoon.fodex.fodexView;
 
 import android.app.Fragment;
 import android.net.Uri;
@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.dyhpoon.fodex.R;
-import com.dyhpoon.fodex.model.FodexLayoutSpecItem;
 import com.dyhpoon.fodex.view.ImageGridItem;
 import com.felipecsl.asymmetricgridview.library.Utils;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridView;

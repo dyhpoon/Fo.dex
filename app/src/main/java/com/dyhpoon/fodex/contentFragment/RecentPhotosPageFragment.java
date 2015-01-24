@@ -1,4 +1,4 @@
-package com.dyhpoon.fodex.controller.fragment;
+package com.dyhpoon.fodex.contentFragment;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -6,13 +6,15 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import com.dyhpoon.fodex.fodexView.FodexBaseFragment;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by darrenpoon on 8/12/14.
  */
-public class AllPhotosPageFragment extends FodexBaseFragment <AllPhotosPageFragment.PhotoMedia> {
+public class RecentPhotosPageFragment extends FodexBaseFragment<RecentPhotosPageFragment.PhotoMedia> {
 
     @Override
     protected void onClickFloatingActionButton() {

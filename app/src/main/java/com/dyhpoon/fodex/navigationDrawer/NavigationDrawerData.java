@@ -3,7 +3,7 @@ package com.dyhpoon.fodex.navigationDrawer;
 import android.content.Context;
 
 import com.dyhpoon.fodex.R;
-import com.dyhpoon.fodex.controller.fragment.AllPhotosPageFragment;
+import com.dyhpoon.fodex.contentFragment.AllPhotosPageFragment;
 
 import java.util.Arrays;
 import java.util.List;
