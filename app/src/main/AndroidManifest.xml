@@ -1,22 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.dyhpoon.fodex">
-
     // Only for Handsets
     <compatible-screens>
+
         <!-- all small size screens -->
-        <screen android:screenDensity="ldpi" android:screenSize="small" />
-        <screen android:screenDensity="mdpi" android:screenSize="small" />
-        <screen android:screenDensity="hdpi" android:screenSize="small" />
-        <screen android:screenDensity="xhdpi" android:screenSize="small" />
+        <screen
+            android:screenDensity="ldpi"
+            android:screenSize="small" />
+        <screen
+            android:screenDensity="mdpi"
+            android:screenSize="small" />
+        <screen
+            android:screenDensity="hdpi"
+            android:screenSize="small" />
+        <screen
+            android:screenDensity="xhdpi"
+            android:screenSize="small" />
         <!-- all normal size screens -->
-        <screen android:screenDensity="ldpi" android:screenSize="normal" />
-        <screen android:screenDensity="mdpi" android:screenSize="normal" />
-        <screen android:screenDensity="hdpi" android:screenSize="normal" />
-        <screen android:screenDensity="xhdpi" android:screenSize="normal" />
+        <screen
+            android:screenDensity="ldpi"
+            android:screenSize="normal" />
+        <screen
+            android:screenDensity="mdpi"
+            android:screenSize="normal" />
+        <screen
+            android:screenDensity="hdpi"
+            android:screenSize="normal" />
+        <screen
+            android:screenDensity="xhdpi"
+            android:screenSize="normal" />
     </compatible-screens>
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -25,21 +42,27 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".fullscreen.FullscreenActivity"
+            android:label="@string/title_activity_fullscreen"
+            android:screenOrientation="portrait"></activity>
+
         <provider
             android:name=".data.FodexProvider"
             android:authorities="com.dyhpoon.fodex.provider" />
+
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="2a2e349920a9b0113302bc093def54421149f6e8" />
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

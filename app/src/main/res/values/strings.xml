@@ -12,5 +12,6 @@
     <string name="title_settings">Settings</string>
 
     <string name="hashtags">Hashtags</string>
+    <string name="title_activity_fullscreen">Fullscreen</string>
 
 </resources>
