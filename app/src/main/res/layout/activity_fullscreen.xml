@@ -2,16 +2,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:background="#000000"
     tools:context="com.dyhpoon.fodex.fullscreen.FullscreenActivity">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
+    <com.dyhpoon.fodex.view.PagerContainer
+        android:id="@+id/pager_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <android.support.v4.view.ViewPager
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal" />
+
+    </com.dyhpoon.fodex.view.PagerContainer>
 
 </RelativeLayout>

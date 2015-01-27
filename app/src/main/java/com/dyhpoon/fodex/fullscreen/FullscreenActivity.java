@@ -11,11 +11,13 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 
 import com.dyhpoon.fodex.R;
+import com.dyhpoon.fodex.view.PagerContainer;
 
 import java.io.IOException;
 
 public class FullscreenActivity extends Activity {
 
+    private PagerContainer mContainer;
     private ViewPager mPager;
     private Cursor mCursor;
 
@@ -24,7 +26,10 @@ public class FullscreenActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen);
 
-        mPager = (ViewPager) findViewById(R.id.pager);
+        mContainer = (PagerContainer) findViewById(R.id.pager_container);
+        mPager = mContainer.getViewPager();
+        mPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.fullscreen_pager_padding));
+        mPager.setClipChildren(false);
     }
 
     @Override
