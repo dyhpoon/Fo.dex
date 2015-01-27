@@ -90,7 +90,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
             }
             layoutItems.add(i, new FodexLayoutSpecItem(columnSpan, 1, userObjects.get(i)));
         }
-        ((AsymmetricGridViewAdapter)mGridView.getAdapter()).appendItems(layoutItems);
+        ((AsymmetricGridViewAdapter)mGridView.getAdapter()).setItems(layoutItems);
     }
 
     private void setupAsymmetricGridView() {
