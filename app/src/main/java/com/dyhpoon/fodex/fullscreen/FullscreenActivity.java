@@ -1,7 +1,6 @@
 package com.dyhpoon.fodex.fullscreen;
 
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -11,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 
 import com.dyhpoon.fodex.R;
+import com.dyhpoon.fodex.data.FodexCursor;
 import com.dyhpoon.fodex.view.PagerContainer;
 
 import java.io.IOException;
@@ -35,8 +35,8 @@ public class FullscreenActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        mCursor = getAdapter();
-        mPager.setAdapter(new ImageAdapter(this) {
+        mCursor = FodexCursor.allPhotosCursor(FullscreenActivity.this);
+        mPager.setAdapter(new ReusableFullscreenAdapter(this) {
 
             @Override
             public Bitmap imageBitmapAtPosition(int position) {
@@ -61,23 +61,6 @@ public class FullscreenActivity extends Activity {
                 return mCursor.getCount();
             }
         });
-    }
-
-    private Cursor getAdapter() {
-        ContentResolver resolver = getContentResolver();
-        String[] projection = new String[]{
-                MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DATA,
-                MediaStore.Images.Media.DATE_TAKEN,
-        };
-        Cursor cursor = resolver.query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                null,
-                null,
-                null
-        );
-        return cursor;
     }
 
 }

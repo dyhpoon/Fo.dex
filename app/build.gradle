@@ -43,7 +43,7 @@ dependencies {
     compile project(':libraries:AsymmetricGridView')
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile 'com.melnykov:floatingactionbutton:1.1.0'
-    compile 'com.github.chrisbanes.photoview:library:1.2.3'
+    compile 'com.facebook.rebound:rebound:0.3.7'
     aarLinkSources 'com.github.chrisbanes.photoview:library:1.2.3:sources@jar'
     compile('com.crashlytics.sdk.android:crashlytics:2.2.0@aar') {
         transitive = true;
