@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.dyhpoon.fodex.view.SpringImageView;
+import com.dyhpoon.fodex.view.TouchImageView;
 
 import java.util.Stack;
 
@@ -43,13 +43,14 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
     public void destroyItem(ViewGroup container, int position, Object object) {
         View recycledView = (View) object;
         container.removeView(recycledView);
+        cleanView((TouchImageView)recycledView);
         mRecycledViews.push(recycledView);
     }
 
     private View createOrRecycleView(Context context) {
         View photoView;
         if (mRecycledViews.isEmpty()) {
-            photoView = new SpringImageView(context);
+            photoView = new TouchImageView(context);
             photoView.setLayoutParams(new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
@@ -58,5 +59,9 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
             photoView = mRecycledViews.pop();
         }
         return photoView;
+    }
+
+    private void cleanView(TouchImageView v) {
+        v.resetZoom();
     }
 }

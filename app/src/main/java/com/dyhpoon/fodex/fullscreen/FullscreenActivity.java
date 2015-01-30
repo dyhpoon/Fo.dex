@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 
 import com.dyhpoon.fodex.R;
@@ -18,7 +17,7 @@ import java.io.IOException;
 public class FullscreenActivity extends Activity {
 
     private PagerContainer mContainer;
-    private ViewPager mPager;
+    private FullscreenViewPager mPager;
     private Cursor mCursor;
 
     @Override
@@ -27,9 +26,10 @@ public class FullscreenActivity extends Activity {
         setContentView(R.layout.activity_fullscreen);
 
         mContainer = (PagerContainer) findViewById(R.id.pager_container);
-        mPager = mContainer.getViewPager();
+        mPager = (FullscreenViewPager) mContainer.getViewPager();
         mPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.fullscreen_pager_padding));
         mPager.setClipChildren(false);
+        mPager.setVerticalScrollBarEnabled(false);
     }
 
     @Override
