@@ -2,6 +2,7 @@ package com.dyhpoon.fodex.fullscreen;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import java.util.Stack;
  */
 public abstract class ReusableFullscreenAdapter extends PagerAdapter {
 
+    public View currentView = null;
+
     public abstract Bitmap imageBitmapAtPosition(int position);
 
     private Context mContext;
@@ -24,6 +27,11 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
 
     public ReusableFullscreenAdapter(Context context) {
         mContext = context;
+    }
+
+    @Override
+    public void setPrimaryItem(ViewGroup container, int position, final Object object) {
+        currentView = (View)object;
     }
 
     @Override
@@ -51,6 +59,7 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
         View photoView;
         if (mRecycledViews.isEmpty()) {
             photoView = new TouchImageView(context);
+            photoView.setBackgroundColor(Color.BLACK);
             photoView.setLayoutParams(new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT

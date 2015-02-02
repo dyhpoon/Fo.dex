@@ -5,12 +5,14 @@ import android.content.ContentUris;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.View;
 
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexCursor;
 import com.dyhpoon.fodex.view.PagerContainer;
+import com.dyhpoon.fodex.view.TouchImageView;
 
 import java.io.IOException;
 
@@ -30,6 +32,13 @@ public class FullscreenActivity extends Activity {
         mPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.fullscreen_pager_padding));
         mPager.setClipChildren(false);
         mPager.setVerticalScrollBarEnabled(false);
+        mPager.setCanScrollAdapter(new FullscreenViewPager.CanScrollAdapter() {
+            @Override
+            public boolean canScroll() {
+                View currentView = ((ReusableFullscreenAdapter)mPager.getAdapter()).currentView;
+                return !((TouchImageView)currentView).isZoomed();
+            }
+        });
     }
 
     @Override

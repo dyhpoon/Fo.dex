@@ -3,15 +3,16 @@ package com.dyhpoon.fodex.fullscreen;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 
 /**
  * Created by darrenpoon on 30/1/15.
  */
 public class FullscreenViewPager extends ViewPager {
 
-    private canScrollAdapter mAdapter;
+    private CanScrollAdapter canScrollAdapter;
 
-    public interface canScrollAdapter {
+    public interface CanScrollAdapter {
         public boolean canScroll();
     }
 
@@ -23,15 +24,26 @@ public class FullscreenViewPager extends ViewPager {
         super(context, attrs);
     }
 
-    public void setCanScrollAdapter(canScrollAdapter adapter) {
-        mAdapter = adapter;
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (canScrollAdapter != null) {
+            return canScrollAdapter.canScroll() && super.onTouchEvent(event);
+        } else {
+            return super.onTouchEvent(event);
+        }
     }
 
     @Override
-    public boolean canScrollHorizontally(int direction) {
-        if (mAdapter != null)
-            return mAdapter.canScroll();
-        else
-            return super.canScrollHorizontally(direction);
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        if (canScrollAdapter != null) {
+            return canScrollAdapter.canScroll() && super.onInterceptTouchEvent(event);
+        } else {
+            return super.onInterceptTouchEvent(event);
+        }
     }
+
+    public void setCanScrollAdapter(CanScrollAdapter adapter) {
+        this.canScrollAdapter = adapter;
+    }
+
 }
