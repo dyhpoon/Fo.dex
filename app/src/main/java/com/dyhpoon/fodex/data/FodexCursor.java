@@ -22,7 +22,7 @@ public class FodexCursor {
                 projection,
                 null,
                 null,
-                null
+                MediaStore.Images.Media.DATE_ADDED + " DESC"
         );
         return cursor;
     }

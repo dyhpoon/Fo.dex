@@ -18,6 +18,9 @@ import java.io.IOException;
 
 public class FullscreenActivity extends Activity {
 
+    private static final String PREFIX = FullscreenActivity.class.getName();
+    public static final String RESOURCE_INDEX =  PREFIX + ".RESOURCE_INDEX";
+
     private PagerContainer mContainer;
     private FullscreenViewPager mPager;
     private Cursor mCursor;
@@ -28,6 +31,9 @@ public class FullscreenActivity extends Activity {
         setContentView(R.layout.activity_fullscreen);
 
         mContainer = (PagerContainer) findViewById(R.id.pager_container);
+
+        mCursor = FodexCursor.allPhotosCursor(FullscreenActivity.this);
+
         mPager = (FullscreenViewPager) mContainer.getViewPager();
         mPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.fullscreen_pager_padding));
         mPager.setClipChildren(false);
@@ -39,14 +45,7 @@ public class FullscreenActivity extends Activity {
                 return !((TouchImageView)currentView).isZoomed();
             }
         });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mCursor = FodexCursor.allPhotosCursor(FullscreenActivity.this);
         mPager.setAdapter(new ReusableFullscreenAdapter(this) {
-
             @Override
             public Bitmap imageBitmapAtPosition(int position) {
                 mCursor.moveToPosition(position);
@@ -70,6 +69,15 @@ public class FullscreenActivity extends Activity {
                 return mCursor.getCount();
             }
         });
+
+        Bundle bundle = getIntent().getExtras();
+        int imageIndex = bundle.getInt(RESOURCE_INDEX, 0);
+        mPager.setCurrentItem(imageIndex);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mCursor.close();
+    }
 }

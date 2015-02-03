@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import com.dyhpoon.fodex.data.FodexCursor;
 import com.dyhpoon.fodex.fodexView.FodexBaseFragment;
 
 import java.util.ArrayList;
@@ -30,22 +31,10 @@ public class AllPhotosPageFragment extends FodexBaseFragment<AllPhotosPageFragme
 
     @Override
     protected List<PhotoMedia> itemsForAdapters() {
-        ContentResolver resolver = getActivity().getContentResolver();
-        String[] projection = new String[]{
-                MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DATA,
-                MediaStore.Images.Media.DATE_TAKEN,
-        };
-        Cursor cursor = resolver.query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                projection,
-                null,
-                null,
-                null
-        );
+        Cursor cursor = FodexCursor.allPhotosCursor(getActivity());
 
         List<PhotoMedia> items = new ArrayList<PhotoMedia>();
-        if (cursor.moveToLast()) {
+        if (cursor.moveToFirst()) {
             final int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
             final int dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             final int dateColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_TAKEN);
@@ -56,7 +45,7 @@ public class AllPhotosPageFragment extends FodexBaseFragment<AllPhotosPageFragme
                 final String date = cursor.getString(dateColumn);
 
                 items.add(new PhotoMedia(id, data, date));
-            } while (cursor.moveToPrevious());
+            } while (cursor.moveToNext());
 
         }
         cursor.close();

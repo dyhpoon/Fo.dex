@@ -121,6 +121,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent fullscreenIntent = new Intent(getActivity(), FullscreenActivity.class);
+                fullscreenIntent.putExtra(FullscreenActivity.RESOURCE_INDEX, position);
                 startActivity(fullscreenIntent);
             }
         });
