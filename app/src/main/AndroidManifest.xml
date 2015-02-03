@@ -54,7 +54,8 @@
         <activity
             android:name=".fullscreen.FullscreenActivity"
             android:label="@string/title_activity_fullscreen"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/Transparent"></activity>
 
         <provider
             android:name=".data.FodexProvider"

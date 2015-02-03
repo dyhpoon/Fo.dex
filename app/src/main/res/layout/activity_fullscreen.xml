@@ -1,20 +1,39 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/switcher"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#000000"
-    tools:context="com.dyhpoon.fodex.fullscreen.FullscreenActivity">
+    android:layout_height="match_parent">
 
-    <com.dyhpoon.fodex.view.PagerContainer
-        android:id="@+id/pager_container"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.dyhpoon.fodex.fullscreen.FullscreenViewPager
+        <ImageView
+            android:id="@+id/image_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal" />
+            android:scaleType="fitXY" />
+    </FrameLayout>
 
-    </com.dyhpoon.fodex.view.PagerContainer>
+    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        tools:context="com.dyhpoon.fodex.fullscreen.FullscreenActivity">
 
-</RelativeLayout>
+        <com.dyhpoon.fodex.view.PagerContainer
+            android:id="@+id/pager_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.dyhpoon.fodex.fullscreen.FullscreenViewPager
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal" />
+
+        </com.dyhpoon.fodex.view.PagerContainer>
+
+    </RelativeLayout>
+
+</ViewSwitcher>
+
