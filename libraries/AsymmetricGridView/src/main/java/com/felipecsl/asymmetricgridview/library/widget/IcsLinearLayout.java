@@ -185,7 +185,7 @@ public class IcsLinearLayout extends NineLinearLayout {
         super.onDraw(canvas);
     }
 
-    void drawDividersVertical(Canvas canvas) {
+    private void drawDividersVertical(Canvas canvas) {
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
@@ -212,7 +212,7 @@ public class IcsLinearLayout extends NineLinearLayout {
         }
     }
 
-    void drawDividersHorizontal(Canvas canvas) {
+    private void drawDividersHorizontal(Canvas canvas) {
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
@@ -239,13 +239,13 @@ public class IcsLinearLayout extends NineLinearLayout {
         }
     }
 
-    void drawHorizontalDivider(Canvas canvas, int top) {
+    private void drawHorizontalDivider(Canvas canvas, int top) {
         mDivider.setBounds(getPaddingLeft() + mDividerPadding, top,
                 getWidth() - getPaddingRight() - mDividerPadding, top + mDividerHeight);
         mDivider.draw(canvas);
     }
 
-    void drawVerticalDivider(Canvas canvas, int left) {
+    private void drawVerticalDivider(Canvas canvas, int left) {
         mDivider.setBounds(left, getPaddingTop() + mDividerPadding,
                 left + mDividerWidth, getHeight() - getPaddingBottom() - mDividerPadding);
         mDivider.draw(canvas);
