@@ -1,6 +1,5 @@
 package com.dyhpoon.fodex.contentFragment;
 
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.database.Cursor;
 import android.net.Uri;
