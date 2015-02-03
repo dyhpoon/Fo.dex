@@ -5,8 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.dyhpoon.fodex.data.FodexContract.ImageEntry;
-import com.dyhpoon.fodex.data.FodexContract.TagEntry;
 import com.dyhpoon.fodex.data.FodexContract.ImageTagEntry;
+import com.dyhpoon.fodex.data.FodexContract.TagEntry;
 
 
 /**

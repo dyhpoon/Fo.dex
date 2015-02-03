@@ -3,13 +3,13 @@ package com.dyhpoon.fodex.navigationDrawer;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -57,7 +57,7 @@ public class NavigationDrawerFragment extends Fragment {
     private ListView mDrawerListView;
     private View mFragmentContainerView;
 
-    private int mCurrentSelectedPosition = 0;
+    private int mCurrentSelectedPosition = 2;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
@@ -195,12 +195,22 @@ public class NavigationDrawerFragment extends Fragment {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
 
-        int pageItemCount = NavigationDrawerData.getPageItems(getActivity()).size();
         if (mCallbacks != null) {
-            if (position < pageItemCount) {
-                mCallbacks.onNavigationDrawerPageItemSelected(position);
+            if (mDrawerListView == null) {
+                mCallbacks.onNavigationDrawerPageItemSelected(0);
             } else {
-                mCallbacks.onNavigationDrawerUtilityItemSelected(position - pageItemCount);
+                int section =
+                        mDrawerListView.getAdapter().getItemViewType(position);
+                int correspondingPosition =
+                        ((NavigationDrawerAdapter)mDrawerListView.getAdapter()).getCorrespondingPosition(position, section);
+                switch (section) {
+                    case NavigationDrawerAdapter.ViewType.PAGE:
+                        mCallbacks.onNavigationDrawerPageItemSelected(correspondingPosition);
+                        break;
+                    case NavigationDrawerAdapter.ViewType.UTILITY:
+                        mCallbacks.onNavigationDrawerUtilityItemSelected(correspondingPosition);
+                        break;
+                }
             }
         }
     }

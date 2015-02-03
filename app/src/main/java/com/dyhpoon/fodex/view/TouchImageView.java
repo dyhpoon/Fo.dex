@@ -25,7 +25,6 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.OverScroller;
 import android.widget.Scroller;
-import android.widget.ZoomButtonsController;
 
 /**
  * Created by darrenpoon on 30/1/15.
