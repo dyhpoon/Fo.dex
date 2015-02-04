@@ -143,7 +143,8 @@ public abstract class FodexBaseFragment <T> extends Fragment {
                     .putExtra(FullscreenActivity.TOP, screenLocation[1])
                     .putExtra(FullscreenActivity.LEFT, screenLocation[0])
                     .putExtra(FullscreenActivity.WIDTH, view.getWidth())
-                    .putExtra(FullscreenActivity.HEIGHT, view.getHeight());
+                    .putExtra(FullscreenActivity.HEIGHT, view.getHeight())
+                    .addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(fullscreenIntent);
 
             // Override transitions: we don't want the normal window animation in addition
