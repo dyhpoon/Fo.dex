@@ -1,25 +1,24 @@
 <ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/switcher"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="com.dyhpoon.fodex.fullscreen.FullscreenActivity">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/image_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY" />
-    </FrameLayout>
-
-    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/top_layout"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#000000"
-        tools:context="com.dyhpoon.fodex.fullscreen.FullscreenActivity">
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/fake_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <com.dyhpoon.fodex.view.PagerContainer
             android:id="@+id/pager_container"
@@ -30,9 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal" />
-
         </com.dyhpoon.fodex.view.PagerContainer>
-
     </RelativeLayout>
 
 </ViewSwitcher>

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.dyhpoon.fodex.data.FodexImageContract;
 import com.dyhpoon.fodex.view.TouchImageView;
 
 import java.util.Stack;
@@ -18,7 +19,7 @@ import java.util.Stack;
  */
 public abstract class ReusableFullscreenAdapter extends PagerAdapter {
 
-    public View currentView = null;
+    public TouchImageView currentView = null;
 
     public abstract Bitmap imageBitmapAtPosition(int position);
 
@@ -31,7 +32,7 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
 
     @Override
     public void setPrimaryItem(ViewGroup container, int position, final Object object) {
-        currentView = (View)object;
+        currentView = (TouchImageView)object;
     }
 
     @Override
@@ -62,8 +63,9 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
             photoView.setBackgroundColor(Color.BLACK);
             photoView.setLayoutParams(new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
+                    ViewGroup.LayoutParams.WRAP_CONTENT
             ));
+            photoView.setMinimumHeight(FodexImageContract.preferredMinimumHeight(mContext));
         } else {
             photoView = mRecycledViews.pop();
         }

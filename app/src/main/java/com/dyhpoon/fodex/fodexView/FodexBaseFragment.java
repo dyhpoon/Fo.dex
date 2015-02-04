@@ -66,8 +66,8 @@ public abstract class FodexBaseFragment <T> extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         presentContent();
     }
 
@@ -149,7 +149,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
 
             // Override transitions: we don't want the normal window animation in addition
             // to our custom one
-//            getActivity().overridePendingTransition(0, 0);
+            getActivity().overridePendingTransition(0, 0);
         }
     };
 
