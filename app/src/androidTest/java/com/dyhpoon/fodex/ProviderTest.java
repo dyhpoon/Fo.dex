@@ -3,14 +3,12 @@ package com.dyhpoon.fodex;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.test.AndroidTestCase;
 
 import com.dyhpoon.fodex.data.FodexContract.ImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.ImageTagEntry;
 import com.dyhpoon.fodex.data.FodexContract.TagEntry;
-import com.dyhpoon.fodex.data.FodexDbHelper;
 
 import java.util.Arrays;
 import java.util.Map;

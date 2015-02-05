@@ -1,15 +1,20 @@
 package com.dyhpoon.fodex.fodexView;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
+import com.bumptech.glide.GenericRequestBuilder;
+import com.bumptech.glide.ListPreloader;
+import com.bumptech.glide.util.FixedPreloadSizeProvider;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.fullscreen.FullscreenActivity;
 import com.dyhpoon.fodex.view.ImageGridItem;
@@ -94,30 +99,17 @@ public abstract class FodexBaseFragment <T> extends Fragment {
     }
 
     private void setupAsymmetricGridView() {
+        FodexAdapter adapter = new FodexAdapter(getActivity(), mGridView, new ArrayList<FodexLayoutSpecItem>());
+
         mGridView.setRequestedColumnCount(GRID_VIEW_COLUMNS_COUNT);
         mGridView.setRequestedHorizontalSpacing(Utils.dpToPx(getActivity(), GRID_VIEW_HORIZONTAL_SPACING));
-        mGridView.setAdapter(new AsymmetricGridViewAdapter<FodexLayoutSpecItem>(getActivity(), mGridView, new ArrayList<FodexLayoutSpecItem>()) {
-            @Override
-            public View getActualView(int position, View convertView, ViewGroup parent) {
-                ImageGridItem gridItem;
-                FodexLayoutSpecItem item = getItem(position);
-                if (convertView == null) {
-                    gridItem = new ImageGridItem(getActivity());
-                } else {
-                    gridItem = (ImageGridItem) convertView;
-                }
-                Uri uri = imageUriForItems(position, (T) item.object);
-                gridItem.loadImage(uri);
-                return gridItem;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                return view;
-            }
-        });
+        mGridView.setAdapter(adapter);
         mGridView.setOnItemClickListener(imageOnClickListener);
+        final FixedPreloadSizeProvider<T> preloadSizeProvider =
+                new FixedPreloadSizeProvider<T>(344, 344);
+        final ListPreloader<T> preloader =
+                new ListPreloader<T>(adapter, preloadSizeProvider, 60);
+        mGridView.setOnScrollListener(preloader);
     }
 
     private void setupFloatingActionButton() {
@@ -152,5 +144,46 @@ public abstract class FodexBaseFragment <T> extends Fragment {
             getActivity().overridePendingTransition(0, 0);
         }
     };
+
+    private class FodexAdapter
+            extends AsymmetricGridViewAdapter <FodexLayoutSpecItem>
+            implements ListPreloader.PreloadModelProvider <T> {
+
+        public FodexAdapter(Context context, AsymmetricGridView listView, List items) {
+            super(context, listView, items);
+        }
+
+        @Override
+        public View getActualView(int position, View convertView, ViewGroup parent) {
+            ImageGridItem gridItem;
+            FodexLayoutSpecItem item = getItem(position);
+            if (convertView == null) {
+                gridItem = new ImageGridItem(getActivity());
+            } else {
+                gridItem = (ImageGridItem) convertView;
+            }
+            Uri uri = imageUriForItems(position, (T) item.object);
+            gridItem.loadImage(uri, getActivity());
+            return gridItem;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = super.getView(position, convertView, parent);
+            return view;
+        }
+
+        @Override
+        public List<T> getPreloadItems(int position) {
+            Log.v("HELLO", "getPreloadItems: " + position);
+            return null;
+        }
+
+        @Override
+        public GenericRequestBuilder getPreloadRequestBuilder(T item) {
+            Log.v("HELLO", "getPreloadRequestBuilder");
+            return null;
+        }
+    }
 
 }

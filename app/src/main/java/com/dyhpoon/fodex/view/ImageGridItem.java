@@ -1,5 +1,6 @@
 package com.dyhpoon.fodex.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
@@ -7,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
 import com.dyhpoon.fodex.data.FodexImageContract;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * Created by darrenpoon on 9/12/14.
@@ -16,12 +17,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class ImageGridItem extends LinearLayout {
 
     private ImageView mImageView;
-    private ImageLoader mImageLoader;
 
     public ImageGridItem(Context context) {
         super(context);
-
-        mImageLoader = ImageLoader.getInstance();
 
         CardView cardView = new CardView(context);
         LinearLayout.LayoutParams params = new LayoutParams(
@@ -46,8 +44,8 @@ public class ImageGridItem extends LinearLayout {
         cardView.addView(mImageView);
     }
 
-    public void loadImage(Uri uri) {
-        mImageLoader.displayImage(uri.toString(), mImageView);
+    public void loadImage(Uri uri, Activity activity) {
+        Glide.with(activity).load(uri.toString()).into(mImageView);
     }
 
 }

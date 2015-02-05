@@ -19,11 +19,6 @@ import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerCallbacks;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerData;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerFragment;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerInfo;
-import com.nostra13.universalimageloader.cache.memory.impl.LRULimitedMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -51,8 +46,6 @@ public class MainActivity extends ActionBarActivity
 
         mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
-
-        this.setupImageLoader();
     }
 
     @Override
@@ -106,22 +99,6 @@ public class MainActivity extends ActionBarActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void setupImageLoader() {
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(false)
-                .resetViewBeforeLoading(true)
-                .build();
-        ImageLoaderConfiguration configs = new ImageLoaderConfiguration.Builder(this)
-                .threadPoolSize(5)
-                .defaultDisplayImageOptions(options)
-                .tasksProcessingOrder(QueueProcessingType.LIFO)
-                .denyCacheImageMultipleSizesInMemory()
-                .memoryCache(new LRULimitedMemoryCache(16 * 1024 * 1024))
-                .build();
-        ImageLoader.getInstance().init(configs);
     }
 
     @Override
