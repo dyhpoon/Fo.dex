@@ -6,13 +6,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
+import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.GenericRequestBuilder;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.util.FixedPreloadSizeProvider;
 import com.dyhpoon.fab.FloatingActionsMenu;
@@ -37,6 +38,8 @@ public abstract class FodexBaseFragment <T> extends Fragment {
     private static final int GRID_VIEW_HORIZONTAL_SPACING = 3;
     private static final int GRID_VIEW_COLUMNS_COUNT = 3;
 
+    private DrawableRequestBuilder<FodexLayoutSpecItem> preloadRequest;
+
     /**
      * Triggers when user clicks on the floating action button.
      */
@@ -44,11 +47,10 @@ public abstract class FodexBaseFragment <T> extends Fragment {
 
     /**
      * Image uri of the photo at #position to be displayed.
-     * @param position
      * @param item
      * @return
      */
-    protected abstract Uri imageUriForItems(int position, T item);
+    protected abstract Uri imageUriForItems(T item);
 
     /**
      * List of media photo items.
@@ -64,8 +66,12 @@ public abstract class FodexBaseFragment <T> extends Fragment {
         mGridView = (AsymmetricGridView) view.findViewById(R.id.grid_view);
         mFloatingActionMenu = (FloatingActionsMenu) view.findViewById(R.id.floating_menu);
 
-        setupAsymmetricGridView();
+        preloadRequest = Glide.with(this)
+                .from(FodexLayoutSpecItem.class)
+                .centerCrop();
+
         setupFloatingActionButton();
+        setupAsymmetricGridView();
 
         return view;
     }
@@ -93,9 +99,20 @@ public abstract class FodexBaseFragment <T> extends Fragment {
                     columnSpan = 1;
                     break;
             }
-            layoutItems.add(i, new FodexLayoutSpecItem(columnSpan, 1, userObjects.get(i)));
+            FodexLayoutSpecItem item = new FodexLayoutSpecItem(columnSpan, 1, userObjects.get(i));
+            item.url = imageUriForItems((T) item.object).toString();
+            layoutItems.add(i, item);
         }
         ((AsymmetricGridViewAdapter)mGridView.getAdapter()).setItems(layoutItems);
+    }
+
+    private void setupFloatingActionButton() {
+        mFloatingActionMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickFloatingActionButton();
+            }
+        });
     }
 
     private void setupAsymmetricGridView() {
@@ -105,21 +122,12 @@ public abstract class FodexBaseFragment <T> extends Fragment {
         mGridView.setRequestedHorizontalSpacing(Utils.dpToPx(getActivity(), GRID_VIEW_HORIZONTAL_SPACING));
         mGridView.setAdapter(adapter);
         mGridView.setOnItemClickListener(imageOnClickListener);
-        final FixedPreloadSizeProvider<T> preloadSizeProvider =
-                new FixedPreloadSizeProvider<T>(344, 344);
-        final ListPreloader<T> preloader =
-                new ListPreloader<T>(adapter, preloadSizeProvider, 60);
-        mGridView.setOnScrollListener(preloader);
-    }
+        final FixedPreloadSizeProvider<FodexLayoutSpecItem> preloadSizeProvider =
+                new FixedPreloadSizeProvider<FodexLayoutSpecItem>(344, 344);
+        final ListPreloader<FodexLayoutSpecItem> preloader =
+                new ListPreloader<FodexLayoutSpecItem>(adapter, preloadSizeProvider, 60);
 
-    private void setupFloatingActionButton() {
-        mFloatingActionMenu.attachToListView(mGridView);
-        mFloatingActionMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickFloatingActionButton();
-            }
-        });
+        mFloatingActionMenu.attachToListView(mGridView, null, preloader);
     }
 
     private AdapterView.OnItemClickListener imageOnClickListener = new AdapterView.OnItemClickListener() {
@@ -147,7 +155,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
 
     private class FodexAdapter
             extends AsymmetricGridViewAdapter <FodexLayoutSpecItem>
-            implements ListPreloader.PreloadModelProvider <T> {
+            implements ListPreloader.PreloadModelProvider <FodexLayoutSpecItem> {
 
         public FodexAdapter(Context context, AsymmetricGridView listView, List items) {
             super(context, listView, items);
@@ -162,8 +170,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
             } else {
                 gridItem = (ImageGridItem) convertView;
             }
-            Uri uri = imageUriForItems(position, (T) item.object);
-            gridItem.loadImage(uri, getActivity());
+            gridItem.loadImage(item.url, getActivity());
             return gridItem;
         }
 
@@ -174,15 +181,15 @@ public abstract class FodexBaseFragment <T> extends Fragment {
         }
 
         @Override
-        public List<T> getPreloadItems(int position) {
-            Log.v("HELLO", "getPreloadItems: " + position);
-            return null;
+        public List<FodexLayoutSpecItem> getPreloadItems(int position) {
+            List<FodexLayoutSpecItem> items = new ArrayList<FodexLayoutSpecItem>();
+            items.add((FodexLayoutSpecItem) mGridView.getAdapter().getItem(position));
+            return items;
         }
 
         @Override
-        public GenericRequestBuilder getPreloadRequestBuilder(T item) {
-            Log.v("HELLO", "getPreloadRequestBuilder");
-            return null;
+        public GenericRequestBuilder getPreloadRequestBuilder(FodexLayoutSpecItem item) {
+            return preloadRequest.load(item);
         }
     }
 

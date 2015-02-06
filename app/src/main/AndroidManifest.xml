@@ -64,6 +64,9 @@
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="2a2e349920a9b0113302bc093def54421149f6e8" />
+        <meta-data
+            android:name="com.dyhpoon.fodex.fodexView.FodexGlideModule"
+            android:value="GlideModule" />
     </application>
 
 </manifest>

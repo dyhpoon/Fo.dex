@@ -48,4 +48,8 @@ public class ImageGridItem extends LinearLayout {
         Glide.with(activity).load(uri.toString()).into(mImageView);
     }
 
+    public void loadImage(String url, Activity activity) {
+        Glide.with(activity).load(url).into(mImageView);
+    }
+
 }

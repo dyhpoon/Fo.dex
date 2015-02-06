@@ -9,6 +9,9 @@ import com.felipecsl.asymmetricgridview.library.model.AsymmetricItem;
  * Created by darrenpoon on 24/1/15.
  */
 public final class FodexLayoutSpecItem implements AsymmetricItem {
+
+    public String url;
+
     public int columnSpan;
     public int rowSpan;
     public Object object;

@@ -22,7 +22,7 @@ public class AllPhotosPageFragment extends FodexBaseFragment<AllPhotosPageFragme
     }
 
     @Override
-    protected Uri imageUriForItems(int position, PhotoMedia item) {
+    protected Uri imageUriForItems(PhotoMedia item) {
         return ContentUris.withAppendedId(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 Integer.parseInt(item.id));
