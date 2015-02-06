@@ -18,8 +18,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.dyhpoon.fab.FloatingActionsMenu;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexImageContract;
@@ -174,13 +174,32 @@ public abstract class FodexBaseFragment <T> extends Fragment {
         @Override
         public View getActualView(int position, View convertView, ViewGroup parent) {
             final ImageGridItem gridItem;
-            FodexLayoutSpecItem item = getItem(position);
+            final FodexLayoutSpecItem item = getItem(position);
             if (convertView == null) {
                 gridItem = new ImageGridItem(getActivity());
             } else {
                 gridItem = (ImageGridItem) convertView;
             }
-            mPreloadRequest.load(item).priority(Priority.HIGH).into(gridItem.imageView);
+
+            mPreloadRequest
+                    .load(item)
+                    .priority(Priority.HIGH)
+                    .placeholder(gridItem.colorDrawable)
+                    .listener(new RequestListener<FodexLayoutSpecItem, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, FodexLayoutSpecItem model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            // make sure the image is always set to imageView when exception.
+                            Glide.with(FodexBaseFragment.this).load(item.url).into(gridItem.imageView);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, FodexLayoutSpecItem model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            return false;
+                        }
+                    })
+                    .into(gridItem.imageView);
+
             return gridItem;
         }
 
