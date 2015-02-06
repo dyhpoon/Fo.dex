@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +16,13 @@ import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.GenericRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.ListPreloader;
-import com.bumptech.glide.util.FixedPreloadSizeProvider;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.dyhpoon.fab.FloatingActionsMenu;
 import com.dyhpoon.fodex.R;
+import com.dyhpoon.fodex.data.FodexImageContract;
 import com.dyhpoon.fodex.fullscreen.FullscreenActivity;
 import com.dyhpoon.fodex.view.ImageGridItem;
 import com.felipecsl.asymmetricgridview.library.Utils;
@@ -37,7 +42,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
 
     private static final int GRID_VIEW_HORIZONTAL_SPACING = 3;
     private static final int GRID_VIEW_COLUMNS_COUNT = 3;
-    private static final int PRELOAD_SIZE = 60;
+    private static final int PRELOAD_SIZE = 10;
 
     private FodexAdapter mAdapter;
     private DrawableRequestBuilder<FodexLayoutSpecItem> mPreloadRequest;
@@ -127,10 +132,11 @@ public abstract class FodexBaseFragment <T> extends Fragment {
         mPreloadRequest = Glide.with(this)
                 .from(FodexLayoutSpecItem.class)
                 .centerCrop();
-        final FixedPreloadSizeProvider<FodexLayoutSpecItem> preloadSizeProvider =
-                new FixedPreloadSizeProvider<FodexLayoutSpecItem>(344, 344);
+
+        final AsymmetricSizeProvider sizeProvider =
+                new AsymmetricSizeProvider(mAdapter);
         final ListPreloader<FodexLayoutSpecItem> preloader =
-                new ListPreloader<FodexLayoutSpecItem>(mAdapter, preloadSizeProvider, PRELOAD_SIZE);
+                new ListPreloader<FodexLayoutSpecItem>(mAdapter, sizeProvider, PRELOAD_SIZE);
         mFloatingActionMenu.attachToListView(mGridView, null, preloader);
     }
 
@@ -167,14 +173,14 @@ public abstract class FodexBaseFragment <T> extends Fragment {
 
         @Override
         public View getActualView(int position, View convertView, ViewGroup parent) {
-            ImageGridItem gridItem;
+            final ImageGridItem gridItem;
             FodexLayoutSpecItem item = getItem(position);
             if (convertView == null) {
                 gridItem = new ImageGridItem(getActivity());
             } else {
                 gridItem = (ImageGridItem) convertView;
             }
-            mPreloadRequest.load(item).into(gridItem.imageView);
+            mPreloadRequest.load(item).priority(Priority.HIGH).into(gridItem.imageView);
             return gridItem;
         }
 
@@ -192,6 +198,22 @@ public abstract class FodexBaseFragment <T> extends Fragment {
         @Override
         public GenericRequestBuilder getPreloadRequestBuilder(FodexLayoutSpecItem item) {
             return mPreloadRequest.load(item);
+        }
+    }
+
+    private class AsymmetricSizeProvider extends FodexPreloadSizeProvider <FodexLayoutSpecItem> {
+
+        private FodexAdapter mAdapter;
+
+        public AsymmetricSizeProvider(@NonNull FodexAdapter adapter) {
+            this.mAdapter = adapter;
+        }
+
+        @Override
+        public int[] getSize(FodexLayoutSpecItem item) {
+            return new int[]{
+                    mAdapter.getRowWidth(item) - FodexImageContract.LEFT_MARGIN - FodexImageContract.RIGHT_MARGIN,
+                    mAdapter.getRowHeight(item) - FodexImageContract.TOP_MARGIN - FodexImageContract.BOTTOM_MARGIN};
         }
     }
 
