@@ -1,0 +1,3 @@
+[submodule "libraries/FloatingActionButton"]
+	path = libraries/FloatingActionButton
+	url = https://github.com/dyhpoon/FloatingActionButton.git

@@ -1,1 +1,2 @@
-include ':app', ':libraries:AsymmetricGridView'
+include ':app', ':libraries:AsymmetricGridView', ':libraries:FloatingActionButton'
+project(':libraries:FloatingActionButton').projectDir = new File('libraries/FloatingActionButton/library')
