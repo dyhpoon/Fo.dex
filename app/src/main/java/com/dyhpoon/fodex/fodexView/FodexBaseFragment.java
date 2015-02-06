@@ -15,13 +15,13 @@ import android.widget.AdapterView;
 import com.bumptech.glide.GenericRequestBuilder;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.util.FixedPreloadSizeProvider;
+import com.dyhpoon.fab.FloatingActionsMenu;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.fullscreen.FullscreenActivity;
 import com.dyhpoon.fodex.view.ImageGridItem;
 import com.felipecsl.asymmetricgridview.library.Utils;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridView;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter;
-import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.List;
 public abstract class FodexBaseFragment <T> extends Fragment {
 
     private AsymmetricGridView mGridView;
-    private FloatingActionButton mFloatingActionButton;
+    private FloatingActionsMenu mFloatingActionMenu;
 
     private static final int GRID_VIEW_HORIZONTAL_SPACING = 3;
     private static final int GRID_VIEW_COLUMNS_COUNT = 3;
@@ -62,7 +62,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
         View view = inflater.inflate(R.layout.fragment_fodex_base, container, false);
 
         mGridView = (AsymmetricGridView) view.findViewById(R.id.grid_view);
-        mFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.floating_button);
+        mFloatingActionMenu = (FloatingActionsMenu) view.findViewById(R.id.floating_menu);
 
         setupAsymmetricGridView();
         setupFloatingActionButton();
@@ -113,8 +113,8 @@ public abstract class FodexBaseFragment <T> extends Fragment {
     }
 
     private void setupFloatingActionButton() {
-        mFloatingActionButton.attachToListView(mGridView);
-        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+        mFloatingActionMenu.attachToListView(mGridView);
+        mFloatingActionMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onClickFloatingActionButton();

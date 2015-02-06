@@ -18,16 +18,14 @@
         android:scrollbarStyle="outsideOverlay" />
 
 
-    <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/floating_button"
+    <com.dyhpoon.fab.FloatingActionsMenu
+        android:id="@+id/floating_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_tag"
-        app:fab_colorNormal="@color/colorPrimaryAccent"
-        app:fab_colorPressed="@color/colorPrimaryAccentDark"
-        app:fab_colorRipple="@color/ripple_material_light"
-        app:fab_shadow="true" />
+        app:fab_menuButtonSrc="@drawable/ic_tag"
+        app:fab_menuButtonColorNormal="@color/colorPrimaryAccent"
+        app:fab_menuButtonColorPressed="@color/colorPrimaryAccentDark"
+        app:fab_menuButtonColorRipple="@color/ripple_material_light" />
 
 </FrameLayout>
