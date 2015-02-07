@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +21,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ViewSwitcher;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexCursor;
 import com.dyhpoon.fodex.data.FodexImageContract;
@@ -35,6 +41,7 @@ public class FullscreenActivity extends Activity {
     private static final TimeInterpolator sDecelerator = new DecelerateInterpolator();
 
     public static final String RESOURCE_INDEX   = PREFIX + ".RESOURCE_INDEX";
+    public static final String RESOURCE_URL     = PREFIX + ".RESOURCES_URL";
     public static final String TOP              = PREFIX + ".TOP";
     public static final String LEFT             = PREFIX + ".LEFT";
     public static final String WIDTH            = PREFIX + ".WIDTH";
@@ -55,7 +62,7 @@ public class FullscreenActivity extends Activity {
     private ColorDrawable mBackground;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen);
 
@@ -63,36 +70,44 @@ public class FullscreenActivity extends Activity {
 
         Bundle bundle = getIntent().getExtras();
         mImageIndex         = bundle.getInt(RESOURCE_INDEX, 0);
+        final String url    = bundle.getString(RESOURCE_URL);
         final int top       = bundle.getInt(TOP);
         final int left      = bundle.getInt(LEFT);
         final int width     = bundle.getInt(WIDTH);
         final int height    = bundle.getInt(HEIGHT);
 
         setupViewSwitcher();
-        setupFakeView(mCursor, mImageIndex);
         setupFullscreenPager(mCursor, mImageIndex);
+        setupFakeView(url, new OnImageLoadListener() {
+            @Override
+            public void didLoad() {
+                if (savedInstanceState == null) {
+                    ViewTreeObserver observer = mPager.getViewTreeObserver();
+                    observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                        @Override
+                        public boolean onPreDraw() {
+                            mFakeImageView.getViewTreeObserver().removeOnPreDrawListener(this);
 
-        if (savedInstanceState == null) {
-            ViewTreeObserver observer = mPager.getViewTreeObserver();
-            observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    mFakeImageView.getViewTreeObserver().removeOnPreDrawListener(this);
+                            int screenLocation[] = new int[2];
+                            mFakeImageView.getLocationOnScreen(screenLocation);
+                            mLeftDelta = left - screenLocation[0];
+                            mTopDelta = top - screenLocation[1];
 
-                    int screenLocation[] = new int[2];
-                    mFakeImageView.getLocationOnScreen(screenLocation);
-                    mLeftDelta = left - screenLocation[0];
-                    mTopDelta = top - screenLocation[1];
+                            mWidthScale = (float) width / mFakeImageView.getWidth();
+                            mHeightScale = (float) height / mFakeImageView.getHeight();
 
-                    mWidthScale = (float) width / mFakeImageView.getWidth();
-                    mHeightScale = (float) height / mFakeImageView.getHeight();
+                            runEnterAnimation();
 
-                    runEnterAnimation();
-
-                    return true;
+                            return true;
+                        }
+                    });
                 }
-            });
-        }
+            }
+            @Override
+            public void didFail() {
+                mSwitcher.showNext();
+            }
+        });
     }
 
     @Override
@@ -113,8 +128,7 @@ public class FullscreenActivity extends Activity {
         }
     }
 
-    private void setupFakeView(Cursor cursor, int position) {
-        Bitmap bm = getImageFromCursor(cursor, position);
+    private void setupFakeView(String imageUrl, final OnImageLoadListener listener) {
         mFakeImageView = (ImageView) findViewById(R.id.fake_image_view);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mFakeImageView.getLayoutParams();
         lp.setMargins(
@@ -125,7 +139,22 @@ public class FullscreenActivity extends Activity {
         mFakeImageView.setLayoutParams(lp);
         mFakeImageView.setMinimumHeight(FodexImageContract.preferredMinimumHeight(FullscreenActivity.this));
         mFakeImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        mFakeImageView.setImageBitmap(bm);
+
+        Glide.with(FullscreenActivity.this)
+                .load(imageUrl)
+                .priority(Priority.IMMEDIATE)
+                .into(new SimpleTarget<GlideDrawable>() {
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        if (listener != null) listener.didFail();
+                    }
+
+                    @Override
+                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        mFakeImageView.setImageDrawable(resource);
+                        if (listener != null) listener.didLoad();
+                    }
+                });
     }
 
     private void setupFullscreenPager(final Cursor cursor, int position) {
@@ -202,5 +231,10 @@ public class FullscreenActivity extends Activity {
             e.printStackTrace();
         }
         return bm;
+    }
+
+    private interface OnImageLoadListener {
+        public void didLoad();
+        public void didFail();
     }
 }

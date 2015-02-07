@@ -142,14 +142,16 @@ public abstract class FodexBaseFragment <T> extends Fragment {
 
     private AdapterView.OnItemClickListener imageOnClickListener = new AdapterView.OnItemClickListener() {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent fullscreenIntent = new Intent(getActivity(), FullscreenActivity.class);
+        public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
+            FodexLayoutSpecItem item = (FodexLayoutSpecItem) mGridView.getItemAtPosition(position);
 
+            Intent fullscreenIntent = new Intent(getActivity(), FullscreenActivity.class);
             int[] screenLocation = new int[2];
             view.getLocationOnScreen(screenLocation);
 
             fullscreenIntent
                     .putExtra(FullscreenActivity.RESOURCE_INDEX, position)
+                    .putExtra(FullscreenActivity.RESOURCE_URL, item.url)
                     .putExtra(FullscreenActivity.TOP, screenLocation[1])
                     .putExtra(FullscreenActivity.LEFT, screenLocation[0])
                     .putExtra(FullscreenActivity.WIDTH, view.getWidth())
