@@ -1,5 +1,6 @@
 package com.dyhpoon.fodex.fullscreen;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.annotation.TargetApi;
@@ -29,6 +30,9 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexCursor;
 import com.dyhpoon.fodex.data.FodexImageContract;
+import com.dyhpoon.fodex.util.OnCompleteListener;
+import com.dyhpoon.fodex.util.OnFinishListener;
+import com.dyhpoon.fodex.util.SimpleAnimatorListener;
 import com.dyhpoon.fodex.view.PagerContainer;
 import com.dyhpoon.fodex.view.TouchImageView;
 
@@ -59,7 +63,7 @@ public class FullscreenActivity extends Activity {
     private FullscreenViewPager mPager;
 
     private Cursor mCursor;
-    private ColorDrawable mBackground;
+    final private ColorDrawable mBackground = new ColorDrawable(Color.BLACK);
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -76,11 +80,13 @@ public class FullscreenActivity extends Activity {
         final int width     = bundle.getInt(WIDTH);
         final int height    = bundle.getInt(HEIGHT);
 
+        mBackground.setAlpha(0);
+
         setupViewSwitcher();
         setupFullscreenPager(mCursor, mImageIndex);
-        setupFakeView(url, new OnImageLoadListener() {
+        setupFakeView(url, new OnCompleteListener() {
             @Override
-            public void didLoad() {
+            public void didComplete() {
                 if (savedInstanceState == null) {
                     ViewTreeObserver observer = mPager.getViewTreeObserver();
                     observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -96,15 +102,22 @@ public class FullscreenActivity extends Activity {
                             mWidthScale = (float) width / mFakeImageView.getWidth();
                             mHeightScale = (float) height / mFakeImageView.getHeight();
 
-                            runEnterAnimation();
+                            runEnterAnimation(new OnFinishListener() {
+                                @Override
+                                public void didFinish() {
+//                                    mSwitcher.showNext();
+                                }
+                            });
 
                             return true;
                         }
                     });
                 }
             }
+
             @Override
             public void didFail() {
+                mBackground.setAlpha(255);
                 mSwitcher.showNext();
             }
         });
@@ -119,16 +132,14 @@ public class FullscreenActivity extends Activity {
     @TargetApi(16)
     private void setupViewSwitcher() {
         mSwitcher = (ViewSwitcher) findViewById(R.id.switcher);
-        mBackground = new ColorDrawable(Color.BLACK);
-        int currentVersion = Build.VERSION.SDK_INT;
-        if (currentVersion >= Build.VERSION_CODES.JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             mSwitcher.setBackground(mBackground);
         } else {
             mSwitcher.setBackgroundDrawable(mBackground);
         }
     }
 
-    private void setupFakeView(String imageUrl, final OnImageLoadListener listener) {
+    private void setupFakeView(String imageUrl, final OnCompleteListener listener) {
         mFakeImageView = (ImageView) findViewById(R.id.fake_image_view);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mFakeImageView.getLayoutParams();
         lp.setMargins(
@@ -152,7 +163,7 @@ public class FullscreenActivity extends Activity {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                         mFakeImageView.setImageDrawable(resource);
-                        if (listener != null) listener.didLoad();
+                        if (listener != null) listener.didComplete();
                     }
                 });
     }
@@ -183,7 +194,8 @@ public class FullscreenActivity extends Activity {
         mPager.setCurrentItem(position);
     }
 
-    private void runEnterAnimation() {
+    @TargetApi(16)
+    private void runEnterAnimation(final OnFinishListener listener) {
         final long duration = (long) (ANIM_DURATION * 1);
 
         mFakeImageView.setPivotX(0);
@@ -203,8 +215,24 @@ public class FullscreenActivity extends Activity {
 
         // Fade in the black background
         ObjectAnimator bgAnimation = ObjectAnimator.ofInt(mBackground, "alpha", 0, 255);
-        bgAnimation.setDuration((long) (duration * 0.75));
+        bgAnimation.setDuration((long) (duration * 0.5));
         bgAnimation.start();
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            mFakeImageView.animate().setListener(new SimpleAnimatorListener() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (listener != null) listener.didFinish();
+                }
+            });
+        } else {
+            mFakeImageView.animate().withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    if (listener != null) listener.didFinish();
+                }
+            });
+        }
     }
 
     private TouchImageView getCurrentPagerView() {
@@ -233,8 +261,4 @@ public class FullscreenActivity extends Activity {
         return bm;
     }
 
-    private interface OnImageLoadListener {
-        public void didLoad();
-        public void didFail();
-    }
 }
