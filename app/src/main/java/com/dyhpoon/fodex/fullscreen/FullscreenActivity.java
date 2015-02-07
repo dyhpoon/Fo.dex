@@ -17,7 +17,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.view.PagerAdapter;
 import android.view.ViewTreeObserver;
-import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.ViewSwitcher;
@@ -42,7 +42,7 @@ public class FullscreenActivity extends Activity {
 
     private static final int ANIM_DURATION = 300;
     private static final String PREFIX = FullscreenActivity.class.getName();
-    private static final TimeInterpolator sDecelerator = new DecelerateInterpolator();
+    private static final TimeInterpolator mInterpolator = new OvershootInterpolator(1);
 
     public static final String RESOURCE_INDEX   = PREFIX + ".RESOURCE_INDEX";
     public static final String RESOURCE_URL     = PREFIX + ".RESOURCES_URL";
@@ -211,7 +211,7 @@ public class FullscreenActivity extends Activity {
                 .scaleY(1)
                 .translationX(0)
                 .translationY(0)
-                .setInterpolator(sDecelerator);
+                .setInterpolator(mInterpolator);
 
         // Fade in the black background
         ObjectAnimator bgAnimation = ObjectAnimator.ofInt(mBackground, "alpha", 0, 255);
