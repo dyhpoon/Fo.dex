@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
@@ -106,7 +107,7 @@ public class FullscreenActivity extends Activity {
                             runEnterAnimation(new OnFinishListener() {
                                 @Override
                                 public void didFinish() {
-//                                    mSwitcher.showNext();
+                                    mSwitcher.showNext();
                                 }
                             });
 
@@ -142,15 +143,7 @@ public class FullscreenActivity extends Activity {
 
     private void setupFakeView(String imageUrl, final OnCompleteListener listener) {
         mFakeImageView = (ImageView) findViewById(R.id.fake_image_view);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mFakeImageView.getLayoutParams();
-        lp.setMargins(
-                FodexImageContract.LEFT_MARGIN,
-                FodexImageContract.TOP_MARGIN,
-                FodexImageContract.RIGHT_MARGIN,
-                FodexImageContract.BOTTOM_MARGIN);
-        mFakeImageView.setLayoutParams(lp);
         mFakeImageView.setMinimumHeight(FodexImageContract.preferredMinimumHeight(FullscreenActivity.this));
-        mFakeImageView.setScaleType(ImageView.ScaleType.FIT_XY);
 
         Glide.with(FullscreenActivity.this)
                 .load(imageUrl)

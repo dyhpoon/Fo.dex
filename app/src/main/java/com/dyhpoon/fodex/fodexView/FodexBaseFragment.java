@@ -128,7 +128,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
     private void setupPreload() {
         mPreloadRequest = Glide.with(this)
                 .fromMediaStore()
-                .centerCrop();
+                .fitCenter();
 
         final AsymmetricSizeProvider sizeProvider =
                 new AsymmetricSizeProvider(mAdapter);
@@ -183,6 +183,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
             mPreloadRequest
                     .load(item.uri)
                     .priority(Priority.HIGH)
+                    .fitCenter()
                     .placeholder(gridItem.colorDrawable)
                     .into(gridItem.imageView);
 
