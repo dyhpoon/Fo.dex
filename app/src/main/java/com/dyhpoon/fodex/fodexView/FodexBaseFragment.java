@@ -17,9 +17,6 @@ import com.bumptech.glide.GenericRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.dyhpoon.fab.FloatingActionsMenu;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexImageContract;
@@ -45,7 +42,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
     private static final int PRELOAD_SIZE = 10;
 
     private FodexAdapter mAdapter;
-    private DrawableRequestBuilder<FodexLayoutSpecItem> mPreloadRequest;
+    private DrawableRequestBuilder<Uri> mPreloadRequest;
 
     /**
      * Triggers when user clicks on the floating action button.
@@ -104,7 +101,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
                     break;
             }
             FodexLayoutSpecItem item = new FodexLayoutSpecItem(columnSpan, 1, userObjects.get(i));
-            item.url = imageUriForItems((T) item.object).toString();
+            item.uri = imageUriForItems((T) item.object);
             layoutItems.add(i, item);
         }
         ((AsymmetricGridViewAdapter)mGridView.getAdapter()).setItems(layoutItems);
@@ -130,7 +127,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
 
     private void setupPreload() {
         mPreloadRequest = Glide.with(this)
-                .from(FodexLayoutSpecItem.class)
+                .fromMediaStore()
                 .centerCrop();
 
         final AsymmetricSizeProvider sizeProvider =
@@ -151,7 +148,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
 
             fullscreenIntent
                     .putExtra(FullscreenActivity.RESOURCE_INDEX, position)
-                    .putExtra(FullscreenActivity.RESOURCE_URL, item.url)
+                    .putExtra(FullscreenActivity.RESOURCE_URL, item.uri.toString())
                     .putExtra(FullscreenActivity.TOP, screenLocation[1])
                     .putExtra(FullscreenActivity.LEFT, screenLocation[0])
                     .putExtra(FullscreenActivity.WIDTH, view.getWidth())
@@ -184,22 +181,9 @@ public abstract class FodexBaseFragment <T> extends Fragment {
             }
 
             mPreloadRequest
-                    .load(item)
+                    .load(item.uri)
                     .priority(Priority.HIGH)
                     .placeholder(gridItem.colorDrawable)
-                    .listener(new RequestListener<FodexLayoutSpecItem, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, FodexLayoutSpecItem model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            // make sure the image is always set to imageView when exception.
-                            Glide.with(FodexBaseFragment.this).load(item.url).into(gridItem.imageView);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, FodexLayoutSpecItem model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            return false;
-                        }
-                    })
                     .into(gridItem.imageView);
 
             return gridItem;
@@ -218,7 +202,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
 
         @Override
         public GenericRequestBuilder getPreloadRequestBuilder(FodexLayoutSpecItem item) {
-            return mPreloadRequest.load(item);
+            return mPreloadRequest.load(item.uri);
         }
     }
 
