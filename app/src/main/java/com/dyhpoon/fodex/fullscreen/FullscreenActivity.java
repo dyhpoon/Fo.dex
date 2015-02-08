@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.view.ViewTreeObserver;
 import android.view.animation.OvershootInterpolator;
@@ -168,7 +169,7 @@ public class FullscreenActivity extends Activity {
                 });
     }
 
-    private void setupFullscreenPager(final Cursor cursor, int position) {
+    private void setupFullscreenPager(@NonNull final Cursor cursor, int position) {
         mContainer = (PagerContainer) findViewById(R.id.pager_container);
         mPager = (FullscreenViewPager) mContainer.getViewPager();
         mPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.fullscreen_pager_padding));
