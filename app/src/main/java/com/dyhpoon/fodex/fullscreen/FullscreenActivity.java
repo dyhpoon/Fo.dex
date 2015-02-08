@@ -17,11 +17,9 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.Glide;
@@ -42,7 +40,7 @@ import java.io.IOException;
 
 public class FullscreenActivity extends Activity {
 
-    private static final int ANIM_DURATION = 300;
+    private static final int ANIM_DURATION = 250;
     private static final String PREFIX = FullscreenActivity.class.getName();
     private static final TimeInterpolator mInterpolator = new OvershootInterpolator(1);
 
