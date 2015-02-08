@@ -174,13 +174,18 @@ public class FullscreenActivity extends Activity {
         });
         mPager.setAdapter(new ReusableFullscreenAdapter(this) {
             @Override
-            public Bitmap imageBitmapAtPosition(int position) {
-                return getImageFromCursor(cursor, position);
+            public int getCount() {
+                return cursor.getCount();
             }
 
             @Override
-            public int getCount() {
-                return cursor.getCount();
+            public Uri imageUriAtPosition(int position) {
+                cursor.moveToPosition(position);
+                final int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
+                String id = cursor.getString(idColumn);
+                return ContentUris.withAppendedId(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        Integer.parseInt(id));
             }
         });
         mPager.setCurrentItem(position);
