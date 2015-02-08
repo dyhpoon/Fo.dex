@@ -10,7 +10,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,7 +29,6 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexCursor;
 import com.dyhpoon.fodex.data.FodexImageContract;
-import com.dyhpoon.fodex.util.OnCompleteListener;
 import com.dyhpoon.fodex.util.OnFinishListener;
 import com.dyhpoon.fodex.util.SimpleAnimatorListener;
 import com.dyhpoon.fodex.view.PagerContainer;
@@ -80,13 +78,13 @@ public class FullscreenActivity extends Activity {
         final int width     = bundle.getInt(WIDTH);
         final int height    = bundle.getInt(HEIGHT);
 
-        mBackground.setAlpha(0);
+        mBackground.setAlpha(0);    // prevent flashing
 
         setupViewSwitcher();
         setupFullscreenPager(mCursor, mImageIndex);
-        setupFakeView(url, new OnCompleteListener() {
+        setupFakeView(url, new OnFinishListener() {
             @Override
-            public void didComplete() {
+            public void didFinish() {
                 if (savedInstanceState == null) {
                     ViewTreeObserver observer = mPager.getViewTreeObserver();
                     observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -114,12 +112,6 @@ public class FullscreenActivity extends Activity {
                     });
                 }
             }
-
-            @Override
-            public void didFail() {
-                mBackground.setAlpha(255);
-                mSwitcher.showNext();
-            }
         });
     }
 
@@ -139,23 +131,18 @@ public class FullscreenActivity extends Activity {
         }
     }
 
-    private void setupFakeView(String imageUrl, final OnCompleteListener listener) {
+    private void setupFakeView(String imageUrl, final OnFinishListener listener) {
         mFakeImageView = (ImageView) findViewById(R.id.fake_image_view);
         mFakeImageView.setMinimumHeight(FodexImageContract.preferredMinimumHeight(FullscreenActivity.this));
 
         Glide.with(FullscreenActivity.this)
-                .load(imageUrl)
+                .loadFromMediaStore(Uri.parse(imageUrl))
                 .priority(Priority.IMMEDIATE)
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        if (listener != null) listener.didFail();
-                    }
-
-                    @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                         mFakeImageView.setImageDrawable(resource);
-                        if (listener != null) listener.didComplete();
+                        if (listener != null) listener.didFinish();
                     }
                 });
     }
