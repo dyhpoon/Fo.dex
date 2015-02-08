@@ -50,7 +50,8 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
         final ImageView photoView = (ImageView) createOrRecycleView(mContext);
         Glide.with(mContext)
                 .loadFromMediaStore(imageUriAtPosition(position))
-                .priority(Priority.HIGH)
+                .priority(Priority.IMMEDIATE)
+                .thumbnail(0.3f)
                 .into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
