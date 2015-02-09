@@ -7,7 +7,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -33,8 +32,6 @@ import com.dyhpoon.fodex.util.OnFinishListener;
 import com.dyhpoon.fodex.util.SimpleAnimatorListener;
 import com.dyhpoon.fodex.view.PagerContainer;
 import com.dyhpoon.fodex.view.TouchImageView;
-
-import java.io.IOException;
 
 public class FullscreenActivity extends Activity {
 
@@ -156,7 +153,7 @@ public class FullscreenActivity extends Activity {
         mPager.setCanScrollAdapter(new FullscreenViewPager.CanScrollAdapter() {
             @Override
             public boolean canScroll() {
-                return !((TouchImageView)getCurrentPagerView()).isZoomed();
+                return !getCurrentPagerView().isZoomed();
             }
         });
         mPager.setAdapter(new ReusableFullscreenAdapter(this) {
@@ -226,23 +223,6 @@ public class FullscreenActivity extends Activity {
             view = ((ReusableFullscreenAdapter)adapter).currentView;
         }
         return view;
-    }
-
-    private Bitmap getImageFromCursor(Cursor cursor, int position) {
-        cursor.moveToPosition(position);
-        final int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
-        String id = cursor.getString(idColumn);
-        Uri uri = ContentUris.withAppendedId(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                Integer.parseInt(id));
-
-        Bitmap bm = null;
-        try {
-            bm = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bm;
     }
 
 }
