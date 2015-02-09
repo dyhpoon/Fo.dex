@@ -32,6 +32,9 @@ import com.dyhpoon.fodex.util.OnFinishListener;
 import com.dyhpoon.fodex.util.SimpleAnimatorListener;
 import com.dyhpoon.fodex.view.PagerContainer;
 import com.dyhpoon.fodex.view.TouchImageView;
+import com.felipecsl.asymmetricgridview.library.widget.GridItemViewInfo;
+
+import java.util.List;
 
 public class FullscreenActivity extends Activity {
 
@@ -45,12 +48,14 @@ public class FullscreenActivity extends Activity {
     public static final String LEFT             = PREFIX + ".LEFT";
     public static final String WIDTH            = PREFIX + ".WIDTH";
     public static final String HEIGHT           = PREFIX + ".HEIGHT";
+    public static final String VIEWS_INFO       = PREFIX + ".VIEWS_INFO";
 
     private int mImageIndex;
     private int mLeftDelta;
     private int mTopDelta;
     private float mWidthScale;
     private float mHeightScale;
+    private List<GridItemViewInfo> viewInfos;
 
     private ViewSwitcher mSwitcher;
     private ImageView mFakeImageView;
@@ -74,6 +79,7 @@ public class FullscreenActivity extends Activity {
         final int left      = bundle.getInt(LEFT);
         final int width     = bundle.getInt(WIDTH);
         final int height    = bundle.getInt(HEIGHT);
+        viewInfos           = getIntent().getParcelableArrayListExtra(VIEWS_INFO);
 
         mBackground.setAlpha(0);    // prevent flashing
 

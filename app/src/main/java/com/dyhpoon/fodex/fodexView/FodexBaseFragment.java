@@ -25,6 +25,7 @@ import com.dyhpoon.fodex.view.ImageGridItem;
 import com.felipecsl.asymmetricgridview.library.Utils;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridView;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter;
+import com.felipecsl.asymmetricgridview.library.widget.GridItemViewInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,11 +141,17 @@ public abstract class FodexBaseFragment <T> extends Fragment {
     private AdapterView.OnItemClickListener imageOnClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
+
+            ((AsymmetricGridViewAdapter)mGridView.getAdapter()).getVisibleViewsInfo();
+
             FodexLayoutSpecItem item = (FodexLayoutSpecItem) mGridView.getItemAtPosition(position);
 
             Intent fullscreenIntent = new Intent(getActivity(), FullscreenActivity.class);
             int[] screenLocation = new int[2];
             view.getLocationOnScreen(screenLocation);
+
+            List<GridItemViewInfo> infos =
+                    ((AsymmetricGridViewAdapter)mGridView.getAdapter()).getVisibleViewsInfo();
 
             fullscreenIntent
                     .putExtra(FullscreenActivity.RESOURCE_INDEX, position)
@@ -153,7 +160,12 @@ public abstract class FodexBaseFragment <T> extends Fragment {
                     .putExtra(FullscreenActivity.LEFT, screenLocation[0])
                     .putExtra(FullscreenActivity.WIDTH, view.getWidth())
                     .putExtra(FullscreenActivity.HEIGHT, view.getHeight())
+
+                    .putParcelableArrayListExtra(FullscreenActivity.VIEWS_INFO,
+                            (ArrayList<? extends android.os.Parcelable>) infos)
+
                     .addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
             startActivity(fullscreenIntent);
 
             // Override transitions: we don't want the normal window animation in addition
@@ -188,12 +200,6 @@ public abstract class FodexBaseFragment <T> extends Fragment {
                     .into(gridItem.imageView);
 
             return gridItem;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View view = super.getView(position, convertView, parent);
-            return view;
         }
 
         @Override

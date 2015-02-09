@@ -309,6 +309,31 @@ public abstract class AsymmetricGridViewAdapter<T extends AsymmetricItem>
         return itemsPerRow.size();
     }
 
+    public List<GridItemViewInfo> getVisibleViewsInfo() {
+        List<GridItemViewInfo> infos = new ArrayList<>();
+        for (int i = 0; i <= listView.getChildCount(); i++) {
+            ViewGroup container = (ViewGroup) listView.getChildAt(i);
+            if (container != null) {
+                for (int j = 0; j < container.getChildCount(); j++) {
+                    View view = ((ViewGroup)container.getChildAt(j)).getChildAt(0);
+
+                    T item = (T) view.getTag();
+                    int[] screenLocation = new int[2];
+                    view.getLocationOnScreen(screenLocation);
+
+                    int index = items.indexOf(item);
+                    infos.add(new GridItemViewInfo(
+                            index,
+                            screenLocation[1],
+                            screenLocation[0],
+                            view.getWidth(),
+                            view.getHeight()));
+                }
+            }
+        }
+        return infos;
+    }
+
     @SuppressWarnings("unchecked")
     public void recalculateItemsPerRow() {
         if (asyncTask != null)
