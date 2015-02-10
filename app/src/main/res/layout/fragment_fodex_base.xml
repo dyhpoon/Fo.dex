@@ -23,9 +23,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
-        app:fab_menuButtonSrc="@drawable/ic_tag"
         app:fab_menuButtonColorNormal="@color/colorPrimaryAccent"
-        app:fab_menuButtonColorPressed="@color/colorPrimaryAccentDark"
-        app:fab_menuButtonColorRipple="@color/ripple_material_light" />
+        app:fab_menuButtonColorPressed="@color/colorPrimaryAccentLight"
+        app:fab_menuButtonColorSelected="@color/colorPrimarySelected"
+        app:fab_menuButtonColorRipple="@color/ripple_material_light"
+        app:fab_menuButtonSelectedSrc="@drawable/ic_cross"
+        app:fab_menuButtonUnSelectedSrc="@drawable/ic_add">
+
+        <com.dyhpoon.fab.FloatingActionButton
+            android:id="@+id/floation_add_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_tag"
+            app:fab_colorNormal="@color/colorPrimaryAccent"
+            app:fab_colorPressed="@color/colorPrimaryAccentLight"
+            app:fab_colorRipple="@color/ripple_material_light" />
+    </com.dyhpoon.fab.FloatingActionsMenu>
 
 </FrameLayout>
