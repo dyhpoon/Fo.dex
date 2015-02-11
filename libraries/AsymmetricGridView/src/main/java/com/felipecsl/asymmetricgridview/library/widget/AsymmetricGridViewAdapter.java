@@ -309,27 +309,35 @@ public abstract class AsymmetricGridViewAdapter<T extends AsymmetricItem>
         return itemsPerRow.size();
     }
 
-    public List<GridItemViewInfo> getVisibleViewsInfo() {
-        List<GridItemViewInfo> infos = new ArrayList<>();
+    public List<View> getVisibleViews() {
+        List<View> views = new ArrayList<>();
         for (int i = 0; i <= listView.getChildCount(); i++) {
             ViewGroup container = (ViewGroup) listView.getChildAt(i);
             if (container != null) {
                 for (int j = 0; j < container.getChildCount(); j++) {
-                    View view = ((ViewGroup)container.getChildAt(j)).getChildAt(0);
-
-                    T item = (T) view.getTag();
-                    int[] screenLocation = new int[2];
-                    view.getLocationOnScreen(screenLocation);
-
-                    int index = items.indexOf(item);
-                    infos.add(new GridItemViewInfo(
-                            index,
-                            screenLocation[1],
-                            screenLocation[0],
-                            view.getWidth(),
-                            view.getHeight()));
+                    View view = ((ViewGroup) container.getChildAt(j)).getChildAt(0);
+                    views.add(view);
                 }
             }
+        }
+        return views;
+    }
+
+    public List<GridItemViewInfo> getVisibleViewsInfo() {
+        List<GridItemViewInfo> infos = new ArrayList<>();
+        List<View> visibleViews = getVisibleViews();
+        for (View view : visibleViews) {
+            T item = (T) view.getTag();
+            int[] screenLocation = new int[2];
+            view.getLocationOnScreen(screenLocation);
+
+            int index = items.indexOf(item);
+            infos.add(new GridItemViewInfo(
+                    index,
+                    screenLocation[1],
+                    screenLocation[0],
+                    view.getWidth(),
+                    view.getHeight()));
         }
         return infos;
     }
