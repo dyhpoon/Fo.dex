@@ -17,7 +17,7 @@ import java.util.List;
 public class AllPhotosPageFragment extends FodexBaseFragment<AllPhotosPageFragment.PhotoMedia> {
 
     @Override
-    protected void onClickFloatingActionButton() {
+    protected void onClickConfirmedButton(List<PhotoMedia> selectedItems) {
         // TODO: implement
     }
 

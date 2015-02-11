@@ -28,12 +28,18 @@ import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter
 import com.felipecsl.asymmetricgridview.library.widget.GridItemViewInfo;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by darrenpoon on 16/1/15.
  */
 public abstract class FodexBaseFragment <T> extends Fragment {
+
+    public State state = State.NORMAL;
+
+    public enum State { NORMAL, SELECTED; }
 
     private AsymmetricGridView mGridView;
     private FloatingActionsMenu mFloatingActionMenu;
@@ -44,11 +50,12 @@ public abstract class FodexBaseFragment <T> extends Fragment {
 
     private FodexAdapter mAdapter;
     private DrawableRequestBuilder<Uri> mPreloadRequest;
+    private Set<FodexLayoutSpecItem> mSelectedItems = new HashSet<>();
 
     /**
      * Triggers when user clicks on the floating action button.
      */
-    protected abstract void onClickFloatingActionButton();
+    protected abstract void onClickConfirmedButton(List<T> selectedItems);
 
     /**
      * Image uri of the photo at #position to be displayed.
@@ -109,10 +116,21 @@ public abstract class FodexBaseFragment <T> extends Fragment {
     }
 
     private void setupFloatingActionButton() {
-        mFloatingActionMenu.setOnClickListener(new View.OnClickListener() {
+        mFloatingActionMenu.setOnMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
             @Override
-            public void onClick(View v) {
-                onClickFloatingActionButton();
+            public void onMenuExpanded() {
+                state = State.SELECTED;
+            }
+
+            @Override
+            public void onMenuCollapsed() {
+                state = State.NORMAL;
+                mSelectedItems.clear();
+                List<View> visibleViews =
+                        ((AsymmetricGridViewAdapter)mGridView.getAdapter()).getVisibleViews();
+                for (View view: visibleViews) {
+                    view.setSelected(false);
+                }
             }
         });
     }
@@ -141,11 +159,26 @@ public abstract class FodexBaseFragment <T> extends Fragment {
     private AdapterView.OnItemClickListener imageOnClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
-
-            ((AsymmetricGridViewAdapter)mGridView.getAdapter()).getVisibleViewsInfo();
-
             FodexLayoutSpecItem item = (FodexLayoutSpecItem) mGridView.getItemAtPosition(position);
+            ImageGridItem itemView = (ImageGridItem) view;
 
+            if (state == State.SELECTED) {
+                setSelectedItem(item, itemView);
+            } else {
+                startFullscreen(position, item, itemView.imageView);
+            }
+        }
+
+        private void setSelectedItem(FodexLayoutSpecItem item, ImageGridItem itemView) {
+            itemView.setSelected(!itemView.isSelected());
+            if (itemView.isSelected()) {
+                mSelectedItems.add(item);
+            } else {
+                mSelectedItems.remove(item);
+            }
+        }
+
+        private void startFullscreen(int position, FodexLayoutSpecItem item, View view) {
             Intent fullscreenIntent = new Intent(getActivity(), FullscreenActivity.class);
             int[] screenLocation = new int[2];
             view.getLocationOnScreen(screenLocation);
@@ -191,6 +224,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
             } else {
                 gridItem = (ImageGridItem) convertView;
             }
+            gridItem.setSelected(mSelectedItems.contains(item));
 
             mPreloadRequest
                     .load(item.uri)

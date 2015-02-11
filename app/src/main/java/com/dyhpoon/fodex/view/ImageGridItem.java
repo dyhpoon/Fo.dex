@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexImageContract;
 
 import java.util.Random;
@@ -20,9 +21,10 @@ public class ImageGridItem extends LinearLayout {
     public ImageView imageView;
     public ColorDrawable colorDrawable = generateColorDrawable();
 
+    private ImageView mSelectedImageView;
+
     public ImageGridItem(Context context) {
         super(context);
-
         CardView cardView = new CardView(context);
         LinearLayout.LayoutParams params = new LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -44,6 +46,32 @@ public class ImageGridItem extends LinearLayout {
         ));
         imageView.setScaleType(FodexImageContract.PREFERRED_SCALE_TYPE);
         cardView.addView(imageView);
+
+        mSelectedImageView = new ImageView(context);
+        mSelectedImageView.setBackgroundColor(Color.BLACK);
+        mSelectedImageView.setScaleType(ImageView.ScaleType.CENTER);
+        mSelectedImageView.setVisibility(INVISIBLE);
+        mSelectedImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_selected));
+        mSelectedImageView.setAlpha(0.8f);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        );
+        mSelectedImageView.setLayoutParams(lp);
+        cardView.addView(mSelectedImageView);
+    }
+
+    @Override
+    public void setSelected(boolean isSelected) {
+        if (isSelected != isSelected()) {
+            super.setSelected(isSelected);
+            if (isSelected) {
+                mSelectedImageView.setVisibility(VISIBLE);
+
+            } else {
+                mSelectedImageView.setVisibility(INVISIBLE);
+            }
+        }
     }
 
     private ColorDrawable generateColorDrawable() {
