@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId "com.dyhpoon.fodex"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
