@@ -1,3 +1,6 @@
 [submodule "libraries/FloatingActionButton"]
 	path = libraries/FloatingActionButton
 	url = https://github.com/dyhpoon/FloatingActionButton.git
+[submodule "libraries/CircularFloatingActionMenu"]
+	path = libraries/CircularFloatingActionMenu
+	url = https://github.com/dyhpoon/CircularFloatingActionMenu
