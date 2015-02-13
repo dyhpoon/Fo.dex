@@ -42,7 +42,6 @@ public class FullscreenActivity extends Activity {
 
     private static final int ANIM_DURATION = 250;
     private static final String PREFIX = FullscreenActivity.class.getName();
-    private static final TimeInterpolator mInterpolator = new OvershootInterpolator(1);
 
     public static final String RESOURCE_INDEX   = PREFIX + ".RESOURCE_INDEX";
     public static final String RESOURCE_URL     = PREFIX + ".RESOURCES_URL";
@@ -201,7 +200,7 @@ public class FullscreenActivity extends Activity {
                 .scaleY(1)
                 .translationX(0)
                 .translationY(0)
-                .setInterpolator(mInterpolator);
+                .setInterpolator(new OvershootInterpolator(1));
 
         // Fade in the black background
         ObjectAnimator bgAnimation = ObjectAnimator.ofInt(mBackground, "alpha", 0, 255);
