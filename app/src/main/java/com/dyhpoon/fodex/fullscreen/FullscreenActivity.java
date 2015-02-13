@@ -31,8 +31,10 @@ import com.dyhpoon.fodex.data.FodexImageContract;
 import com.dyhpoon.fodex.util.OnFinishListener;
 import com.dyhpoon.fodex.util.SimpleAnimatorListener;
 import com.dyhpoon.fodex.view.PagerContainer;
+import com.dyhpoon.fodex.view.ShareActionMenu;
 import com.dyhpoon.fodex.view.TouchImageView;
 import com.felipecsl.asymmetricgridview.library.widget.GridItemViewInfo;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 
 import java.util.List;
 
@@ -116,6 +118,7 @@ public class FullscreenActivity extends Activity {
                 }
             }
         });
+        new ShareActionMenu(this, FloatingActionButton.POSITION_CENTER);
     }
 
     @Override
