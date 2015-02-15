@@ -50,7 +50,6 @@ public class ImageGridItem extends LinearLayout {
         mSelectedImageView = new ImageView(context);
         mSelectedImageView.setBackgroundColor(Color.BLACK);
         mSelectedImageView.setScaleType(ImageView.ScaleType.CENTER);
-        mSelectedImageView.setVisibility(INVISIBLE);
         mSelectedImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_selected));
         mSelectedImageView.setAlpha(0.8f);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -58,6 +57,8 @@ public class ImageGridItem extends LinearLayout {
                 ViewGroup.LayoutParams.MATCH_PARENT
         );
         mSelectedImageView.setLayoutParams(lp);
+        mSelectedImageView.setLayerType(LAYER_TYPE_HARDWARE, null);
+        mSelectedImageView.setVisibility(INVISIBLE);
         cardView.addView(mSelectedImageView);
     }
 

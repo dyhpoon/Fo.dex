@@ -83,10 +83,12 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
         } else {
             photoView = mRecycledViews.pop();
         }
+        photoView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         return photoView;
     }
 
     private void cleanView(TouchImageView v) {
+        v.setLayerType(View.LAYER_TYPE_NONE, null);
         v.setImageDrawable(null);
         v.resetZoom();
     }
