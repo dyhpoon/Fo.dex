@@ -10,7 +10,7 @@ import android.provider.MediaStore;
 /**
  * Created by darrenpoon on 28/1/15.
  */
-public class FodexCursor {
+public class MediaCursor {
 
     public static Cursor allPhotosCursor(Context context) {
         ContentResolver resolver = context.getContentResolver();

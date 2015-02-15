@@ -2,7 +2,6 @@ package com.dyhpoon.fodex.fullscreen;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.animation.TimeInterpolator;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentUris;
@@ -26,7 +25,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.dyhpoon.fodex.R;
-import com.dyhpoon.fodex.data.FodexCursor;
+import com.dyhpoon.fodex.data.MediaCursor;
 import com.dyhpoon.fodex.data.FodexImageContract;
 import com.dyhpoon.fodex.util.OnFinishListener;
 import com.dyhpoon.fodex.util.SimpleAnimatorListener;
@@ -71,7 +70,7 @@ public class FullscreenActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen);
 
-        mCursor = FodexCursor.allPhotosCursor(FullscreenActivity.this);
+        mCursor = MediaCursor.allPhotosCursor(FullscreenActivity.this);
 
         Bundle bundle = getIntent().getExtras();
         mImageIndex         = bundle.getInt(RESOURCE_INDEX, 0);

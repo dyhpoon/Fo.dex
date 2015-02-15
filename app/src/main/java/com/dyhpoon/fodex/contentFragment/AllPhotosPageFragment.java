@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-import com.dyhpoon.fodex.data.FodexCursor;
+import com.dyhpoon.fodex.data.MediaCursor;
 import com.dyhpoon.fodex.fodexView.FodexBaseFragment;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class AllPhotosPageFragment extends FodexBaseFragment<AllPhotosPageFragme
 
     @Override
     protected List<PhotoMedia> itemsForAdapters() {
-        Cursor cursor = FodexCursor.allPhotosCursor(getActivity());
+        Cursor cursor = MediaCursor.allPhotosCursor(getActivity());
 
         List<PhotoMedia> items = new ArrayList<PhotoMedia>();
         if (cursor.moveToFirst()) {
