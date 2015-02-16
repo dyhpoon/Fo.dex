@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -14,19 +15,16 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.util.DisplayMetrics;
 import android.view.ViewTreeObserver;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.dyhpoon.fodex.R;
-import com.dyhpoon.fodex.data.MediaCursor;
 import com.dyhpoon.fodex.data.FodexImageContract;
+import com.dyhpoon.fodex.data.MediaCursor;
+import com.dyhpoon.fodex.util.MediaImage;
 import com.dyhpoon.fodex.util.OnFinishListener;
 import com.dyhpoon.fodex.util.SimpleAnimatorListener;
 import com.dyhpoon.fodex.view.PagerContainer;
@@ -85,37 +83,33 @@ public class FullscreenActivity extends Activity {
 
         setupViewSwitcher();
         setupFullscreenPager(mCursor, mImageIndex);
-        setupFakeView(url, new OnFinishListener() {
-            @Override
-            public void didFinish() {
-                if (savedInstanceState == null) {
-                    ViewTreeObserver observer = mPager.getViewTreeObserver();
-                    observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        setupFakeView(url);
+        if (savedInstanceState == null) {
+            ViewTreeObserver observer = mPager.getViewTreeObserver();
+            observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    mFakeImageView.getViewTreeObserver().removeOnPreDrawListener(this);
+
+                    int screenLocation[] = new int[2];
+                    mFakeImageView.getLocationOnScreen(screenLocation);
+                    mLeftDelta = left - screenLocation[0];
+                    mTopDelta = top - screenLocation[1];
+
+                    mWidthScale = (float) width / mFakeImageView.getWidth();
+                    mHeightScale = (float) height / mFakeImageView.getHeight();
+
+                    runEnterAnimation(new OnFinishListener() {
                         @Override
-                        public boolean onPreDraw() {
-                            mFakeImageView.getViewTreeObserver().removeOnPreDrawListener(this);
-
-                            int screenLocation[] = new int[2];
-                            mFakeImageView.getLocationOnScreen(screenLocation);
-                            mLeftDelta = left - screenLocation[0];
-                            mTopDelta = top - screenLocation[1];
-
-                            mWidthScale = (float) width / mFakeImageView.getWidth();
-                            mHeightScale = (float) height / mFakeImageView.getHeight();
-
-                            runEnterAnimation(new OnFinishListener() {
-                                @Override
-                                public void didFinish() {
-                                    mSwitcher.showNext();
-                                }
-                            });
-
-                            return true;
+                        public void didFinish() {
+                            mSwitcher.showNext();
                         }
                     });
+
+                    return true;
                 }
-            }
-        });
+            });
+        }
         new ShareActionMenu(this, FloatingActionButton.POSITION_CENTER);
     }
 
@@ -135,20 +129,15 @@ public class FullscreenActivity extends Activity {
         }
     }
 
-    private void setupFakeView(String imageUrl, final OnFinishListener listener) {
+    private void setupFakeView(String imageUrl) {
         mFakeImageView = (ImageView) findViewById(R.id.fake_image_view);
         mFakeImageView.setMinimumHeight(FodexImageContract.preferredMinimumHeight(FullscreenActivity.this));
 
-        Glide.with(FullscreenActivity.this)
-                .loadFromMediaStore(Uri.parse(imageUrl))
-                .priority(Priority.IMMEDIATE)
-                .into(new SimpleTarget<GlideDrawable>() {
-                    @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        mFakeImageView.setImageDrawable(resource);
-                        if (listener != null) listener.didFinish();
-                    }
-                });
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = metrics.widthPixels;
+        int height = metrics.heightPixels;
+        Bitmap bm = MediaImage.getDecodedBitmap(FullscreenActivity.this, Uri.parse(imageUrl), width, height);
+        mFakeImageView.setImageBitmap(bm);
     }
 
     private void setupFullscreenPager(@NonNull final Cursor cursor, int position) {

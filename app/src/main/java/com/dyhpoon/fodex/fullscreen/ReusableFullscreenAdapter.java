@@ -1,9 +1,7 @@
 package com.dyhpoon.fodex.fullscreen;
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
@@ -13,9 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.dyhpoon.fodex.data.FodexImageContract;
+import com.dyhpoon.fodex.util.MediaImage;
 import com.dyhpoon.fodex.view.TouchImageView;
 
-import java.io.FileNotFoundException;
 import java.util.Stack;
 
 
@@ -52,54 +50,10 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         final ImageView photoView = (ImageView) createOrRecycleView(mContext);
-        Bitmap bm = decodeSampledBitmapFromResource(imageUriAtPosition(position), mWidth, mHeight);
+        Bitmap bm = MediaImage.getDecodedBitmap(mContext, imageUriAtPosition(position), mWidth, mHeight);
         photoView.setImageBitmap(bm);
         container.addView(photoView, 0);
         return photoView;
-    }
-
-    private Bitmap decodeSampledBitmapFromResource(Uri uri, int reqWidth, int reqHeight) {
-        try {
-            // First decode with inJustDecodeBounds=true to check dimensions
-            final BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            AssetFileDescriptor fd =
-                    mContext.getContentResolver().openAssetFileDescriptor(uri, "r");
-            BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor(), null, options);
-
-            // Calculate inSampleSize
-            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-            // Decode bitmap with inSampleSize set
-            options.inJustDecodeBounds = false;
-            return BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor(), null, options);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
     }
 
     @Override
