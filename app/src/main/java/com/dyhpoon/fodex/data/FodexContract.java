@@ -60,6 +60,7 @@ public class FodexContract {
         public static final String TABLE_NAME = "image";
 
         // Columns
+        public static final String COLUMN_IMAGE_ID = "photo_id";
         public static final String COLUMN_IMAGE_URI = "uri";
         public static final String COLUMN_IMAGE_HASH = "hash";
         public static final String COLUMN_IMAGE_DATE = "date";

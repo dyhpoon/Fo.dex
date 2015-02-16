@@ -181,6 +181,7 @@ having count(tag.name) = 2
 
                 builder.setProjectionMap(new HashMap<String, String>(){{
                     put(ImageEntry.TABLE_NAME + "." + ImageEntry._ID, ImageEntry.TABLE_NAME + "." + ImageEntry._ID);
+                    put(ImageEntry.COLUMN_IMAGE_ID, ImageEntry.COLUMN_IMAGE_ID);
                     put(ImageEntry.COLUMN_IMAGE_URI, ImageEntry.COLUMN_IMAGE_URI);
                     put(ImageEntry.COLUMN_IMAGE_HASH, ImageEntry.COLUMN_IMAGE_HASH);
                     put(ImageEntry.COLUMN_IMAGE_DATE, ImageEntry.COLUMN_IMAGE_DATE);

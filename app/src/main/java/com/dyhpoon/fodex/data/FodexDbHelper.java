@@ -26,6 +26,7 @@ public class FodexDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         final String SQL_CREATE_IMAGE_TABLE = "CREATE TABLE " + ImageEntry.TABLE_NAME + " (" +
                 ImageEntry._ID + " INTEGER PRIMARY KEY," +
+                ImageEntry.COLUMN_IMAGE_ID + " INTEGER UNIQUE NOT NULL, " +
                 ImageEntry.COLUMN_IMAGE_URI + " TEXT UNIQUE NOT NULL, " +
                 ImageEntry.COLUMN_IMAGE_HASH + " TEXT NOT NULL, " +
                 ImageEntry.COLUMN_IMAGE_DATE + " TEXT NOT NULL, " +
