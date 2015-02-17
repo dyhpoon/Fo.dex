@@ -33,20 +33,6 @@ public class FodexContract {
     public static final String PATH_TAG = "tag";
     public static final String PATH_IMAGE_TAG = "image_tag";
 
-    // Date Format
-    public static final String DATE_FORMAT = "yyyMMdd";
-    public static String getDbDateString(Date date) {
-        return new SimpleDateFormat(DATE_FORMAT).format(date);
-    }
-    public static Date getDateFromDb(String dateText) {
-        try {
-            return new SimpleDateFormat(DATE_FORMAT).parse(dateText);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     /* Inner class defines the table contents of image table */
     public static final class ImageEntry implements BaseColumns {
 
@@ -61,46 +47,13 @@ public class FodexContract {
 
         // Columns
         public static final String COLUMN_IMAGE_ID = "photo_id";
-        public static final String COLUMN_IMAGE_URI = "uri";
-        public static final String COLUMN_IMAGE_HASH = "hash";
-        public static final String COLUMN_IMAGE_DATE = "date";
+        public static final String COLUMN_IMAGE_DATA = "data";
+        public static final String COLUMN_IMAGE_DATE_TAKEN = "date_taken";
 
         // Building Uris
         // content://com.dyhpoon.fodex.provider/image/1
         public static Uri buildImageUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
-        }
-
-        // content://com.dyhpoon.fodex.provider/image/hash/gh390hg223g
-        public static Uri buildHash(String hash) {
-            return CONTENT_URI.buildUpon()
-                    .appendPath(COLUMN_IMAGE_HASH)
-                    .appendPath(hash)
-                    .build();
-        }
-
-        // content://com.dyhpoon.fodex.provider/image/hash/gh390hg223g/date/20141219
-        public static Uri buildHashWithDate(String hash, String date) {
-            return CONTENT_URI.buildUpon()
-                    .appendPath(COLUMN_IMAGE_HASH)
-                    .appendPath(hash)
-                    .appendPath(COLUMN_IMAGE_DATE)
-                    .appendPath(date)
-                    .build();
-        }
-
-        // content://com.dyhpoon.fodex.provider/image/hash/gh390hg223g => gh390hg223g
-        public static String getHashFromUri(Uri uri) {
-            if (!uri.getPathSegments().get(0).equals(TABLE_NAME) || !uri.getPathSegments().get(1).equals(COLUMN_IMAGE_HASH))
-                throw new IllegalArgumentException(ERR_INVALID_URI + uri);
-            return uri.getPathSegments().get(2);
-        }
-
-        // content://com.dyhpoon.fodex.provider/image/hash/gh390hg223g/date/20141219 => 20141219
-        public static String getDateFromUri(Uri uri) {
-            if (!uri.getPathSegments().get(0).equals(TABLE_NAME) || !uri.getPathSegments().get(1).equals(COLUMN_IMAGE_HASH) || !uri.getPathSegments().get(3).equals(COLUMN_IMAGE_DATE))
-                throw new IllegalArgumentException(ERR_INVALID_URI + uri);
-            return uri.getPathSegments().get(4);
         }
 
     }

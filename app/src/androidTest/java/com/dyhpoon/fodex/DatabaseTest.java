@@ -52,9 +52,8 @@ public class DatabaseTest extends AndroidTestCase {
     static ContentValues createImageValues() {
         ContentValues imageValues = new ContentValues();
         imageValues.put(ImageEntry.COLUMN_IMAGE_ID, "93523");
-        imageValues.put(ImageEntry.COLUMN_IMAGE_URI, "/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20141112-WA0000.jpg");
-        imageValues.put(ImageEntry.COLUMN_IMAGE_HASH, "gh0hg30912hg091gh2q9g2390gj203290ghv");
-        imageValues.put(ImageEntry.COLUMN_IMAGE_DATE, "20141219");
+        imageValues.put(ImageEntry.COLUMN_IMAGE_DATA, "/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20141115-WA0010.jpg");
+        imageValues.put(ImageEntry.COLUMN_IMAGE_DATE_TAKEN, "20141219");
         return imageValues;
     }
 

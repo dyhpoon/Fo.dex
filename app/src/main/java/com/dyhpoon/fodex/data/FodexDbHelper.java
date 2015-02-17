@@ -27,10 +27,9 @@ public class FodexDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_IMAGE_TABLE = "CREATE TABLE " + ImageEntry.TABLE_NAME + " (" +
                 ImageEntry._ID + " INTEGER PRIMARY KEY," +
                 ImageEntry.COLUMN_IMAGE_ID + " INTEGER UNIQUE NOT NULL, " +
-                ImageEntry.COLUMN_IMAGE_URI + " TEXT UNIQUE NOT NULL, " +
-                ImageEntry.COLUMN_IMAGE_HASH + " TEXT NOT NULL, " +
-                ImageEntry.COLUMN_IMAGE_DATE + " TEXT NOT NULL, " +
-                "UNIQUE (" + ImageEntry.COLUMN_IMAGE_URI + ") ON CONFLICT IGNORE" +
+                ImageEntry.COLUMN_IMAGE_DATA + " TEXT UNIQUE NOT NULL, " +
+                ImageEntry.COLUMN_IMAGE_DATE_TAKEN + " INTEGER NOT NULL, " +
+                "UNIQUE (" + ImageEntry.COLUMN_IMAGE_DATA + ") ON CONFLICT IGNORE" +
                 " );";
 
         final String SQL_CREATE_TAG_TABLE = "CREATE TABLE " + TagEntry.TABLE_NAME + " (" +

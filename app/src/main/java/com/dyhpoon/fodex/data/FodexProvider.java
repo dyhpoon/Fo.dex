@@ -27,8 +27,6 @@ public class FodexProvider extends ContentProvider {
 
     private static final int IMAGE = 100;
     private static final int IMAGE_ID = 101;
-    private static final int IMAGE_HASH = 102;
-    private static final int IMAGE_HASH_WITH_DATE = 103;
 
     private static final int TAG = 200;
     private static final int TAG_ID = 201;
@@ -50,10 +48,6 @@ public class FodexProvider extends ContentProvider {
         matcher.addURI(authority, imagePath, IMAGE);
         // content://com.dyhpoon.fodex.provider/image/1
         matcher.addURI(authority, imagePath + "/#", IMAGE_ID);
-        // content://com.dyhpoon.fodex.provider/image/hash/gh390hg223g
-        matcher.addURI(authority, imagePath + "/" + ImageEntry.COLUMN_IMAGE_HASH + "/*", IMAGE_HASH);
-        // content://com.dyhpoon.fodex.provider/image/hash/gh390hg223g/date/20141219
-        matcher.addURI(authority, imagePath + "/" + ImageEntry.COLUMN_IMAGE_HASH + "/*/" + ImageEntry.COLUMN_IMAGE_DATE + "/*", IMAGE_HASH_WITH_DATE);
 
         final String tagPath = FodexContract.PATH_TAG;
         // content://com.dyhpoon.fodex.provider/tag
@@ -99,27 +93,6 @@ public class FodexProvider extends ContentProvider {
                         ImageEntry.TABLE_NAME,
                         projection,
                         ImageEntry._ID + " = '" + ContentUris.parseId(uri) + "'",
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder);
-                break;
-            case IMAGE_HASH:
-                cursor = mOpenHelper.getReadableDatabase().query(
-                        ImageEntry.TABLE_NAME,
-                        projection,
-                        ImageEntry.COLUMN_IMAGE_HASH + " = '" + ImageEntry.getHashFromUri(uri) + "'",
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder);
-                break;
-            case IMAGE_HASH_WITH_DATE:
-                cursor = mOpenHelper.getReadableDatabase().query(
-                        ImageEntry.TABLE_NAME,
-                        projection,
-                        ImageEntry.COLUMN_IMAGE_HASH + " = '" + ImageEntry.getHashFromUri(uri) + "'" +
-                        "AND " + ImageEntry.COLUMN_IMAGE_DATE+ " = '" + ImageEntry.getDateFromUri(uri) + "'",
                         selectionArgs,
                         null,
                         null,
@@ -182,9 +155,8 @@ having count(tag.name) = 2
                 builder.setProjectionMap(new HashMap<String, String>(){{
                     put(ImageEntry.TABLE_NAME + "." + ImageEntry._ID, ImageEntry.TABLE_NAME + "." + ImageEntry._ID);
                     put(ImageEntry.COLUMN_IMAGE_ID, ImageEntry.COLUMN_IMAGE_ID);
-                    put(ImageEntry.COLUMN_IMAGE_URI, ImageEntry.COLUMN_IMAGE_URI);
-                    put(ImageEntry.COLUMN_IMAGE_HASH, ImageEntry.COLUMN_IMAGE_HASH);
-                    put(ImageEntry.COLUMN_IMAGE_DATE, ImageEntry.COLUMN_IMAGE_DATE);
+                    put(ImageEntry.COLUMN_IMAGE_DATA, ImageEntry.COLUMN_IMAGE_DATA);
+                    put(ImageEntry.COLUMN_IMAGE_DATE_TAKEN, ImageEntry.COLUMN_IMAGE_DATE_TAKEN);
                 }});
 
                 List<String> tagNames = ImageTagEntry.getTagNames(uri);
@@ -243,10 +215,6 @@ having count(tag.name) = 2
             case IMAGE:
                 return ImageEntry.CONTENT_DIR_TYPE;
             case IMAGE_ID:
-                return ImageEntry.CONTENT_ITEM_TYPE;
-            case IMAGE_HASH:
-                return ImageEntry.CONTENT_ITEM_TYPE;
-            case IMAGE_HASH_WITH_DATE:
                 return ImageEntry.CONTENT_ITEM_TYPE;
             case TAG:
                 return TagEntry.CONTENT_DIR_TYPE;
