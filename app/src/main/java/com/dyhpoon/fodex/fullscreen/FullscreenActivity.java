@@ -5,7 +5,6 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ContentUris;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -13,7 +12,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.util.DisplayMetrics;
 import android.view.ViewTreeObserver;
@@ -23,7 +21,7 @@ import android.widget.ViewSwitcher;
 
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexImageContract;
-import com.dyhpoon.fodex.data.MediaCursor;
+import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.util.MediaImage;
 import com.dyhpoon.fodex.util.OnFinishListener;
 import com.dyhpoon.fodex.util.SimpleAnimatorListener;
@@ -47,6 +45,7 @@ public class FullscreenActivity extends Activity {
     public static final String WIDTH            = PREFIX + ".WIDTH";
     public static final String HEIGHT           = PREFIX + ".HEIGHT";
     public static final String VIEWS_INFO       = PREFIX + ".VIEWS_INFO";
+    public static final String ITEMS_INFO       = PREFIX + ".ITEMS_INFO";
 
     private int mImageIndex;
     private int mLeftDelta;
@@ -54,21 +53,19 @@ public class FullscreenActivity extends Activity {
     private float mWidthScale;
     private float mHeightScale;
     private List<GridItemViewInfo> viewInfos;
+    private List<FodexItem> fodexItems;
 
     private ViewSwitcher mSwitcher;
     private ImageView mFakeImageView;
     private PagerContainer mContainer;
     private FullscreenViewPager mPager;
 
-    private Cursor mCursor;
     final private ColorDrawable mBackground = new ColorDrawable(Color.BLACK);
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen);
-
-        mCursor = MediaCursor.allPhotosCursor(FullscreenActivity.this);
 
         Bundle bundle = getIntent().getExtras();
         mImageIndex         = bundle.getInt(RESOURCE_INDEX, 0);
@@ -78,11 +75,12 @@ public class FullscreenActivity extends Activity {
         final int width     = bundle.getInt(WIDTH);
         final int height    = bundle.getInt(HEIGHT);
         viewInfos           = getIntent().getParcelableArrayListExtra(VIEWS_INFO);
+        fodexItems          = getIntent().getParcelableArrayListExtra(ITEMS_INFO);
 
         mBackground.setAlpha(0);    // prevent flashing
 
         setupViewSwitcher();
-        setupFullscreenPager(mCursor, mImageIndex);
+        setupFullscreenPager(fodexItems, mImageIndex);
         setupFakeView(url);
         if (savedInstanceState == null) {
             ViewTreeObserver observer = mPager.getViewTreeObserver();
@@ -113,12 +111,6 @@ public class FullscreenActivity extends Activity {
         new ShareActionMenu(this, FloatingActionButton.POSITION_CENTER);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mCursor.close();
-    }
-
     @TargetApi(16)
     private void setupViewSwitcher() {
         mSwitcher = (ViewSwitcher) findViewById(R.id.switcher);
@@ -140,7 +132,7 @@ public class FullscreenActivity extends Activity {
         mFakeImageView.setImageBitmap(bm);
     }
 
-    private void setupFullscreenPager(@NonNull final Cursor cursor, int position) {
+    private void setupFullscreenPager(final List<FodexItem> items, int position) {
         mContainer = (PagerContainer) findViewById(R.id.pager_container);
         mPager = (FullscreenViewPager) mContainer.getViewPager();
         mPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.fullscreen_pager_padding));
@@ -155,17 +147,14 @@ public class FullscreenActivity extends Activity {
         mPager.setAdapter(new ReusableFullscreenAdapter(this) {
             @Override
             public int getCount() {
-                return cursor.getCount();
+                return items.size();
             }
 
             @Override
             public Uri imageUriAtPosition(int position) {
-                cursor.moveToPosition(position);
-                final int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
-                String id = cursor.getString(idColumn);
                 return ContentUris.withAppendedId(
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        Integer.parseInt(id));
+                        items.get(position).imageId);
             }
         });
         mPager.setCurrentItem(position);

@@ -20,6 +20,7 @@ import com.bumptech.glide.Priority;
 import com.dyhpoon.fab.FloatingActionsMenu;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexImageContract;
+import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.fullscreen.FullscreenActivity;
 import com.dyhpoon.fodex.view.ImageGridItem;
 import com.felipecsl.asymmetricgridview.library.Utils;
@@ -35,7 +36,7 @@ import java.util.Set;
 /**
  * Created by darrenpoon on 16/1/15.
  */
-public abstract class FodexBaseFragment <T> extends Fragment {
+public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
 
     public State state = State.NORMAL;
 
@@ -51,6 +52,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
     private FodexAdapter mAdapter;
     private DrawableRequestBuilder<Uri> mPreloadRequest;
     private Set<FodexLayoutSpecItem> mSelectedItems = new HashSet<>();
+    private List<T> mFodexItems;
 
     /**
      * Triggers when user clicks on the floating action button.
@@ -88,15 +90,14 @@ public abstract class FodexBaseFragment <T> extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        presentContent();
     }
 
-    private void presentContent() {
-        List<T>userObjects = itemsForAdapters();
-        if (userObjects == null) throw new AssertionError("expect itemsForAdapters to be not null.");
+    public void reload() {
+        mFodexItems = itemsForAdapters();
+        if (mFodexItems == null) throw new AssertionError("expect itemsForAdapters to be not null.");
 
         List<FodexLayoutSpecItem> layoutItems = new ArrayList<FodexLayoutSpecItem>();
-        for (int i = 0; i < userObjects.size(); i++) {
+        for (int i = 0; i < mFodexItems.size(); i++) {
             int index = i % 10;
             int columnSpan;
             switch (index) {
@@ -108,7 +109,7 @@ public abstract class FodexBaseFragment <T> extends Fragment {
                     columnSpan = 1;
                     break;
             }
-            FodexLayoutSpecItem item = new FodexLayoutSpecItem(columnSpan, 1, userObjects.get(i));
+            FodexLayoutSpecItem item = new FodexLayoutSpecItem(columnSpan, 1, mFodexItems.get(i));
             item.uri = imageUriForItems((T) item.object);
             layoutItems.add(i, item);
         }
@@ -196,6 +197,8 @@ public abstract class FodexBaseFragment <T> extends Fragment {
 
                     .putParcelableArrayListExtra(FullscreenActivity.VIEWS_INFO,
                             (ArrayList<? extends android.os.Parcelable>) infos)
+                    .putParcelableArrayListExtra(FullscreenActivity.ITEMS_INFO,
+                            (ArrayList<? extends android.os.Parcelable>) mFodexItems)
 
                     .addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 

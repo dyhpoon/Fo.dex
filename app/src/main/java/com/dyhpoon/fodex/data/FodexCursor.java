@@ -23,14 +23,27 @@ import bolts.Task;
  */
 public class FodexCursor {
 
-    public static Cursor getAllPhotos(Context context) {
-        return context.getContentResolver().query(
-                FodexContract.ImageEntry.CONTENT_URI,
+    public static List<FodexItem> getAllPhotoItems(Context context) {
+        Cursor cursor = context.getContentResolver().query(
+                ImageEntry.CONTENT_URI,
                 null,
                 null,
                 null,
-                null
-        );
+                ImageEntry.COLUMN_IMAGE_DATE_TAKEN + " DESC");
+
+        List<FodexItem> items = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                FodexItem item = new FodexItem(
+                        cursor.getInt(cursor.getColumnIndex(ImageEntry.COLUMN_IMAGE_ID)),
+                        cursor.getLong(cursor.getColumnIndex(ImageEntry.COLUMN_IMAGE_DATE_TAKEN)),
+                        cursor.getString(cursor.getColumnIndex(ImageEntry.COLUMN_IMAGE_DATA))
+                );
+                items.add(item);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return items;
     }
 
     public static void syncAllPhotos(final Context context, final OnCompleteListener listener) {
@@ -45,7 +58,7 @@ public class FodexCursor {
                         null,
                         MediaStore.Images.Media._ID + " ASC");
                 Cursor fodexCursor = resolver.query(
-                        FodexContract.ImageEntry.CONTENT_URI,
+                        ImageEntry.CONTENT_URI,
                         null,
                         null,
                         null,
