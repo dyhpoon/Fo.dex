@@ -74,7 +74,7 @@ public class FodexCursor {
                             ContentValues values = new ContentValues();
                             values.put(ImageEntry.COLUMN_IMAGE_ID, fodexCursor.getInt(fodexCursor.getColumnIndex(ImageEntry.COLUMN_IMAGE_ID)));
                             values.put(ImageEntry.COLUMN_IMAGE_DATA, fodexCursor.getString(fodexCursor.getColumnIndex(ImageEntry.COLUMN_IMAGE_DATA)));
-                            values.put(ImageEntry.COLUMN_IMAGE_DATE_TAKEN, fodexCursor.getLong(fodexCursor.getColumnIndex(ImageEntry.COLUMN_IMAGE_DATA)));
+                            values.put(ImageEntry.COLUMN_IMAGE_DATE_TAKEN, fodexCursor.getLong(fodexCursor.getColumnIndex(ImageEntry.COLUMN_IMAGE_DATE_TAKEN)));
                             removeContentValues.add(values);
                             break;
                         }
