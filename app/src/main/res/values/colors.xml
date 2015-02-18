@@ -13,4 +13,9 @@
 
     <color name="colorDivider">#b6b6b6</color>
     <color name="colorTextIcons">#ffffff</color>
+
+    <color name="red">#FFC93437</color>
+    <color name="blue">#FF375BF1</color>
+    <color name="yellow">#FFF7D23E</color>
+    <color name="green">#FF34A350</color>
 </resources>

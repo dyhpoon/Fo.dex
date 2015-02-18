@@ -18,4 +18,8 @@
     <dimen name="fullscreen_action_menu_size">60dp</dimen>
     <dimen name="fullscreen_sab_button_size">84dp</dimen>
     <dimen name="fullscreen_sab_button_border_width">2dp</dimen>
+
+    <!-- PullToRefresh -->
+    <dimen name="pulltorefresh_top_padding">15dp</dimen>
+    <dimen name="pulltorefresh_bottom_padding">10dp</dimen>
 </resources>

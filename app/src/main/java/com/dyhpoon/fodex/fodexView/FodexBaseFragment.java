@@ -3,6 +3,7 @@ package com.dyhpoon.fodex.fodexView;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,6 +34,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import in.srain.cube.views.ptr.PtrClassicFrameLayout;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
+import in.srain.cube.views.ptr.header.MaterialHeader;
+
 /**
  * Created by darrenpoon on 16/1/15.
  */
@@ -44,6 +51,7 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
 
     private AsymmetricGridView mGridView;
     private FloatingActionsMenu mFloatingActionMenu;
+    private PtrClassicFrameLayout mPtrFrame;
 
     private static final int GRID_VIEW_HORIZONTAL_SPACING = 3;
     private static final int GRID_VIEW_COLUMNS_COUNT = 3;
@@ -79,9 +87,11 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
 
         mGridView = (AsymmetricGridView) view.findViewById(R.id.grid_view);
         mFloatingActionMenu = (FloatingActionsMenu) view.findViewById(R.id.floating_menu);
+        mPtrFrame = (PtrClassicFrameLayout) view.findViewById(R.id.rotate_header_list_view_frame);
 
         setupFloatingActionButton();
         setupAsymmetricGridView();
+        setupPullToRefresh();
         setupPreload();
 
         return view;
@@ -143,6 +153,45 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
         mGridView.setRequestedHorizontalSpacing(Utils.dpToPx(getActivity(), GRID_VIEW_HORIZONTAL_SPACING));
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(imageOnClickListener);
+    }
+
+    private void setupPullToRefresh() {
+        mPtrFrame.setLastUpdateTimeRelateObject(this);
+        mPtrFrame.setPtrHandler(new PtrHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                mPtrFrame.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPtrFrame.refreshComplete();
+                    }
+                }, 2000);
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+            }
+        });
+
+        final MaterialHeader header = new MaterialHeader(getActivity());
+        Resources res = getActivity().getResources();
+        int topPadding = res.getDimensionPixelSize(R.dimen.pulltorefresh_top_padding);
+        int bottomPadding = res.getDimensionPixelSize(R.dimen.pulltorefresh_bottom_padding);
+        int[] colors = getResources().getIntArray(R.array.google_colors);
+        header.setColorSchemeColors(colors);
+        header.setLayoutParams(new PtrFrameLayout.LayoutParams(-1, -2));
+        header.setPadding(0, topPadding, 0, bottomPadding);
+        header.setPtrFrameLayout(mPtrFrame);
+
+        mPtrFrame.setHeaderView(header);
+        mPtrFrame.addPtrUIHandler(header);
+        mPtrFrame.setResistance(1.7f);
+        mPtrFrame.setRatioOfHeaderHeightToRefresh(1.2f);
+        mPtrFrame.setDurationToClose(200);
+        mPtrFrame.setDurationToCloseHeader(1000);
+        mPtrFrame.setPullToRefresh(true);
+        mPtrFrame.setKeepHeaderWhenRefresh(true);
     }
 
     private void setupPreload() {
