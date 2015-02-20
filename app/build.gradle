@@ -13,6 +13,7 @@ apply plugin: 'aar-link-sources'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    maven { url 'https://github.com/tvbarthel/maven/raw/master/' }
 }
 
 
@@ -50,6 +51,7 @@ dependencies {
     aarLinkSources 'in.srain.cube:ultra-ptr:1.0.7:sources@jar'
     compile 'com.facebook.stetho:stetho:1.0.0'
     aarLinkSources 'com.facebook.stetho:stetho:1.0.0:sources@jar'
+    compile 'fr.tvbarthel.lib.blurdialogfragment:lib:1.0.0@aar'
     compile('com.crashlytics.sdk.android:crashlytics:2.2.1@aar') {
         transitive = true;
     }

@@ -37,11 +37,6 @@ public class AllPhotosPageFragment extends FodexBaseFragment<FodexItem> {
     }
 
     @Override
-    protected void onClickConfirmedButton(List<FodexItem> selectedItems) {
-        // TODO: implement
-    }
-
-    @Override
     protected Uri imageUriForItems(FodexItem item) {
         return ContentUris.withAppendedId(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,

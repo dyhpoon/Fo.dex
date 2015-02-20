@@ -1,10 +1,10 @@
 package com.dyhpoon.fodex;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -108,7 +108,7 @@ public class MainActivity extends ActionBarActivity
         try {
             NavigationDrawerInfo info = NavigationDrawerData.getPageItem(this, position);
             fragment = (Fragment) info.classType.newInstance();
-            FragmentManager fragmentManager = getFragmentManager();
+            FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.container, fragment)
                     .commit();

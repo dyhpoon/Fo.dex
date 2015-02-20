@@ -1,6 +1,5 @@
 package com.dyhpoon.fodex.fodexView;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -8,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +18,14 @@ import com.bumptech.glide.GenericRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.Priority;
+import com.dyhpoon.fab.FloatingActionButton;
 import com.dyhpoon.fab.FloatingActionsMenu;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexImageContract;
 import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.fullscreen.FullscreenActivity;
 import com.dyhpoon.fodex.view.ImageGridItem;
+import com.dyhpoon.fodex.view.InsertTagDialog;
 import com.felipecsl.asymmetricgridview.library.Utils;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridView;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter;
@@ -51,6 +53,7 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
 
     private AsymmetricGridView mGridView;
     private FloatingActionsMenu mFloatingActionMenu;
+    private FloatingActionButton mTagButton;
     private PtrClassicFrameLayout mPtrFrame;
 
     private static final int GRID_VIEW_HORIZONTAL_SPACING = 3;
@@ -61,11 +64,6 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
     private DrawableRequestBuilder<Uri> mPreloadRequest;
     private Set<FodexLayoutSpecItem> mSelectedItems = new HashSet<>();
     private List<T> mFodexItems;
-
-    /**
-     * Triggers when user clicks on the floating action button.
-     */
-    protected abstract void onClickConfirmedButton(List<T> selectedItems);
 
     /**
      * Image uri of the photo at #position to be displayed.
@@ -87,9 +85,10 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
 
         mGridView = (AsymmetricGridView) view.findViewById(R.id.grid_view);
         mFloatingActionMenu = (FloatingActionsMenu) view.findViewById(R.id.floating_menu);
+        mTagButton = (FloatingActionButton) view.findViewById(R.id.floating_tag_button);
         mPtrFrame = (PtrClassicFrameLayout) view.findViewById(R.id.rotate_header_list_view_frame);
 
-        setupFloatingActionButton();
+        setupFloatingButtonsAndMenu();
         setupAsymmetricGridView();
         setupPullToRefresh();
         setupPreload();
@@ -126,7 +125,7 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
         ((AsymmetricGridViewAdapter)mGridView.getAdapter()).setItems(layoutItems);
     }
 
-    private void setupFloatingActionButton() {
+    private void setupFloatingButtonsAndMenu() {
         mFloatingActionMenu.setOnMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
             @Override
             public void onMenuExpanded() {
@@ -142,6 +141,14 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
                 for (View view: visibleViews) {
                     view.setSelected(false);
                 }
+            }
+        });
+
+        mTagButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InsertTagDialog dialog = InsertTagDialog.newInstance();
+                dialog.show(getActivity().getSupportFragmentManager(), "insert_tag");
             }
         });
     }

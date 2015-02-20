@@ -46,7 +46,7 @@
         app:fab_menuButtonUnSelectedSrc="@drawable/ic_add">
 
         <com.dyhpoon.fab.FloatingActionButton
-            android:id="@+id/floation_add_button"
+            android:id="@+id/floating_tag_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_tag"
