@@ -14,6 +14,9 @@
     <color name="colorDivider">#b6b6b6</color>
     <color name="colorTextIcons">#ffffff</color>
 
+    <color name="buttonTextColor">#1e88e5</color>
+    <color name="backgroundDimWhite">#f1f1f1</color>
+
     <color name="red">#FFC93437</color>
     <color name="blue">#FF375BF1</color>
     <color name="yellow">#FFF7D23E</color>

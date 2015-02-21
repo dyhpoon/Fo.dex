@@ -1,16 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/backgroundDimWhite"
+    android:orientation="vertical"
+    android:theme="@style/DialogTheme">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="HELLO WORLD"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-</RelativeLayout>
+        android:background="@color/backgroundDimWhite"
+        android:paddingBottom="16dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingTop="24dp">
+
+        <com.dyhpoon.fodex.view.RobotoMediumTextView
+            android:id="@+id/text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:background="@color/backgroundDimWhite"
+            android:paddingLeft="3dp"
+            android:text="@string/dialog_insert_tag"
+            android:textColor="@android:color/black"
+            android:textSize="20dip"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_view"
+            android:layout_marginTop="8dp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="6dp"
+        android:background="@color/backgroundDimWhite"
+        android:gravity="right"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="6dp"
+            android:background="@android:color/transparent"
+            android:text="@string/button_cancel"
+            android:textColor="@color/buttonTextColor" />
+
+        <Button
+            android:id="@+id/button_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="6dp"
+            android:background="@android:color/transparent"
+            android:text="@string/button_add"
+            android:textColor="@color/buttonTextColor" />
+
+    </LinearLayout>
+
+</LinearLayout>

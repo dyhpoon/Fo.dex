@@ -26,7 +26,7 @@ public class InsertTagDialog extends SupportBlurDialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_insert_tag, null);
-        TextView label = ((TextView) view.findViewById(R.id.textView));
+        TextView label = ((TextView) view.findViewById(R.id.text_view));
         label.setMovementMethod(LinkMovementMethod.getInstance());
         Linkify.addLinks(label, Linkify.WEB_URLS);
         builder.setView(view);

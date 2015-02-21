@@ -14,4 +14,9 @@
     <string name="hashtags">Hashtags</string>
     <string name="title_activity_fullscreen">Fullscreen</string>
 
+    <string name="dialog_insert_tag">Insert Your Tag</string>
+
+    <string name="button_add">Add</string>
+    <string name="button_cancel">Cancel</string>
+
 </resources>
