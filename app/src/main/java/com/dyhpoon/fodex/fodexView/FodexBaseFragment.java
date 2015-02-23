@@ -1,6 +1,7 @@
 package com.dyhpoon.fodex.fodexView;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -148,6 +149,20 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
             @Override
             public void onClick(View v) {
                 InsertTagDialog dialog = InsertTagDialog.newInstance();
+                dialog.setOnClickListener(new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case DialogInterface.BUTTON_POSITIVE:
+                                // TODO: add tag
+                                dialog.dismiss();
+                                break;
+                            default:
+                                dialog.dismiss();
+                                break;
+                        }
+                    }
+                });
                 dialog.show(getActivity().getSupportFragmentManager(), "insert_tag");
             }
         });
