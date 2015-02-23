@@ -22,6 +22,7 @@ import com.bumptech.glide.Priority;
 import com.dyhpoon.fab.FloatingActionButton;
 import com.dyhpoon.fab.FloatingActionsMenu;
 import com.dyhpoon.fodex.R;
+import com.dyhpoon.fodex.data.FodexCursor;
 import com.dyhpoon.fodex.data.FodexImageContract;
 import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.fullscreen.FullscreenActivity;
@@ -33,9 +34,7 @@ import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter
 import com.felipecsl.asymmetricgridview.library.widget.GridItemViewInfo;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
@@ -63,15 +62,8 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
 
     private FodexAdapter mAdapter;
     private DrawableRequestBuilder<Uri> mPreloadRequest;
-    private Set<FodexLayoutSpecItem> mSelectedItems = new HashSet<>();
+    private List<FodexLayoutSpecItem> mSelectedItems = new ArrayList<>();
     private List<T> mFodexItems;
-
-    /**
-     * Image uri of the photo at #position to be displayed.
-     * @param item
-     * @return
-     */
-    protected abstract Uri imageUriForItems(T item);
 
     /**
      * List of media photo items.
@@ -120,7 +112,6 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
                     break;
             }
             FodexLayoutSpecItem item = new FodexLayoutSpecItem(columnSpan, 1, mFodexItems.get(i));
-            item.uri = imageUriForItems((T) item.object);
             layoutItems.add(i, item);
         }
         ((AsymmetricGridViewAdapter)mGridView.getAdapter()).setItems(layoutItems);
@@ -149,12 +140,20 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
             @Override
             public void onClick(View v) {
                 InsertTagDialog dialog = InsertTagDialog.newInstance();
-                dialog.setOnClickListener(new DialogInterface.OnClickListener() {
+                dialog.setOnClickListener(new InsertTagDialog.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(DialogInterface dialog, String tag, int which) {
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
-                                // TODO: add tag
+                                if (tag.length() > 0) {
+                                    long[] imageIds = new long[mSelectedItems.size()];
+                                    for (int i = 0; i < mSelectedItems.size(); i++) {
+                                        imageIds[i] = mSelectedItems.get(i).fodexItem.id;
+                                    }
+                                    FodexCursor.addTagsToPhoto(getActivity(), imageIds, tag);
+                                } else {
+                                    //TODO: show error
+                                }
                                 dialog.dismiss();
                                 break;
                             default:
@@ -260,7 +259,7 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
 
             fullscreenIntent
                     .putExtra(FullscreenActivity.RESOURCE_INDEX, position)
-                    .putExtra(FullscreenActivity.RESOURCE_URL, item.uri.toString())
+                    .putExtra(FullscreenActivity.RESOURCE_URL, item.fodexItem.uri.toString())
                     .putExtra(FullscreenActivity.TOP, screenLocation[1])
                     .putExtra(FullscreenActivity.LEFT, screenLocation[0])
                     .putExtra(FullscreenActivity.WIDTH, view.getWidth())
@@ -301,7 +300,7 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
             gridItem.setSelected(mSelectedItems.contains(item));
 
             mPreloadRequest
-                    .load(item.uri)
+                    .load(item.fodexItem.uri)
                     .priority(Priority.HIGH)
                     .fitCenter()
                     .placeholder(gridItem.colorDrawable)
@@ -317,7 +316,7 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
 
         @Override
         public GenericRequestBuilder getPreloadRequestBuilder(FodexLayoutSpecItem item) {
-            return mPreloadRequest.load(item.uri);
+            return mPreloadRequest.load(item.fodexItem.uri);
         }
     }
 

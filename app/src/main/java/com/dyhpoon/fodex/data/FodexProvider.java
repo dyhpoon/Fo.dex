@@ -275,59 +275,39 @@ having count(tag.name) = 2
         final SQLiteDatabase database = mOpenHelper.getWritableDatabase();
         switch (mUriMatcher.match(uri)) {
             case IMAGE: {
-                database.beginTransaction();
-                int returnCount = 0;
-                try {
-                    for (ContentValues value : values) {
-                        long _id = database.insert(ImageEntry.TABLE_NAME, null, value);
-                        if (_id != -1) {
-                            returnCount++;
-                        }
-                    }
-                    database.setTransactionSuccessful();
-                } finally {
-                    database.endTransaction();
-                }
-                getContext().getContentResolver().notifyChange(uri, null);
-                return returnCount;
+                return bulkInsertHelper(ImageEntry.TABLE_NAME, database, uri, values);
             }
             case TAG: {
-                database.beginTransaction();
-                int returnCount = 0;
-                try {
-                    for (ContentValues value : values) {
-                        long _id = database.insert(TagEntry.TABLE_NAME, null, value);
-                        if (_id != -1) {
-                            returnCount++;
-                        }
-                    }
-                    database.setTransactionSuccessful();
-                } finally {
-                    database.endTransaction();
-                }
-                getContext().getContentResolver().notifyChange(uri, null);
-                return returnCount;
+                return bulkInsertHelper(TagEntry.TABLE_NAME, database, uri, values);
             }
             case IMAGE_TAG: {
-                database.beginTransaction();
-                int returnCount = 0;
-                try {
-                    for (ContentValues value : values) {
-                        long _id = database.insert(ImageTagEntry.TABLE_NAME, null, value);
-                        if (_id != -1) {
-                            returnCount++;
-                        }
-                    }
-                    database.setTransactionSuccessful();
-                } finally {
-                    database.endTransaction();
-                }
-                getContext().getContentResolver().notifyChange(uri, null);
-                return returnCount;
+                return bulkInsertHelper(ImageTagEntry.TABLE_NAME, database, uri, values);
             }
             default:
                 return super.bulkInsert(uri, values);
         }
+    }
+
+    private int bulkInsertHelper(String table,
+                                 SQLiteDatabase database,
+                                 Uri uri,
+                                 ContentValues[] values) {
+        database.beginTransaction();
+        int returnCount = 0;
+        try {
+            for (ContentValues value : values) {
+
+                long _id = database.insert(table, null, value);
+                if (_id != -1) {
+                    returnCount++;
+                }
+            }
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return returnCount;
     }
 
     @Override

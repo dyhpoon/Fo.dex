@@ -1,9 +1,6 @@
 package com.dyhpoon.fodex.contentFragment;
 
-import android.content.ContentUris;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 
 import com.dyhpoon.fodex.data.FodexCursor;
 import com.dyhpoon.fodex.data.FodexItem;
@@ -34,13 +31,6 @@ public class RecentPhotosPageFragment extends FodexBaseFragment<FodexItem> {
                 // TODO: show error toast
             }
         });
-    }
-
-    @Override
-    protected Uri imageUriForItems(FodexItem item) {
-        return ContentUris.withAppendedId(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                item.imageId);
     }
 
     @Override

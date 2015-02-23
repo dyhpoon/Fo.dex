@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.dyhpoon.fodex.R;
 
@@ -16,14 +17,19 @@ import fr.tvbarthel.lib.blurdialogfragment.SupportBlurDialogFragment;
  */
 public class InsertTagDialog extends SupportBlurDialogFragment {
 
-    private DialogInterface.OnClickListener mListener;
+    private EditText mEditText;
+    private OnClickListener mListener;
+
+    public interface OnClickListener {
+        public void onClick(DialogInterface dialog, String tag, int which);
+    }
 
     public static InsertTagDialog newInstance() {
         InsertTagDialog dialog = new InsertTagDialog();
         return dialog;
     }
 
-    public void setOnClickListener(DialogInterface.OnClickListener listener) {
+    public void setOnClickListener(OnClickListener listener) {
         mListener = listener;
     }
 
@@ -33,13 +39,20 @@ public class InsertTagDialog extends SupportBlurDialogFragment {
         View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_insert_tag, null);
         builder.setView(view);
         final AlertDialog dialog = builder.create();
+
+        // setup editText
+        mEditText = (EditText) view.findViewById(R.id.edit_text);
+
+        // setup animation
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
+        // setup buttons' onClickListener
         Button cancelButton = (Button) view.findViewById(R.id.button_cancel);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mListener != null)
-                    mListener.onClick(dialog, DialogInterface.BUTTON_NEGATIVE);
+                    mListener.onClick(dialog, mEditText.getText().toString(), DialogInterface.BUTTON_NEGATIVE);
             }
         });
         Button addButton = (Button) view.findViewById(R.id.button_add);
@@ -47,7 +60,7 @@ public class InsertTagDialog extends SupportBlurDialogFragment {
             @Override
             public void onClick(View v) {
                 if (mListener != null)
-                    mListener.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
+                    mListener.onClick(dialog, mEditText.getText().toString(), DialogInterface.BUTTON_POSITIVE);
             }
         });
         return dialog;

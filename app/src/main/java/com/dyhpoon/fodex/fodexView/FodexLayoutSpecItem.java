@@ -1,9 +1,9 @@
 package com.dyhpoon.fodex.fodexView;
 
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.dyhpoon.fodex.data.FodexItem;
 import com.felipecsl.asymmetricgridview.library.model.AsymmetricItem;
 
 /**
@@ -11,16 +11,14 @@ import com.felipecsl.asymmetricgridview.library.model.AsymmetricItem;
  */
 public final class FodexLayoutSpecItem implements AsymmetricItem {
 
-    public Uri uri;
-
     public int columnSpan;
     public int rowSpan;
-    public Object object;
+    public FodexItem fodexItem;
 
-    public FodexLayoutSpecItem(final int columnSpan, final int rowSpan, final Object object) {
+    public FodexLayoutSpecItem(final int columnSpan, final int rowSpan, final FodexItem fodexItem) {
         this.columnSpan = columnSpan;
         this.rowSpan = rowSpan;
-        this.object = object;
+        this.fodexItem = fodexItem;
     }
 
     public FodexLayoutSpecItem(final Parcel in) {

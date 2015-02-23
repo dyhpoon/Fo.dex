@@ -36,6 +36,6 @@ public class FodexModelLoader extends BaseGlideUrlLoader<FodexLayoutSpecItem> {
 
     @Override
     protected String getUrl(FodexLayoutSpecItem model, int width, int height) {
-        return model.uri.toString();
+        return model.fodexItem.uri.toString() + "/" + width + "/" + height;
     }
 }

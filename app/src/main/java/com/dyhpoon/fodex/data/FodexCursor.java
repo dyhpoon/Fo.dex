@@ -1,13 +1,17 @@
 package com.dyhpoon.fodex.data;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorJoiner;
+import android.net.Uri;
 import android.provider.MediaStore;
 
 import com.dyhpoon.fodex.data.FodexContract.ImageEntry;
+import com.dyhpoon.fodex.data.FodexContract.ImageTagEntry;
+import com.dyhpoon.fodex.data.FodexContract.TagEntry;
 import com.dyhpoon.fodex.util.OnCompleteListener;
 
 import java.util.ArrayList;
@@ -35,7 +39,8 @@ public class FodexCursor {
         if (cursor.moveToFirst()) {
             do {
                 FodexItem item = new FodexItem(
-                        cursor.getInt(cursor.getColumnIndex(ImageEntry.COLUMN_IMAGE_ID)),
+                        cursor.getLong(cursor.getColumnIndex(ImageEntry._ID)),
+                        cursor.getLong(cursor.getColumnIndex(ImageEntry.COLUMN_IMAGE_ID)),
                         cursor.getLong(cursor.getColumnIndex(ImageEntry.COLUMN_IMAGE_DATE_TAKEN)),
                         cursor.getString(cursor.getColumnIndex(ImageEntry.COLUMN_IMAGE_DATA))
                 );
@@ -44,6 +49,46 @@ public class FodexCursor {
         }
         cursor.close();
         return items;
+    }
+
+    public static void addTagsToPhoto(Context context, long[] imageIds, String tag) {
+        // get the id of tag first
+        long tagId = getTagId(context, tag);
+
+        // bulk insert into Image_Tag table
+        ContentValues[] bulkToInsert = new ContentValues[imageIds.length];
+        for (int i = 0; i < imageIds.length; i++) {
+            ContentValues values = new ContentValues();
+            values.put(ImageTagEntry.COLUMN_IT_IMAGE_ID, imageIds[i]);
+            values.put(ImageTagEntry.COLUMN_IT_TAG_ID, tagId);
+            bulkToInsert[i] = values;
+        }
+        context.getContentResolver().bulkInsert(ImageTagEntry.CONTENT_URI, bulkToInsert);
+    }
+
+    public static long getTagId(Context context, String tag) {
+        ContentResolver resolver = context.getContentResolver();
+
+        // check if tag exists in table
+        Cursor cursor = resolver.query(
+                TagEntry.buildTagName(tag),
+                null,
+                null,
+                null,
+                null);
+
+        long tagId;
+        if (cursor.moveToFirst()) {
+            tagId = cursor.getLong(cursor.getColumnIndex(TagEntry._ID));
+        } else {
+            // otherwise insert into table
+            ContentValues tagValues = new ContentValues();
+            tagValues.put(TagEntry.COLUMN_TAG_NAME, tag);
+            Uri tagUri = resolver.insert(TagEntry.CONTENT_URI, tagValues);
+            tagId = ContentUris.parseId(tagUri);
+        }
+        cursor.close();
+        return tagId;
     }
 
     public static void syncAllPhotos(final Context context, final OnCompleteListener listener) {
