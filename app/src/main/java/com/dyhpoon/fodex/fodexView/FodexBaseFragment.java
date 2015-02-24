@@ -28,6 +28,9 @@ import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.fullscreen.FullscreenActivity;
 import com.dyhpoon.fodex.view.ImageGridItem;
 import com.dyhpoon.fodex.view.InsertTagDialog;
+import com.dyhpoon.fodex.view.InsertTagToast;
+import com.dyhpoon.fodex.view.NoPhotoToast;
+import com.dyhpoon.fodex.view.NoTagToast;
 import com.felipecsl.asymmetricgridview.library.Utils;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridView;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter;
@@ -139,30 +142,11 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
         mTagButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InsertTagDialog dialog = InsertTagDialog.newInstance();
-                dialog.setOnClickListener(new InsertTagDialog.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, String tag, int which) {
-                        switch (which) {
-                            case DialogInterface.BUTTON_POSITIVE:
-                                if (tag.length() > 0) {
-                                    long[] imageIds = new long[mSelectedItems.size()];
-                                    for (int i = 0; i < mSelectedItems.size(); i++) {
-                                        imageIds[i] = mSelectedItems.get(i).fodexItem.id;
-                                    }
-                                    FodexCursor.addTagsToPhoto(getActivity(), imageIds, tag);
-                                } else {
-                                    //TODO: show error
-                                }
-                                dialog.dismiss();
-                                break;
-                            default:
-                                dialog.dismiss();
-                                break;
-                        }
-                    }
-                });
-                dialog.show(getActivity().getSupportFragmentManager(), "insert_tag");
+                if (mSelectedItems.size() > 0) {
+                    showAddTagDialog();
+                } else {
+                    NoPhotoToast.make(getActivity()).show();
+                }
             }
         });
     }
@@ -225,6 +209,34 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
         final ListPreloader<FodexLayoutSpecItem> preloader =
                 new ListPreloader<FodexLayoutSpecItem>(mAdapter, sizeProvider, PRELOAD_SIZE);
         mFloatingActionMenu.attachToListView(mGridView, null, preloader);
+    }
+
+    private void showAddTagDialog() {
+        InsertTagDialog dialog = InsertTagDialog.newInstance();
+        dialog.setOnClickListener(new InsertTagDialog.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, String tag, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        if (tag.length() > 0) {
+                            long[] imageIds = new long[mSelectedItems.size()];
+                            for (int i = 0; i < mSelectedItems.size(); i++) {
+                                imageIds[i] = mSelectedItems.get(i).fodexItem.id;
+                            }
+                            FodexCursor.addTagsToPhoto(getActivity(), imageIds, tag);
+                            dialog.dismiss();
+                            InsertTagToast.make(getActivity(), tag.length()).show();
+                        } else {
+                            NoTagToast.make(getActivity()).show();
+                        }
+                        break;
+                    default:
+                        dialog.dismiss();
+                        break;
+                }
+            }
+        });
+        dialog.show(getActivity().getSupportFragmentManager(), "insert_tag");
     }
 
     private AdapterView.OnItemClickListener imageOnClickListener = new AdapterView.OnItemClickListener() {

@@ -19,4 +19,11 @@
     <string name="button_add">Add</string>
     <string name="button_cancel">Cancel</string>
 
+    <plurals name="message_add_tag">
+        <item quantity="one">You have tagged %d photo</item>
+        <item quantity="other">You have tagged %d photos</item>
+    </plurals>
+    <string name="message_no_tag">Please type in your tag name</string>
+    <string name="message_no_photo">You must select a photo first</string>
+
 </resources>
