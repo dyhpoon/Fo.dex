@@ -219,13 +219,18 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         if (tag.length() > 0) {
+                            // add tags to DB
                             long[] imageIds = new long[mSelectedItems.size()];
                             for (int i = 0; i < mSelectedItems.size(); i++) {
                                 imageIds[i] = mSelectedItems.get(i).fodexItem.id;
                             }
                             FodexCursor.addTagsToPhoto(getActivity(), imageIds, tag);
+
+                            // cleanup and show message
                             dialog.dismiss();
-                            InsertTagToast.make(getActivity(), tag.length()).show();
+                            InsertTagToast.make(getActivity(), mSelectedItems.size()).show();
+                            mSelectedItems.clear();
+                            if (mFloatingActionMenu.isExpanded()) mFloatingActionMenu.toggle();
                         } else {
                             NoTagToast.make(getActivity()).show();
                         }
