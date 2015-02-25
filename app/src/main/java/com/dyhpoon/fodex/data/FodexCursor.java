@@ -61,6 +61,7 @@ public class FodexCursor {
             ContentValues values = new ContentValues();
             values.put(ImageTagEntry.COLUMN_IT_IMAGE_ID, imageIds[i]);
             values.put(ImageTagEntry.COLUMN_IT_TAG_ID, tagId);
+            values.put(ImageTagEntry.COLUMN_IT_DATE_ADDED, System.currentTimeMillis());
             bulkToInsert[i] = values;
         }
         context.getContentResolver().bulkInsert(ImageTagEntry.CONTENT_URI, bulkToInsert);

@@ -67,6 +67,7 @@ public class DatabaseTest extends AndroidTestCase {
         ContentValues imageTagValues = new ContentValues();
         imageTagValues.put(ImageTagEntry.COLUMN_IT_IMAGE_ID, imageRowId);
         imageTagValues.put(ImageTagEntry.COLUMN_IT_TAG_ID, tagRowId);
+        imageTagValues.put(ImageTagEntry.COLUMN_IT_DATE_ADDED, System.currentTimeMillis());
         return imageTagValues;
     }
 

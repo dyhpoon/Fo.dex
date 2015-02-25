@@ -113,6 +113,7 @@ public class FodexContract {
         // Columns
         public static final String COLUMN_IT_IMAGE_ID = "image_id";
         public static final String COLUMN_IT_TAG_ID = "tag_id";
+        public static final String COLUMN_IT_DATE_ADDED = "date_added";
 
         // Building Uris
         // content://com.dyhpoon.fodex.provider/image_tag/1

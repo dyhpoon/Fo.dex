@@ -43,6 +43,7 @@ public class FodexDbHelper extends SQLiteOpenHelper {
                 ImageTagEntry._ID + " INTEGER PRIMARY KEY, " +
                 ImageTagEntry.COLUMN_IT_TAG_ID + " INTEGER NOT NULL, " +
                 ImageTagEntry.COLUMN_IT_IMAGE_ID + " INTEGER NOT NULL, " +
+                ImageTagEntry.COLUMN_IT_DATE_ADDED + " INTEGER NOT NULL, " +
                 "FOREIGN KEY (" + ImageTagEntry.COLUMN_IT_TAG_ID + ") REFERENCES " + TagEntry.TABLE_NAME + "(" + TagEntry._ID + ") ON DELETE CASCADE," +
                 "FOREIGN KEY (" + ImageTagEntry.COLUMN_IT_IMAGE_ID + ") REFERENCES " + ImageEntry.TABLE_NAME + "(" + ImageEntry._ID + ") ON DELETE CASCADE," +
                 "UNIQUE (" + ImageTagEntry.COLUMN_IT_TAG_ID + ", " + ImageTagEntry.COLUMN_IT_IMAGE_ID  + ") ON CONFLICT REPLACE" +
