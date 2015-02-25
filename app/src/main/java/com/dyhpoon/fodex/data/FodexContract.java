@@ -29,6 +29,7 @@ public class FodexContract {
     public static final String PATH_IMAGE = "image";
     public static final String PATH_TAG = "tag";
     public static final String PATH_IMAGE_TAG = "image_tag";
+    public static final String PATH_INDEXED_IMAGE = "indexed_image";
 
     /* Inner class defines the table contents of image table */
     public static final class ImageEntry implements BaseColumns {
@@ -169,5 +170,14 @@ public class FodexContract {
             return new ArrayList<String>(decodedNames);
         }
 
+    }
+
+    public static final class IndexImageEntry implements BaseColumns {
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_INDEXED_IMAGE).build();
+
+        // Type
+        public static final String CONTENT_ITEM_TYPE = ImageEntry.CONTENT_ITEM_TYPE;
+        public static final String CONTENT_DIR_TYPE = ImageEntry.CONTENT_DIR_TYPE;
     }
 }

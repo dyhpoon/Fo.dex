@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 
 import com.dyhpoon.fodex.data.FodexContract.ImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.ImageTagEntry;
+import com.dyhpoon.fodex.data.FodexContract.IndexImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.TagEntry;
 import com.dyhpoon.fodex.util.OnCompleteListener;
 
@@ -35,6 +36,25 @@ public class FodexCursor {
                 null,
                 ImageEntry.COLUMN_IMAGE_DATE_TAKEN + " DESC");
 
+        List<FodexItem> items = convertCursorToItems(cursor);
+        cursor.close();
+        return items;
+    }
+
+    public static List<FodexItem> getIndexedPhotoItems(Context context) {
+        Cursor cursor = context.getContentResolver().query(
+                IndexImageEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+
+        List<FodexItem> items = convertCursorToItems(cursor);
+        cursor.close();
+        return items;
+    }
+
+    private static List<FodexItem> convertCursorToItems(Cursor cursor) {
         List<FodexItem> items = new ArrayList<>();
         if (cursor.moveToFirst()) {
             do {
@@ -47,7 +67,6 @@ public class FodexCursor {
                 items.add(item);
             } while (cursor.moveToNext());
         }
-        cursor.close();
         return items;
     }
 

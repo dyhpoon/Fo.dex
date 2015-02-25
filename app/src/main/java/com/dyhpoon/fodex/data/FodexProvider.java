@@ -36,6 +36,8 @@ public class FodexProvider extends ContentProvider {
     private static final int IMAGE_TAG = 300;
     private static final int IMAGE_TAG_ID = 301;
 
+    private static final int INDEXED_IMAGE = 400;
+
     private static final String ERR_UNSUPPORTED_URI = "Unsupported uri: ";
     private static final String ERR_INSERT_FAILED = "Failed to insert row into: ";
 
@@ -64,6 +66,10 @@ public class FodexProvider extends ContentProvider {
         matcher.addURI(authority, imageTagPath, IMAGE_TAG);
         // content://com.dyhpoon.fodex.provider/tag/1
         matcher.addURI(authority, imageTagPath + "/#", IMAGE_TAG_ID);
+
+        final String indexImagePath = FodexContract.PATH_INDEXED_IMAGE;
+        // content://com.dyhpoon.fodex.provider/indexed_image
+        matcher.addURI(authority, indexImagePath, INDEXED_IMAGE);
 
         return matcher;
     }
@@ -146,6 +152,7 @@ WHERE tag.name in ("hello", "bye")
 group by image._id
 having count(tag.name) = 2
                  */
+            {
                 final SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 
                 builder.setTables(ImageTagEntry.TABLE_NAME +
@@ -183,6 +190,7 @@ having count(tag.name) = 2
                         "count(" + TagEntry.TABLE_NAME + "." + TagEntry.COLUMN_TAG_NAME + ") = " + Integer.toString(tagNames.size()),
                         sortOrder);
                 break;
+            }
             case IMAGE_TAG:
                 cursor = mOpenHelper.getReadableDatabase().query(
                         ImageTagEntry.TABLE_NAME,
@@ -203,6 +211,42 @@ having count(tag.name) = 2
                         null,
                         sortOrder);
                 break;
+            case INDEXED_IMAGE:
+                /*
+SELECT image._id, image.photo_id, image.data, image.date_taken
+FROM (SELECT DISTINCT image_id, MAX(date_added)
+      FROM image_tag
+      GROUP BY image_id
+      ORDER BY date_added DESC) AS recent
+INNER JOIN image ON recent.image_id = image._id
+                 */
+            {
+                final SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+
+                builder.setTables(
+                        "(SELECT DISTINCT " + ImageTagEntry.COLUMN_IT_IMAGE_ID + ", MAX(" + ImageTagEntry.COLUMN_IT_DATE_ADDED + ")" +
+                                " FROM " + ImageTagEntry.TABLE_NAME +
+                                " GROUP BY " + ImageTagEntry.COLUMN_IT_IMAGE_ID +
+                                " ORDER BY " + ImageTagEntry.COLUMN_IT_DATE_ADDED + " DESC) AS recent" +
+                                " INNER JOIN " + ImageEntry.TABLE_NAME + " ON recent." + ImageTagEntry.COLUMN_IT_IMAGE_ID + " = " + ImageEntry.TABLE_NAME + "." + ImageEntry._ID);
+
+                builder.setProjectionMap(new HashMap<String, String>(){{
+                    put(ImageEntry.TABLE_NAME + "." + ImageEntry._ID, ImageEntry.TABLE_NAME + "." + ImageEntry._ID);
+                    put(ImageEntry.COLUMN_IMAGE_ID, ImageEntry.COLUMN_IMAGE_ID);
+                    put(ImageEntry.COLUMN_IMAGE_DATA, ImageEntry.COLUMN_IMAGE_DATA);
+                    put(ImageEntry.COLUMN_IMAGE_DATE_TAKEN, ImageEntry.COLUMN_IMAGE_DATE_TAKEN);
+                }});
+
+                cursor = builder.query(
+                        mOpenHelper.getWritableDatabase(),
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException(ERR_UNSUPPORTED_URI + uri);
         }
@@ -228,6 +272,8 @@ having count(tag.name) = 2
                 return ImageTagEntry.CONTENT_DIR_TYPE;
             case IMAGE_TAG_ID:
                 return ImageTagEntry.CONTENT_ITEM_TYPE;
+            case INDEXED_IMAGE:
+                return ImageEntry.CONTENT_DIR_TYPE;
             default:
                 throw new UnsupportedOperationException(ERR_UNSUPPORTED_URI + uri);
         }
