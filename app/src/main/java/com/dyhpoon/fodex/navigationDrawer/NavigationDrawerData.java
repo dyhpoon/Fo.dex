@@ -5,6 +5,7 @@ import android.content.Context;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.contentFragment.AllPhotosPageFragment;
 import com.dyhpoon.fodex.contentFragment.IndexedPhotosPageFragment;
+import com.dyhpoon.fodex.contentFragment.UnindexedPhotoPageFragment;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,7 +47,7 @@ public class NavigationDrawerData {
                             TAG_UNINDEXED_PHOTOS,
                             context.getString(R.string.title_unindexed_photos),
                             context.getResources().getDrawable(R.drawable.ic_unindexed),
-                            AllPhotosPageFragment.class)
+                            UnindexedPhotoPageFragment.class)
             );
         }
         return mPageItems;
