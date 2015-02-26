@@ -22,7 +22,7 @@ import com.bumptech.glide.Priority;
 import com.dyhpoon.fab.FloatingActionButton;
 import com.dyhpoon.fab.FloatingActionsMenu;
 import com.dyhpoon.fodex.R;
-import com.dyhpoon.fodex.data.FodexCursor;
+import com.dyhpoon.fodex.data.FodexCore;
 import com.dyhpoon.fodex.data.FodexImageContract;
 import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.fullscreen.FullscreenActivity;
@@ -225,7 +225,7 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
                             for (int i = 0; i < mSelectedItems.size(); i++) {
                                 imageIds[i] = mSelectedItems.get(i).fodexItem.id;
                             }
-                            FodexCursor.addTagsToPhoto(getActivity(), imageIds, tag);
+                            FodexCore.addTagsToPhoto(getActivity(), imageIds, tag);
 
                             // cleanup and show message
                             dialog.dismiss();
@@ -250,7 +250,7 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
             FodexItem item =
                     ((FodexLayoutSpecItem) mGridView.getItemAtPosition(position)).fodexItem;
-            FodexCursor.getTags(getActivity(), item.id);
+            FodexCore.getTags(getActivity(), item.id);
             return true;
         }
     };

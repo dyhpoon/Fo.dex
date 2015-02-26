@@ -2,7 +2,7 @@ package com.dyhpoon.fodex.contentFragment;
 
 import android.os.Bundle;
 
-import com.dyhpoon.fodex.data.FodexCursor;
+import com.dyhpoon.fodex.data.FodexCore;
 import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.fodexView.FodexBaseFragment;
 import com.dyhpoon.fodex.util.OnCompleteListener;
@@ -19,10 +19,10 @@ public class RecentPhotosPageFragment extends FodexBaseFragment<FodexItem> {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        FodexCursor.syncAllPhotos(getActivity(), new OnCompleteListener() {
+        FodexCore.syncAllPhotos(getActivity(), new OnCompleteListener() {
             @Override
             public void didComplete() {
-                mItems = FodexCursor.getAllPhotoItems(getActivity());
+                mItems = FodexCore.getAllPhotoItems(getActivity());
                 reload();
             }
 

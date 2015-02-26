@@ -27,7 +27,7 @@ import bolts.Task;
 /**
  * Created by darrenpoon on 16/2/15.
  */
-public class FodexCursor {
+public class FodexCore {
 
     public static List<FodexItem> getAllPhotoItems(Context context) {
         Cursor cursor = context.getContentResolver().query(
