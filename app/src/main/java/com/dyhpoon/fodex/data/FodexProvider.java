@@ -64,9 +64,9 @@ public class FodexProvider extends ContentProvider {
         matcher.addURI(authority, tagPath + "/" + TagEntry.PATH_SEGMENT_KEYWORD + "/*", TAG_KEYWORDS);
 
         final String imageTagPath = FodexContract.PATH_IMAGE_TAG;
-        // content://com.dyhpoon.fodex.provider/tag
+        // content://com.dyhpoon.fodex.provider/image_tag
         matcher.addURI(authority, imageTagPath, IMAGE_TAG);
-        // content://com.dyhpoon.fodex.provider/tag/1
+        // content://com.dyhpoon.fodex.provider/image_tag/1
         matcher.addURI(authority, imageTagPath + "/#", IMAGE_TAG_ID);
 
         final String indexImagePath = FodexContract.PATH_INDEXED_IMAGE;
