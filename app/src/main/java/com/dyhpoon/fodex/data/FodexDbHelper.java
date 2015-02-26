@@ -35,7 +35,7 @@ public class FodexDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_TAG_TABLE = "CREATE TABLE " + TagEntry.TABLE_NAME + " (" +
                 TagEntry._ID + " INTEGER PRIMARY KEY, " +
                 TagEntry.COLUMN_TAG_NAME + " TEXT UNIQUE NOT NULL, " +
-                TagEntry.COLUMN_TAG_VISIBLE + "INTEGER NOT NULL DEFAULT 1, " +
+                TagEntry.COLUMN_TAG_VISIBLE + " INTEGER NOT NULL DEFAULT 1, " +
                 "UNIQUE (" + TagEntry.COLUMN_TAG_NAME + ") ON CONFLICT IGNORE" +
                 " );";
 
