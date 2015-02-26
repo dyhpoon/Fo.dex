@@ -38,6 +38,8 @@ public class FodexProvider extends ContentProvider {
 
     private static final int INDEXED_IMAGE = 400;
 
+    private static final int UNINDEXED_IMAGE = 500;
+
     private static final String ERR_UNSUPPORTED_URI = "Unsupported uri: ";
     private static final String ERR_INSERT_FAILED = "Failed to insert row into: ";
 
@@ -70,6 +72,10 @@ public class FodexProvider extends ContentProvider {
         final String indexImagePath = FodexContract.PATH_INDEXED_IMAGE;
         // content://com.dyhpoon.fodex.provider/indexed_image
         matcher.addURI(authority, indexImagePath, INDEXED_IMAGE);
+
+        final String unindexedImagePath = FodexContract.PATH_UNINDEXED_IMAGE;
+        // content://com.dyhpoon.fodex.provider/unindexed_image
+        matcher.addURI(authority, unindexedImagePath, UNINDEXED_IMAGE);
 
         return matcher;
     }
@@ -247,6 +253,39 @@ INNER JOIN image ON recent.image_id = image._id
                         sortOrder);
                 break;
             }
+            case UNINDEXED_IMAGE:
+                /*
+SELECT *
+FROM image
+WHERE _id
+NOT IN (SELECT DISTINCT image_id
+        FROM image_tag)
+                 */
+            {
+                final SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+
+                builder.setTables("(SELECT * FROM " + ImageEntry.TABLE_NAME +
+                        " WHERE " + ImageEntry._ID +
+                        " NOT IN (SELECT DISTINCT " + ImageTagEntry.COLUMN_IT_IMAGE_ID +
+                                " FROM " + ImageTagEntry.TABLE_NAME + "))");
+
+                builder.setProjectionMap(new HashMap<String, String>(){{
+                    put(ImageEntry._ID, ImageEntry._ID);
+                    put(ImageEntry.COLUMN_IMAGE_ID, ImageEntry.COLUMN_IMAGE_ID);
+                    put(ImageEntry.COLUMN_IMAGE_DATA, ImageEntry.COLUMN_IMAGE_DATA);
+                    put(ImageEntry.COLUMN_IMAGE_DATE_TAKEN, ImageEntry.COLUMN_IMAGE_DATE_TAKEN);
+                }});
+
+                cursor = builder.query(
+                        mOpenHelper.getWritableDatabase(),
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException(ERR_UNSUPPORTED_URI + uri);
         }
@@ -273,6 +312,8 @@ INNER JOIN image ON recent.image_id = image._id
             case IMAGE_TAG_ID:
                 return ImageTagEntry.CONTENT_ITEM_TYPE;
             case INDEXED_IMAGE:
+                return ImageEntry.CONTENT_DIR_TYPE;
+            case UNINDEXED_IMAGE:
                 return ImageEntry.CONTENT_DIR_TYPE;
             default:
                 throw new UnsupportedOperationException(ERR_UNSUPPORTED_URI + uri);

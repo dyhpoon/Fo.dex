@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 
 import com.dyhpoon.fodex.data.FodexContract.ImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.ImageTagEntry;
+import com.dyhpoon.fodex.data.FodexContract.UnindexedImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.IndexImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.TagEntry;
 import com.dyhpoon.fodex.util.OnCompleteListener;
@@ -48,6 +49,19 @@ public class FodexCursor {
                 null,
                 null,
                 null);
+
+        List<FodexItem> items = convertCursorToItems(cursor);
+        cursor.close();
+        return items;
+    }
+
+    public static List<FodexItem> getUnindexPhotoItems(Context context) {
+        Cursor cursor = context.getContentResolver().query(
+                UnindexedImageEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                ImageEntry.COLUMN_IMAGE_DATE_TAKEN + " DESC");
 
         List<FodexItem> items = convertCursorToItems(cursor);
         cursor.close();
