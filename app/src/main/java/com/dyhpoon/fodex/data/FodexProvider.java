@@ -35,6 +35,7 @@ public class FodexProvider extends ContentProvider {
 
     private static final int IMAGE_TAG = 300;
     private static final int IMAGE_TAG_ID = 301;
+    private static final int IMAGE_TAG_SEARCH = 302;
 
     private static final int INDEXED_IMAGE = 400;
 
@@ -68,6 +69,8 @@ public class FodexProvider extends ContentProvider {
         matcher.addURI(authority, imageTagPath, IMAGE_TAG);
         // content://com.dyhpoon.fodex.provider/image_tag/1
         matcher.addURI(authority, imageTagPath + "/#", IMAGE_TAG_ID);
+        // content://com.dyhpoon.fodex.provider/image_tag/search/1
+        matcher.addURI(authority, imageTagPath + "/" + ImageTagEntry.PATH_SEGMENT_SEARCH + "/#", IMAGE_TAG_SEARCH);
 
         final String indexImagePath = FodexContract.PATH_INDEXED_IMAGE;
         // content://com.dyhpoon.fodex.provider/indexed_image
@@ -217,6 +220,36 @@ having count(tag.name) = 2
                         null,
                         sortOrder);
                 break;
+            case IMAGE_TAG_SEARCH:
+                /*
+SELECT tag._id, tag.name, tag.visible
+FROM image_tag
+INNER JOIN tag ON tag_id = tag._id
+INNER JOIN image ON image_id = image._id
+WHERE image._id = 100
+                 */
+            {
+                final SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+
+                builder.setTables("(SELECT " +
+                        TagEntry.TABLE_NAME + "." + TagEntry._ID + ", " +
+                        TagEntry.TABLE_NAME + "." + TagEntry.COLUMN_TAG_NAME + ", " +
+                        TagEntry.TABLE_NAME + "." + TagEntry.COLUMN_TAG_VISIBLE +
+                        " FROM " + ImageTagEntry.TABLE_NAME +
+                        " INNER JOIN " + TagEntry.TABLE_NAME + " ON " + ImageTagEntry.COLUMN_IT_TAG_ID + " = " + TagEntry.TABLE_NAME + "." + TagEntry._ID +
+                        " INNER JOIN " + ImageEntry.TABLE_NAME + " ON " + ImageTagEntry.COLUMN_IT_IMAGE_ID + " = " + ImageEntry.TABLE_NAME + "." + ImageEntry._ID +
+                        " WHERE " + ImageEntry.TABLE_NAME + "." + ImageEntry._ID + " = " + ImageTagEntry.getSearchId(uri) + ")");
+
+                cursor = builder.query(
+                        mOpenHelper.getWritableDatabase(),
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            }
             case INDEXED_IMAGE:
                 /*
 SELECT image._id, image.photo_id, image.data, image.date_taken
@@ -311,6 +344,8 @@ NOT IN (SELECT DISTINCT image_id
                 return ImageTagEntry.CONTENT_DIR_TYPE;
             case IMAGE_TAG_ID:
                 return ImageTagEntry.CONTENT_ITEM_TYPE;
+            case IMAGE_TAG_SEARCH:
+                return ImageTagEntry.CONTENT_DIR_TYPE;
             case INDEXED_IMAGE:
                 return ImageEntry.CONTENT_DIR_TYPE;
             case UNINDEXED_IMAGE:

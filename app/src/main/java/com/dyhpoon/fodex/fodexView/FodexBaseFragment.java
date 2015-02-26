@@ -158,6 +158,7 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
         mGridView.setRequestedHorizontalSpacing(Utils.dpToPx(getActivity(), GRID_VIEW_HORIZONTAL_SPACING));
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(imageOnClickListener);
+        mGridView.setOnItemLongClickListener(imageOnLongClickListener);
     }
 
     private void setupPullToRefresh() {
@@ -243,6 +244,16 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
         });
         dialog.show(getActivity().getSupportFragmentManager(), "insert_tag");
     }
+
+    private AdapterView.OnItemLongClickListener imageOnLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            FodexItem item =
+                    ((FodexLayoutSpecItem) mGridView.getItemAtPosition(position)).fodexItem;
+            FodexCursor.getTags(getActivity(), item.id);
+            return true;
+        }
+    };
 
     private AdapterView.OnItemClickListener imageOnClickListener = new AdapterView.OnItemClickListener() {
         @Override

@@ -11,9 +11,9 @@ import android.provider.MediaStore;
 
 import com.dyhpoon.fodex.data.FodexContract.ImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.ImageTagEntry;
-import com.dyhpoon.fodex.data.FodexContract.UnindexedImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.IndexImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.TagEntry;
+import com.dyhpoon.fodex.data.FodexContract.UnindexedImageEntry;
 import com.dyhpoon.fodex.util.OnCompleteListener;
 
 import java.util.ArrayList;
@@ -66,6 +66,25 @@ public class FodexCursor {
         List<FodexItem> items = convertCursorToItems(cursor);
         cursor.close();
         return items;
+    }
+
+    public static List<String> getTags(Context context, long imageId) {
+        Cursor cursor = context.getContentResolver().query(
+                ImageTagEntry.buildSearchId(imageId),
+                null,
+                null,
+                null,
+                null);
+
+        List<String> tags = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                String tag = cursor.getString(cursor.getColumnIndex(TagEntry.COLUMN_TAG_NAME));
+                tags.add(tag);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return tags;
     }
 
     private static List<FodexItem> convertCursorToItems(Cursor cursor) {
@@ -207,6 +226,5 @@ public class FodexCursor {
             }
         });
     }
-
 
 }

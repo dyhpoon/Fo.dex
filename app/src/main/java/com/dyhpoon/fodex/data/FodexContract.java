@@ -117,6 +117,9 @@ public class FodexContract {
         public static final String COLUMN_IT_TAG_ID = "tag_id";
         public static final String COLUMN_IT_DATE_ADDED = "date_added";
 
+        // Path Segments
+        public static final String PATH_SEGMENT_SEARCH = "search";
+
         // Building Uris
         // content://com.dyhpoon.fodex.provider/image_tag/1
         public static Uri buildImageTagUri(long id) {
@@ -130,6 +133,21 @@ public class FodexContract {
                     .appendPath(TagEntry.PATH_SEGMENT_KEYWORD)
                     .appendPath(appendedString)
                     .build();
+        }
+
+        // content://com.dyhpoon.fodex.provider/image_tag/search/123123
+        public static Uri buildSearchId(long photoId) {
+            return CONTENT_URI.buildUpon()
+                    .appendPath(PATH_SEGMENT_SEARCH)
+                    .appendPath(String.valueOf(photoId))
+                    .build();
+        }
+
+        // content://com.dyhpoon.fodex.provider/image_tag/search/123123 => 123123
+        public static String getSearchId(Uri uri) {
+            if (!uri.getPathSegments().get(0).equals(TABLE_NAME) || !uri.getPathSegments().get(1).equals(PATH_SEGMENT_SEARCH))
+                throw new IllegalArgumentException(ERR_INVALID_URI + uri);
+            return uri.getPathSegments().get(2);
         }
 
         // content://com.dyhpoon.fodex.provider/tag/keywords/morning+evening => [morning, evening]
