@@ -31,6 +31,7 @@ import com.dyhpoon.fodex.view.InsertTagDialog;
 import com.dyhpoon.fodex.view.InsertTagToast;
 import com.dyhpoon.fodex.view.NoPhotoToast;
 import com.dyhpoon.fodex.view.NoTagToast;
+import com.dyhpoon.fodex.view.ShowTagsDialog;
 import com.felipecsl.asymmetricgridview.library.Utils;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridView;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter;
@@ -251,6 +252,8 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
             FodexItem item =
                     ((FodexLayoutSpecItem) mGridView.getItemAtPosition(position)).fodexItem;
             FodexCore.getTags(getActivity(), item.id);
+            ShowTagsDialog dialog = ShowTagsDialog.newInstance(null);
+            dialog.show(getActivity().getSupportFragmentManager(), "show_tag");
             return true;
         }
     };

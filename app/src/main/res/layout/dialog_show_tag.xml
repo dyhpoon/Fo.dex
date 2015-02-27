@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundDimWhite"
-    android:orientation="vertical"
-    android:theme="@style/DialogTheme">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,24 +14,12 @@
         android:paddingRight="@dimen/dialog_padding_right"
         android:paddingTop="@dimen/dialog_padding_top">
 
-        <com.dyhpoon.fodex.view.RobotoMediumTextView
-            android:id="@+id/text_view"
+        <ListView
+            android:id="@+id/list_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:background="@color/backgroundDimWhite"
-            android:paddingLeft="3dp"
-            android:text="@string/dialog_insert_tag"
-            android:textColor="@android:color/black"
-            android:textSize="20dip"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/text_view"
-            android:layout_marginTop="8dp" />
+            android:layout_height="@dimen/dialog_upper_part_max_height"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
 
     </RelativeLayout>
 
@@ -46,23 +33,13 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button_cancel"
+            android:id="@+id/button_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
             android:layout_marginTop="6dp"
             android:background="@android:color/transparent"
-            android:text="@string/button_cancel"
-            android:textColor="@color/buttonTextColor" />
-
-        <Button
-            android:id="@+id/button_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            android:layout_marginTop="6dp"
-            android:background="@android:color/transparent"
-            android:text="@string/button_add"
+            android:text="@string/button_close"
             android:textColor="@color/buttonTextColor" />
 
     </LinearLayout>

@@ -28,4 +28,15 @@
     <dimen name="toast_corner_radius">12dp</dimen>
     <dimen name="toast_text_size">15dp</dimen>
     <dimen name="toast_margin">10dp</dimen>
+
+    <!-- Dialog -->
+    <dimen name="dialog_padding_bottom">16dp</dimen>
+    <dimen name="dialog_padding_left">24dp</dimen>
+    <dimen name="dialog_padding_right">24dp</dimen>
+    <dimen name="dialog_padding_top">24dp</dimen>
+    <dimen name="dialog_upper_part_max_height">250dp</dimen>
+    <dimen name="dialog_lower_part_margin_bottom">8dp</dimen>
+    <dimen name="dialog_lower_part_margin_top">6dp</dimen>
+    <dimen name="dialog_item_text_size">25dp</dimen>
+    <dimen name="dialog_button_text_size">18dp</dimen>
 </resources>

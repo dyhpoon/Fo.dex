@@ -52,6 +52,8 @@ dependencies {
     compile 'com.facebook.stetho:stetho:1.0.0'
     aarLinkSources 'com.facebook.stetho:stetho:1.0.0:sources@jar'
     compile 'fr.tvbarthel.lib.blurdialogfragment:lib:1.0.0@aar'
+    compile 'com.daimajia.swipelayout:library:1.1.9'
+    aarLinkSources 'com.daimajia.swipelayout:library:1.1.9:sources@jar'
     compile('com.crashlytics.sdk.android:crashlytics:2.2.1@aar') {
         transitive = true;
     }
