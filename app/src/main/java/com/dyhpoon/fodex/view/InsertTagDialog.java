@@ -36,7 +36,7 @@ public class InsertTagDialog extends SupportBlurDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_insert_tag, null);
+        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_insert_tag, null);
         builder.setView(view);
         final AlertDialog dialog = builder.create();
 
