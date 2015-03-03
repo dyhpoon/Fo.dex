@@ -17,6 +17,8 @@ import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.daimajia.swipe.util.Attributes;
 import com.dyhpoon.fodex.R;
 
+import java.util.List;
+
 import fr.tvbarthel.lib.blurdialogfragment.SupportBlurDialogFragment;
 
 /**
@@ -24,21 +26,30 @@ import fr.tvbarthel.lib.blurdialogfragment.SupportBlurDialogFragment;
  */
 public class ShowTagsDialog extends SupportBlurDialogFragment {
 
-    private String[] mTags;
+    public interface OnDeleteListener {
+        public void onDelete(CharSequence tag);
+    }
+
+    private List<String> mTags;
     private ListView mListView;
     private DialogInterface.OnClickListener mListener;
+    private OnDeleteListener mDeleteListener;
 
-    public ShowTagsDialog(String[] tags) {
+    public ShowTagsDialog(List<String> tags) {
         mTags = tags;
     }
 
-    public static ShowTagsDialog newInstance(String[] tags) {
+    public static ShowTagsDialog newInstance(List<String> tags) {
         ShowTagsDialog dialog = new ShowTagsDialog(tags);
         return dialog;
     }
 
     public void setOnClickListener(DialogInterface.OnClickListener listener) {
         mListener = listener;
+    }
+
+    public void setOnDeleteListener(OnDeleteListener listener) {
+        mDeleteListener = listener;
     }
 
     @NonNull
@@ -51,7 +62,7 @@ public class ShowTagsDialog extends SupportBlurDialogFragment {
 
         // setup listview
         mListView = (ListView) view.findViewById(R.id.list_view);
-        mListView.setAdapter(new RemoveableAdapter(getActivity()));
+        mListView.setAdapter(new TagAdapter(getActivity(), mTags));
 
         // setup animation
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
@@ -94,12 +105,14 @@ public class ShowTagsDialog extends SupportBlurDialogFragment {
         return 8;
     }
 
-    private class RemoveableAdapter extends BaseSwipeAdapter {
+    private class TagAdapter extends BaseSwipeAdapter {
 
         private Context mContext;
+        private List<String> mTags;
 
-        public RemoveableAdapter(Context context) {
+        public TagAdapter(Context context, List<String>tags) {
             mContext = context;
+            mTags = tags;
             setMode(Attributes.Mode.Single);
         }
 
@@ -111,28 +124,49 @@ public class ShowTagsDialog extends SupportBlurDialogFragment {
         @Override
         public View generateView(int i, ViewGroup viewGroup) {
             View view = LayoutInflater.from(mContext).inflate(R.layout.list_removeable_item, null);
+
+            // tag textview
+            final TextView tv = (TextView) view.findViewById(R.id.text_view);
+            view.setTag(new ViewHolder(tv));
+
+            // delete button
+            final Button deleteButton = (Button) view.findViewById(R.id.button_delete);
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mDeleteListener.onDelete(tv.getText());
+                }
+            });
             return view;
         }
 
         @Override
         public void fillValues(int i, View view) {
-            TextView textView = (TextView) view.findViewById(R.id.text_view);
-            textView.setText("HELLO");
+            ViewHolder vh = (ViewHolder) view.getTag();
+            vh.textView.setText(mTags.get(i));
         }
 
         @Override
         public int getCount() {
-            return 10;
+            return mTags.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return null;
+            return mTags.get(position);
         }
 
         @Override
         public long getItemId(int position) {
             return position;
+        }
+
+        private class ViewHolder {
+            TextView textView;
+
+            public ViewHolder(TextView view) {
+                textView = view;
+            }
         }
     }
 }

@@ -31,6 +31,7 @@ import com.dyhpoon.fodex.view.InsertTagDialog;
 import com.dyhpoon.fodex.view.InsertTagToast;
 import com.dyhpoon.fodex.view.NoPhotoToast;
 import com.dyhpoon.fodex.view.NoTagToast;
+import com.dyhpoon.fodex.view.PleaseInertTagToast;
 import com.dyhpoon.fodex.view.ShowTagsDialog;
 import com.felipecsl.asymmetricgridview.library.Utils;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridView;
@@ -234,7 +235,7 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
                             mSelectedItems.clear();
                             if (mFloatingActionMenu.isExpanded()) mFloatingActionMenu.toggle();
                         } else {
-                            NoTagToast.make(getActivity()).show();
+                            PleaseInertTagToast.make(getActivity()).show();
                         }
                         break;
                     default:
@@ -249,11 +250,27 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
     private AdapterView.OnItemLongClickListener imageOnLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            FodexItem item =
+            final FodexItem item =
                     ((FodexLayoutSpecItem) mGridView.getItemAtPosition(position)).fodexItem;
-            FodexCore.getTags(getActivity(), item.id);
-            ShowTagsDialog dialog = ShowTagsDialog.newInstance(null);
-            dialog.show(getActivity().getSupportFragmentManager(), "show_tag");
+            List<String> tags = FodexCore.getTags(getActivity(), item.id);
+            if (tags.size() > 0) {
+                ShowTagsDialog dialog = ShowTagsDialog.newInstance(tags);
+                dialog.setOnClickListener(new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setOnDeleteListener(new ShowTagsDialog.OnDeleteListener() {
+                    @Override
+                    public void onDelete(CharSequence tag) {
+                        FodexCore.deleteTagFromPhoto(getActivity(), item.id, tag.toString());
+                    }
+                });
+                dialog.show(getActivity().getSupportFragmentManager(), "show_tag");
+            } else {
+                NoTagToast.make(getActivity()).show();
+            }
             return true;
         }
     };

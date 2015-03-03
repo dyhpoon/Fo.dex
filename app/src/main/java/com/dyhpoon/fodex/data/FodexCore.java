@@ -119,6 +119,18 @@ public class FodexCore {
         context.getContentResolver().bulkInsert(ImageTagEntry.CONTENT_URI, bulkToInsert);
     }
 
+    public static void deleteTagFromPhoto(Context context, long imageId, String tag) {
+        // get the id of tag first
+        long tagId = getTagId(context, tag);
+
+        // remove record
+        context.getContentResolver().delete(
+                ImageTagEntry.CONTENT_URI,
+                ImageTagEntry.COLUMN_IT_IMAGE_ID + "= ? AND " + ImageTagEntry.COLUMN_IT_TAG_ID + "= ?",
+                new String[] {String.valueOf(imageId), String.valueOf(tagId)}
+        );
+    }
+
     public static long getTagId(Context context, String tag) {
         ContentResolver resolver = context.getContentResolver();
 

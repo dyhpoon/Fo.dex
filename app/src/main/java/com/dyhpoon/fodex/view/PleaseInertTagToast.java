@@ -7,11 +7,11 @@ import android.widget.Toast;
 import com.dyhpoon.fodex.R;
 
 /**
- * Created by darrenpoon on 3/3/15.
+ * Created by darrenpoon on 24/2/15.
  */
-public class NoTagToast extends CustomToast {
+public class PleaseInertTagToast extends Toast {
 
-    private NoTagToast(Context context) {
+    private PleaseInertTagToast(Context context) {
         super(context);
     }
 
@@ -19,7 +19,7 @@ public class NoTagToast extends CustomToast {
         Resources res = context.getResources();
         return CustomToast.make(
                 context,
-                res.getString(R.string.message_no_tag),
+                res.getString(R.string.message_please_insert_tag),
                 res.getColor(R.color.red),
                 res.getDrawable(R.drawable.ic_cross_fit_15));
     }

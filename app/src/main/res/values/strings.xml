@@ -26,7 +26,8 @@
         <item quantity="one">You have tagged %d photo</item>
         <item quantity="other">You have tagged %d photos</item>
     </plurals>
-    <string name="message_no_tag">Please type in your tag name</string>
+    <string name="message_please_insert_tag">Please type in your tag name</string>
     <string name="message_no_photo">You must select a photo first</string>
+    <string name="message_no_tag">Oh, no tags are found</string>
 
 </resources>
