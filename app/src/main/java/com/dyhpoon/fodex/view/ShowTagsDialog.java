@@ -4,16 +4,19 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.daimajia.swipe.adapters.BaseSwipeAdapter;
+import com.daimajia.swipe.SwipeLayout;
+import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.daimajia.swipe.util.Attributes;
 import com.dyhpoon.fodex.R;
 
@@ -31,7 +34,7 @@ public class ShowTagsDialog extends SupportBlurDialogFragment {
     }
 
     private List<String> mTags;
-    private ListView mListView;
+    private RecyclerView mRecyclerView;
     private DialogInterface.OnClickListener mListener;
     private OnDeleteListener mDeleteListener;
 
@@ -60,9 +63,14 @@ public class ShowTagsDialog extends SupportBlurDialogFragment {
         builder.setView(view);
         final AlertDialog dialog = builder.create();
 
-        // setup listview
-        mListView = (ListView) view.findViewById(R.id.list_view);
-        mListView.setAdapter(new TagAdapter(getActivity(), mTags));
+        // setup recycler view
+        int itemMargin = getActivity().getResources().getDimensionPixelSize(R.dimen.dialog_item_margin);
+        TagAdapter adapter = new TagAdapter(getActivity(), mTags);
+        adapter.setMode(Attributes.Mode.Single);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.addItemDecoration(new SpacesItemDecoration(itemMargin));
+        mRecyclerView.setAdapter(adapter);
 
         // setup animation
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
@@ -105,15 +113,14 @@ public class ShowTagsDialog extends SupportBlurDialogFragment {
         return 8;
     }
 
-    private class TagAdapter extends BaseSwipeAdapter {
+    private class TagAdapter extends RecyclerSwipeAdapter<TagAdapter.TagViewHolder> {
 
         private Context mContext;
         private List<String> mTags;
 
-        public TagAdapter(Context context, List<String>tags) {
+        public TagAdapter(Context context, List<String> tags) {
             mContext = context;
             mTags = tags;
-            setMode(Attributes.Mode.Single);
         }
 
         @Override
@@ -122,51 +129,67 @@ public class ShowTagsDialog extends SupportBlurDialogFragment {
         }
 
         @Override
-        public View generateView(int i, ViewGroup viewGroup) {
-            View view = LayoutInflater.from(mContext).inflate(R.layout.list_removeable_item, null);
+        public TagAdapter.TagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.list_removeable_item, parent, false);
 
-            // tag textview
-            final TextView tv = (TextView) view.findViewById(R.id.text_view);
-            view.setTag(new ViewHolder(tv));
+            // setup button
+            final TagAdapter.TagViewHolder vh = new TagViewHolder(view);
+            return vh;
+        }
 
-            // delete button
-            final Button deleteButton = (Button) view.findViewById(R.id.button_delete);
-            deleteButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onBindViewHolder(final TagViewHolder viewHolder, final int position) {
+            viewHolder.textView.setText(mTags.get(position));
+            viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mDeleteListener.onDelete(tv.getText());
+                    String tag = viewHolder.textView.getText().toString();
+                    mItemManger.removeShownLayouts(viewHolder.swipeLayout);
+                    mTags.remove(tag);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, mTags.size());
+                    mItemManger.closeAllItems();
+                    mDeleteListener.onDelete(tag);
                 }
             });
-            return view;
+            mItemManger.bindView(viewHolder.itemView, position);
         }
 
         @Override
-        public void fillValues(int i, View view) {
-            ViewHolder vh = (ViewHolder) view.getTag();
-            vh.textView.setText(mTags.get(i));
-        }
-
-        @Override
-        public int getCount() {
+        public int getItemCount() {
             return mTags.size();
         }
 
-        @Override
-        public Object getItem(int position) {
-            return mTags.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        private class ViewHolder {
+        public class TagViewHolder extends RecyclerView.ViewHolder {
             TextView textView;
+            SwipeLayout swipeLayout;
+            Button deleteButton;
 
-            public ViewHolder(TextView view) {
-                textView = view;
+            public TagViewHolder(View view) {
+                super(view);
+                textView = (TextView) view.findViewById(R.id.text_view);
+                swipeLayout = (SwipeLayout) view.findViewById(R.id.swipe);
+                deleteButton = (Button) view.findViewById(R.id.button_delete);
             }
+        }
+    }
+
+    private class SpacesItemDecoration extends RecyclerView.ItemDecoration {
+        private int space;
+
+        public SpacesItemDecoration(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            outRect.left = space;
+            outRect.right = space;
+            outRect.bottom = space;
+
+            // Add top margin only for the first item to avoid double space between items
+            if (parent.getChildPosition(view) == 0)
+                outRect.top = space;
         }
     }
 }

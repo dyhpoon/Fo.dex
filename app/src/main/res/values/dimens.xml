@@ -34,6 +34,7 @@
     <dimen name="dialog_padding_left">24dp</dimen>
     <dimen name="dialog_padding_right">24dp</dimen>
     <dimen name="dialog_padding_top">24dp</dimen>
+    <dimen name="dialog_item_margin">5dp</dimen>
     <dimen name="dialog_upper_part_max_height">250dp</dimen>
     <dimen name="dialog_lower_part_margin_bottom">8dp</dimen>
     <dimen name="dialog_lower_part_margin_top">6dp</dimen>

@@ -14,8 +14,8 @@
         android:paddingRight="@dimen/dialog_padding_right"
         android:paddingTop="@dimen/dialog_padding_top">
 
-        <ListView
-            android:id="@+id/list_view"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dialog_upper_part_max_height"
             android:overScrollMode="never"

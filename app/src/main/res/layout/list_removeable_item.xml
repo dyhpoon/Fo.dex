@@ -46,13 +46,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
         android:gravity="center">
 
         <com.dyhpoon.fodex.view.RobotoRegularTextView
             android:id="@+id/text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimaryText"
+            android:textColor="@color/backgroundDimWhite"
             android:textSize="@dimen/dialog_item_text_size" />
 
     </LinearLayout>
