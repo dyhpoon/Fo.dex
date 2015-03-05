@@ -215,7 +215,7 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
     }
 
     private void showAddTagDialog() {
-        InsertTagDialog dialog = InsertTagDialog.newInstance();
+        InsertTagDialog dialog = InsertTagDialog.newInstance(mSelectedItems.size());
         dialog.setOnClickListener(new InsertTagDialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, String tag, int which) {

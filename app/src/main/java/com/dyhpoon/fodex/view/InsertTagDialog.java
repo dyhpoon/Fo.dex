@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.dyhpoon.fodex.R;
 
@@ -19,13 +20,18 @@ public class InsertTagDialog extends SupportBlurDialogFragment {
 
     private EditText mEditText;
     private OnClickListener mListener;
+    private int mNumberOfPhotos = 0;
 
     public interface OnClickListener {
         public void onClick(DialogInterface dialog, String tag, int which);
     }
 
-    public static InsertTagDialog newInstance() {
-        InsertTagDialog dialog = new InsertTagDialog();
+    private InsertTagDialog(int numberOfPhotos) {
+        this.mNumberOfPhotos = numberOfPhotos;
+    }
+
+    public static InsertTagDialog newInstance(int numberOfPhotos) {
+        InsertTagDialog dialog = new InsertTagDialog(numberOfPhotos);
         return dialog;
     }
 
@@ -39,6 +45,10 @@ public class InsertTagDialog extends SupportBlurDialogFragment {
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_insert_tag, null);
         builder.setView(view);
         final AlertDialog dialog = builder.create();
+
+        // setup title
+        TextView tv = (TextView) view.findViewById(R.id.text_view);
+        tv.setText(getActivity().getResources().getQuantityString(R.plurals.dialog_index_photo, mNumberOfPhotos));
 
         // setup editText
         mEditText = (EditText) view.findViewById(R.id.edit_text);

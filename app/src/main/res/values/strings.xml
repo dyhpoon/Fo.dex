@@ -15,7 +15,10 @@
     <string name="hashtags">Hashtags</string>
     <string name="title_activity_fullscreen">Fullscreen</string>
 
-    <string name="dialog_insert_tag">Insert Your Tag</string>
+    <plurals name="dialog_index_photo">
+        <item quantity="one">Index Your Photo</item>
+        <item quantity="other">Index Your Photos</item>
+    </plurals>
 
     <string name="button_add">Add</string>
     <string name="button_cancel">Cancel</string>

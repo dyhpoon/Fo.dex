@@ -22,7 +22,6 @@
             android:layout_marginBottom="4dp"
             android:background="@color/backgroundDimWhite"
             android:paddingLeft="3dp"
-            android:text="@string/dialog_insert_tag"
             android:textColor="@android:color/black"
             android:textSize="20dip"
             android:textStyle="bold" />
