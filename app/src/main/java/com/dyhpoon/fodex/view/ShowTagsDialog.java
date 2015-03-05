@@ -15,10 +15,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import com.daimajia.swipe.util.Attributes;
 import com.dyhpoon.fodex.R;
+import com.dyhpoon.fodex.util.SimpleNineoldAnimatorListener;
+import com.nineoldandroids.animation.Animator;
 
 import java.util.List;
 
@@ -140,16 +145,30 @@ public class ShowTagsDialog extends SupportBlurDialogFragment {
         @Override
         public void onBindViewHolder(final TagViewHolder viewHolder, final int position) {
             viewHolder.textView.setText(mTags.get(position));
+            viewHolder.deleteButton.setEnabled(true);
             viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String tag = viewHolder.textView.getText().toString();
-                    mItemManger.removeShownLayouts(viewHolder.swipeLayout);
-                    mTags.remove(tag);
-                    notifyItemRemoved(position);
-                    notifyItemRangeChanged(position, mTags.size());
-                    mItemManger.closeAllItems();
-                    mDeleteListener.onDelete(tag);
+                    viewHolder.deleteButton.setEnabled(false);
+                    // animate and delete tag
+                    YoYo.with(Techniques.Bounce).duration(200).withListener(new SimpleNineoldAnimatorListener() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            String tag = viewHolder.textView.getText().toString();
+                            mItemManger.removeShownLayouts(viewHolder.swipeLayout);
+                            mTags.remove(tag);
+                            notifyItemRemoved(position);
+                            notifyItemRangeChanged(position, mTags.size());
+                            mItemManger.closeAllItems();
+                            mDeleteListener.onDelete(tag);
+                        }
+                    }).playOn(viewHolder.deleteButton);
+                }
+            });
+            viewHolder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
+                @Override
+                public void onOpen(SwipeLayout layout) {
+                    YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash_image_view));
                 }
             });
             mItemManger.bindView(viewHolder.itemView, position);

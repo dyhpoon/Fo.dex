@@ -40,6 +40,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:support-v4:21.0.3'
     compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.android.support:recyclerview-v7:21.0.+'
     compile 'com.android.support:cardview-v7:21.0.+'
     compile project(':libraries:AsymmetricGridView')
@@ -55,6 +56,10 @@ dependencies {
     compile 'fr.tvbarthel.lib.blurdialogfragment:lib:1.0.0@aar'
     compile 'com.daimajia.swipelayout:library:1.1.9'
     aarLinkSources 'com.daimajia.swipelayout:library:1.1.9:sources@jar'
+    compile 'com.daimajia.easing:library:1.0.1@aar'
+    aarLinkSources 'com.daimajia.easing:library:1.0.1:sources@jar'
+    compile 'com.daimajia.androidanimations:library:1.1.3@aar'
+    aarLinkSources 'com.daimajia.androidanimations:library:1.1.3:sources@jar'
     compile('com.crashlytics.sdk.android:crashlytics:2.2.1@aar') {
         transitive = true;
     }
