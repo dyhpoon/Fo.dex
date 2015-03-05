@@ -103,20 +103,23 @@ public class FodexCore {
         return items;
     }
 
-    public static void addTagsToPhoto(Context context, long[] imageIds, String tag) {
-        // get the id of tag first
-        long tagId = getTagId(context, tag);
+    public static void addTagsToPhotos(Context context, long[] imageIds, String[] tags) {
+        List<ContentValues> bulkToInsert = new ArrayList<>();
+        for (String tag : tags) {
+            // get the id of tag first
+            long tagId = getTagId(context, tag);
 
-        // bulk insert into Image_Tag table
-        ContentValues[] bulkToInsert = new ContentValues[imageIds.length];
-        for (int i = 0; i < imageIds.length; i++) {
-            ContentValues values = new ContentValues();
-            values.put(ImageTagEntry.COLUMN_IT_IMAGE_ID, imageIds[i]);
-            values.put(ImageTagEntry.COLUMN_IT_TAG_ID, tagId);
-            values.put(ImageTagEntry.COLUMN_IT_DATE_ADDED, System.currentTimeMillis());
-            bulkToInsert[i] = values;
+            // bulk insert into Image_Tag table
+            for (long imageId : imageIds) {
+                ContentValues values = new ContentValues();
+                values.put(ImageTagEntry.COLUMN_IT_IMAGE_ID, imageId);
+                values.put(ImageTagEntry.COLUMN_IT_TAG_ID, tagId);
+                values.put(ImageTagEntry.COLUMN_IT_DATE_ADDED, System.currentTimeMillis());
+                bulkToInsert.add(values);
+            }
         }
-        context.getContentResolver().bulkInsert(ImageTagEntry.CONTENT_URI, bulkToInsert);
+        ContentValues[] serializedBulk = bulkToInsert.toArray(new ContentValues[bulkToInsert.size()]);
+        context.getContentResolver().bulkInsert(ImageTagEntry.CONTENT_URI, serializedBulk);
     }
 
     public static void deleteTagFromPhoto(Context context, long imageId, String tag) {

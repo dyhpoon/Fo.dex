@@ -218,16 +218,16 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
         InsertTagDialog dialog = InsertTagDialog.newInstance(mSelectedItems.size());
         dialog.setOnClickListener(new InsertTagDialog.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, String tag, int which) {
+            public void onClick(DialogInterface dialog, String[] tags, int which) {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
-                        if (tag.length() > 0) {
+                        if (tags != null) {
                             // add tags to DB
                             long[] imageIds = new long[mSelectedItems.size()];
                             for (int i = 0; i < mSelectedItems.size(); i++) {
                                 imageIds[i] = mSelectedItems.get(i).fodexItem.id;
                             }
-                            FodexCore.addTagsToPhoto(getActivity(), imageIds, tag);
+                            FodexCore.addTagsToPhotos(getActivity(), imageIds, tags);
 
                             // cleanup and show message
                             dialog.dismiss();

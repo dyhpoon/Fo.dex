@@ -23,7 +23,7 @@ public class InsertTagDialog extends SupportBlurDialogFragment {
     private int mNumberOfPhotos = 0;
 
     public interface OnClickListener {
-        public void onClick(DialogInterface dialog, String tag, int which);
+        public void onClick(DialogInterface dialog, String[] tags, int which);
     }
 
     private InsertTagDialog(int numberOfPhotos) {
@@ -58,22 +58,33 @@ public class InsertTagDialog extends SupportBlurDialogFragment {
 
         // setup buttons' onClickListener
         Button cancelButton = (Button) view.findViewById(R.id.button_cancel);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mListener != null)
-                    mListener.onClick(dialog, mEditText.getText().toString(), DialogInterface.BUTTON_NEGATIVE);
-            }
-        });
+        cancelButton.setOnClickListener(new InsertTagOnClickListener(dialog, mEditText, DialogInterface.BUTTON_NEGATIVE, mListener));
         Button addButton = (Button) view.findViewById(R.id.button_add);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mListener != null)
-                    mListener.onClick(dialog, mEditText.getText().toString(), DialogInterface.BUTTON_POSITIVE);
-            }
-        });
+        addButton.setOnClickListener(new InsertTagOnClickListener(dialog, mEditText, DialogInterface.BUTTON_POSITIVE, mListener));
         return dialog;
+    }
+
+    private class InsertTagOnClickListener implements View.OnClickListener {
+        private Dialog mDialog;
+        private EditText mEditText;
+        private int mDialogButtonType;
+        private OnClickListener mListener;
+
+        public InsertTagOnClickListener(Dialog dialog, EditText editText, int dialogButtonType, OnClickListener listener) {
+            mDialog = dialog;
+            mEditText = editText;
+            mDialogButtonType = dialogButtonType;
+            mListener = listener;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (mListener != null) {
+                String[] tags = mEditText.getText().toString().split("\\s+");
+                if (tags.length == 0 || tags[0].length() == 0) tags = null;
+                mListener.onClick(mDialog, tags, mDialogButtonType);
+            }
+        }
     }
 
     @Override
