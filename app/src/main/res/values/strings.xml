@@ -19,6 +19,7 @@
         <item quantity="one">Index Your Photo</item>
         <item quantity="other">Index Your Photos</item>
     </plurals>
+    <string name="dialog_insert_tag_hint">Insert Your Tags Here</string>
 
     <string name="button_add">Add</string>
     <string name="button_cancel">Cancel</string>

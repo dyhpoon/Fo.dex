@@ -102,7 +102,7 @@ public class ProviderTest extends AndroidTestCase {
 
     public void testTagNameUri() {
         Cursor tagNameCursor = mContext.getContentResolver().query(
-                TagEntry.buildTagName(mTagValues.getAsString(TagEntry.COLUMN_TAG_NAME)),
+                TagEntry.buildSearchTagName(mTagValues.getAsString(TagEntry.COLUMN_TAG_NAME)),
                 null,
                 null,
                 null,

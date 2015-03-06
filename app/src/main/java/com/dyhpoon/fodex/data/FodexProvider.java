@@ -9,6 +9,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.util.Log;
 
 import com.dyhpoon.fodex.data.FodexContract.ImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.ImageTagEntry;
@@ -30,8 +31,9 @@ public class FodexProvider extends ContentProvider {
 
     private static final int TAG = 200;
     private static final int TAG_ID = 201;
-    private static final int TAG_SEARCH = 202;
-    private static final int TAG_KEYWORDS = 203;
+    private static final int TAG_GET = 202;
+    private static final int TAG_SEARCH = 203;
+    private static final int TAG_KEYWORDS = 204;
 
     private static final int IMAGE_TAG = 300;
     private static final int IMAGE_TAG_ID = 301;
@@ -59,6 +61,8 @@ public class FodexProvider extends ContentProvider {
         matcher.addURI(authority, tagPath, TAG);
         // content://com.dyhpoon.fodex.provider/tag/1
         matcher.addURI(authority, tagPath + "/#", TAG_ID);
+        // content://com.dyhpoon.fodex.provider/tag/get/morning
+        matcher.addURI(authority, tagPath + "/" + TagEntry.PATH_SEGMENT_GET + "/*", TAG_GET);
         // content://com.dyhpoon.fodex.provider/tag/search/morning
         matcher.addURI(authority, tagPath + "/" + TagEntry.PATH_SEGMENT_SEARCH + "/*", TAG_SEARCH);
         // content://com.dyhpoon.fodex.provider/tag/keywords/morning+evening
@@ -107,8 +111,8 @@ public class FodexProvider extends ContentProvider {
                 cursor = mOpenHelper.getReadableDatabase().query(
                         ImageEntry.TABLE_NAME,
                         projection,
-                        ImageEntry._ID + " = '" + ContentUris.parseId(uri) + "'",
-                        selectionArgs,
+                        ImageEntry._ID + " =?",
+                        new String[]{String.valueOf(ContentUris.parseId(uri))},
                         null,
                         null,
                         sortOrder);
@@ -127,18 +131,29 @@ public class FodexProvider extends ContentProvider {
                 cursor = mOpenHelper.getReadableDatabase().query(
                         TagEntry.TABLE_NAME,
                         projection,
-                        TagEntry._ID + " = '" + ContentUris.parseId(uri) + "'",
-                        selectionArgs,
+                        TagEntry._ID + "=?",
+                        new String[]{String.valueOf(ContentUris.parseId(uri))},
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case TAG_GET:
+                cursor = mOpenHelper.getReadableDatabase().query(
+                        TagEntry.TABLE_NAME,
+                        projection,
+                        TagEntry.COLUMN_TAG_NAME + " =?",
+                        new String[]{TagEntry.getTagName(uri)},
                         null,
                         null,
                         sortOrder);
                 break;
             case TAG_SEARCH:
+                Log.v("HELLO", TagEntry.getSearchTagName(uri));
                 cursor = mOpenHelper.getReadableDatabase().query(
                         TagEntry.TABLE_NAME,
                         projection,
-                        TagEntry.COLUMN_TAG_NAME + " LIKE '%" + TagEntry.getTagName(uri) + "%'",
-                        selectionArgs,
+                        TagEntry.COLUMN_TAG_NAME + " LIKE ?",
+                        new String[]{"%" + TagEntry.getSearchTagName(uri) + "%"},
                         null,
                         null,
                         sortOrder);
@@ -335,6 +350,8 @@ NOT IN (SELECT DISTINCT image_id
             case TAG:
                 return TagEntry.CONTENT_DIR_TYPE;
             case TAG_ID:
+                return TagEntry.CONTENT_ITEM_TYPE;
+            case TAG_GET:
                 return TagEntry.CONTENT_ITEM_TYPE;
             case TAG_SEARCH:
                 return TagEntry.CONTENT_DIR_TYPE;

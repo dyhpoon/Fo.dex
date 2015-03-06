@@ -74,6 +74,7 @@ public class FodexContract {
         public static final String COLUMN_TAG_VISIBLE = "visible";
 
         // Path Segments
+        public static final String PATH_SEGMENT_GET = "get";
         public static final String PATH_SEGMENT_SEARCH = "search";
         public static final String PATH_SEGMENT_KEYWORD = "keywords";
 
@@ -84,7 +85,7 @@ public class FodexContract {
         }
 
         // content://com.dyhpoon.fodex.provider/tag/search/morning
-        public static Uri buildTagName(String tagName) {
+        public static Uri buildSearchTagName(String tagName) {
             return CONTENT_URI.buildUpon()
                     .appendPath(PATH_SEGMENT_SEARCH)
                     .appendPath(tagName)
@@ -92,8 +93,23 @@ public class FodexContract {
         }
 
         // content://com.dyhpoon.fodex.provider/tag/search/morning => morning
-        public static String getTagName(Uri uri) {
+        public static String getSearchTagName(Uri uri) {
             if (!uri.getPathSegments().get(0).equals(TABLE_NAME) || !uri.getPathSegments().get(1).equals(PATH_SEGMENT_SEARCH))
+                throw new IllegalArgumentException(ERR_INVALID_URI + uri);
+            return uri.getPathSegments().get(2);
+        }
+
+        // content://com.dyhpoon.fodex.provider/tag/get/morning
+        public static Uri buildTagName(String tagName) {
+            return CONTENT_URI.buildUpon()
+                    .appendPath(PATH_SEGMENT_GET)
+                    .appendPath(tagName)
+                    .build();
+        }
+
+        // content://com.dyhpoon.fodex.provider/tag/get/morning => morning
+        public static String getTagName(Uri uri) {
+            if (!uri.getPathSegments().get(0).equals(TABLE_NAME) || !uri.getPathSegments().get(1).equals(PATH_SEGMENT_GET))
                 throw new IllegalArgumentException(ERR_INVALID_URI + uri);
             return uri.getPathSegments().get(2);
         }
