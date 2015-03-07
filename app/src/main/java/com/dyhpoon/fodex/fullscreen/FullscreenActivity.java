@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.view.ViewTreeObserver;
 import android.view.animation.OvershootInterpolator;
@@ -59,6 +60,7 @@ public class FullscreenActivity extends Activity {
     private ImageView mFakeImageView;
     private PagerContainer mContainer;
     private FullscreenViewPager mPager;
+    private ShareActionMenu mShareActionMenu;
 
     final private ColorDrawable mBackground = new ColorDrawable(Color.BLACK);
 
@@ -108,7 +110,7 @@ public class FullscreenActivity extends Activity {
                 }
             });
         }
-        new ShareActionMenu(this, FloatingActionButton.POSITION_CENTER);
+        mShareActionMenu = new ShareActionMenu(this, FloatingActionButton.POSITION_CENTER);
     }
 
     @TargetApi(16)
@@ -156,8 +158,24 @@ public class FullscreenActivity extends Activity {
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                         items.get(position).imageId);
             }
+
+            @Override
+            public void onLongClick(int position) {
+                mShareActionMenu.open();
+            }
+
+            @Override
+            public void onClick(int position) {
+                mShareActionMenu.close();
+            }
         });
         mPager.setCurrentItem(position);
+        mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                mShareActionMenu.close();
+            }
+        });
     }
 
     @TargetApi(16)

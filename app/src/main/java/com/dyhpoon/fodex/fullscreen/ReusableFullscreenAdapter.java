@@ -25,6 +25,8 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
     public TouchImageView currentView = null;
 
     public abstract Uri imageUriAtPosition(int position);
+    public abstract void onLongClick(int position);
+    public abstract void onClick(int position);
 
     private Context mContext;
     private int mWidth, mHeight;
@@ -48,11 +50,24 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(ViewGroup container, final int position) {
         final ImageView photoView = (ImageView) createOrRecycleView(mContext);
         Bitmap bm = MediaImage.getDecodedBitmap(mContext, imageUriAtPosition(position), mWidth, mHeight);
         photoView.setImageBitmap(bm);
         container.addView(photoView, 0);
+        photoView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ReusableFullscreenAdapter.this.onLongClick(position);
+                return true;
+            }
+        });
+        photoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ReusableFullscreenAdapter.this.onClick(position);
+            }
+        });
         return photoView;
     }
 

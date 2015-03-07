@@ -3,6 +3,7 @@ package com.dyhpoon.fodex.view;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -20,19 +21,22 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class ShareActionMenu {
 
+    private FloatingActionButton mFabButton;
+    private FloatingActionMenu mMenu;
+
     public ShareActionMenu(Context context, int position) {
         Resources resources = context.getResources();
 
         // Floating Action Button - cross button
         int size = resources.getDimensionPixelSize(R.dimen.fullscreen_action_menu_size);
-        final ImageView crossIcon = new ImageView(context);
-        crossIcon.setImageDrawable(resources.getDrawable(R.drawable.ic_cross));
-        final FloatingActionButton fabButton = new FloatingActionButton.Builder(context)
-                .setContentView(crossIcon, new FloatingActionButton.LayoutParams(size, size))
-                .setBackgroundDrawable(R.drawable.button_circle_red)
+        mFabButton = new FloatingActionButton.Builder(context)
+                .setContentView(null, new FloatingActionButton.LayoutParams(size, size))
+                .setBackgroundDrawable(R.drawable.circle_ring)
                 .setPosition(position)
                 .setLayoutParams(new FloatingActionButton.LayoutParams(size, size))
                 .build();
+        mFabButton.setEnabled(false);
+        mFabButton.setVisibility(View.INVISIBLE);
 
         // Sub Action Buttons
         int subSize = resources.getDimensionPixelSize(R.dimen.fullscreen_sab_button_size);
@@ -49,15 +53,40 @@ public class ShareActionMenu {
         CircleImageView googlePlusIcon =
                 createCircleButton(context, R.drawable.ic_googleplus, subSize, borderWidth);
 
-        new FloatingActionMenu.Builder(context)
+        // setup menu
+        mMenu = new FloatingActionMenu.Builder(context)
                 .addSubActionView(buttonsBuilder.setContentView(facebookIcon).build())
                 .addSubActionView(buttonsBuilder.setContentView(whatsappIcon).build())
                 .addSubActionView(buttonsBuilder.setContentView(googlePlusIcon).build())
                 .setAnimationHandler(new BouncyAnimationHandler())
                 .setStartAngle(-25)
                 .setEndAngle(-150)
-                .attachTo(fabButton)
+                .attachTo(mFabButton)
                 .build();
+
+        // override original onClickListener, we will open/close it in other ways
+        mFabButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                close();
+            }
+        });
+    }
+
+    public void open() {
+        if (!mMenu.isOpen()) {
+            mFabButton.setVisibility(View.VISIBLE);
+            mFabButton.setEnabled(true);
+            mMenu.open(true);
+        }
+    }
+
+    public void close() {
+        if (mMenu.isOpen()) {
+            mMenu.close(true);
+            mFabButton.setEnabled(false);
+            mFabButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     private CircleImageView createCircleButton(Context context, int resId, int size, int borderWidth) {
