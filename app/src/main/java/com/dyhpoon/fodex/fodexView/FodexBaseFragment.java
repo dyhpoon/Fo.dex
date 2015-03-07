@@ -254,7 +254,7 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
                     ((FodexLayoutSpecItem) mGridView.getItemAtPosition(position)).fodexItem;
             List<String> tags = FodexCore.getTags(getActivity(), item.id);
             if (tags.size() > 0) {
-                ShowTagsDialog dialog = ShowTagsDialog.newInstance(tags);
+                final ShowTagsDialog dialog = ShowTagsDialog.newInstance(tags);
                 dialog.setOnClickListener(new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -265,6 +265,9 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
                     @Override
                     public void onDelete(CharSequence tag) {
                         FodexCore.deleteTagFromPhoto(getActivity(), item.id, tag.toString());
+                        if (FodexCore.getTags(getActivity(), item.id).size() == 0) {
+                            dialog.dismiss();
+                        }
                     }
                 });
                 dialog.show(getActivity().getSupportFragmentManager(), "show_tag");
