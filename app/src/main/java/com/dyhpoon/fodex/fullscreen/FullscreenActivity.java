@@ -70,7 +70,11 @@ public class FullscreenActivity extends Activity {
         setContentView(R.layout.activity_fullscreen);
 
         Bundle bundle = getIntent().getExtras();
-        mImageIndex         = bundle.getInt(RESOURCE_INDEX, 0);
+        mImageIndex =
+                (savedInstanceState == null)
+                        ? bundle.getInt(RESOURCE_INDEX, 0)
+                        : savedInstanceState.getInt(RESOURCE_INDEX, 0);
+        
         final String url    = bundle.getString(RESOURCE_URL);
         final int top       = bundle.getInt(TOP);
         final int left      = bundle.getInt(LEFT);
@@ -79,12 +83,11 @@ public class FullscreenActivity extends Activity {
         viewInfos           = getIntent().getParcelableArrayListExtra(VIEWS_INFO);
         fodexItems          = getIntent().getParcelableArrayListExtra(ITEMS_INFO);
 
-        mBackground.setAlpha(0);    // prevent flashing
-
         setupViewSwitcher();
         setupFullscreenPager(fodexItems, mImageIndex);
         setupFakeView(url);
         if (savedInstanceState == null) {
+            mBackground.setAlpha(0);    // prevent flashing
             ViewTreeObserver observer = mPager.getViewTreeObserver();
             observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
@@ -109,8 +112,16 @@ public class FullscreenActivity extends Activity {
                     return true;
                 }
             });
+        } else {
+            mSwitcher.showNext();
         }
         mShareActionMenu = new ShareActionMenu(this, FloatingActionButton.POSITION_CENTER);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(RESOURCE_INDEX, mPager.getCurrentItem());
     }
 
     @TargetApi(16)
