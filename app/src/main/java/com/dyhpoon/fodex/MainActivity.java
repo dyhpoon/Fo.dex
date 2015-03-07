@@ -2,6 +2,7 @@ package com.dyhpoon.fodex;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +16,8 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.crashlytics.android.Crashlytics;
+import com.dyhpoon.fodex.data.FodexCore;
+import com.dyhpoon.fodex.data.SearchViewCursorAdapter;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerCallbacks;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerData;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerFragment;
@@ -55,7 +58,7 @@ public class MainActivity extends ActionBarActivity
 
             // setup searchview
             SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-            SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+            final SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
@@ -65,7 +68,9 @@ public class MainActivity extends ActionBarActivity
 
                 @Override
                 public boolean onQueryTextChange(String s) {
-                    // TODO: add adapter for queries, see http://tpbapp.com/android-development/android-action-bar-searchview-tutorial/
+                    Cursor cursor = FodexCore.getMatchedTags(MainActivity.this, s);
+                    SearchViewCursorAdapter adapter = new SearchViewCursorAdapter(MainActivity.this, cursor, true);
+                    searchView.setSuggestionsAdapter(adapter);
                     return true;
                 }
             });

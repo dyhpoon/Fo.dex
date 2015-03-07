@@ -33,7 +33,8 @@ public class FodexProvider extends ContentProvider {
     private static final int TAG_ID = 201;
     private static final int TAG_GET = 202;
     private static final int TAG_SEARCH = 203;
-    private static final int TAG_KEYWORDS = 204;
+    private static final int TAG_SEARCH_ALL = 204;
+    private static final int TAG_KEYWORDS = 205;
 
     private static final int IMAGE_TAG = 300;
     private static final int IMAGE_TAG_ID = 301;
@@ -65,6 +66,8 @@ public class FodexProvider extends ContentProvider {
         matcher.addURI(authority, tagPath + "/" + TagEntry.PATH_SEGMENT_GET + "/*", TAG_GET);
         // content://com.dyhpoon.fodex.provider/tag/search/morning
         matcher.addURI(authority, tagPath + "/" + TagEntry.PATH_SEGMENT_SEARCH + "/*", TAG_SEARCH);
+        // content://com.dyhpoon.fodex.provider/tag/search/
+        matcher.addURI(authority, tagPath + "/" + TagEntry.PATH_SEGMENT_SEARCH + "/", TAG_SEARCH_ALL);
         // content://com.dyhpoon.fodex.provider/tag/keywords/morning+evening
         matcher.addURI(authority, tagPath + "/" + TagEntry.PATH_SEGMENT_KEYWORD + "/*", TAG_KEYWORDS);
 
@@ -148,12 +151,21 @@ public class FodexProvider extends ContentProvider {
                         sortOrder);
                 break;
             case TAG_SEARCH:
-                Log.v("HELLO", TagEntry.getSearchTagName(uri));
                 cursor = mOpenHelper.getReadableDatabase().query(
                         TagEntry.TABLE_NAME,
                         projection,
                         TagEntry.COLUMN_TAG_NAME + " LIKE ?",
                         new String[]{"%" + TagEntry.getSearchTagName(uri) + "%"},
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case TAG_SEARCH_ALL:
+                cursor = mOpenHelper.getReadableDatabase().query(
+                        TagEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
                         null,
                         null,
                         sortOrder);
@@ -354,6 +366,8 @@ NOT IN (SELECT DISTINCT image_id
             case TAG_GET:
                 return TagEntry.CONTENT_ITEM_TYPE;
             case TAG_SEARCH:
+                return TagEntry.CONTENT_DIR_TYPE;
+            case TAG_SEARCH_ALL:
                 return TagEntry.CONTENT_DIR_TYPE;
             case TAG_KEYWORDS:
                 return ImageEntry.CONTENT_DIR_TYPE;

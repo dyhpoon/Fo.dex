@@ -87,6 +87,16 @@ public class FodexCore {
         return tags;
     }
 
+    public static Cursor getMatchedTags(Context context, String words) {
+        Cursor cursor = context.getContentResolver().query(
+                TagEntry.buildSearchTagName(words),
+                null,
+                null,
+                null,
+                null);
+        return cursor;
+    }
+
     private static List<FodexItem> convertCursorToItems(Cursor cursor) {
         List<FodexItem> items = new ArrayList<>();
         if (cursor.moveToFirst()) {
