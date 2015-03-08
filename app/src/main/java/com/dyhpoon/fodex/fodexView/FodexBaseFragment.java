@@ -94,11 +94,6 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
         return view;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
     public void reload() {
         mFodexItems = itemsForAdapters();
         if (mFodexItems == null) throw new AssertionError("expect itemsForAdapters to be not null.");
