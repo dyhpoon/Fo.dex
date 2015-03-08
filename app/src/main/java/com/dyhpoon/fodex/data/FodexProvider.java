@@ -39,6 +39,7 @@ public class FodexProvider extends ContentProvider {
     private static final int IMAGE_TAG = 300;
     private static final int IMAGE_TAG_ID = 301;
     private static final int IMAGE_TAG_SEARCH = 302;
+    private static final int IMAGE_TAG_NAME = 303;
 
     private static final int INDEXED_IMAGE = 400;
 
@@ -78,6 +79,8 @@ public class FodexProvider extends ContentProvider {
         matcher.addURI(authority, imageTagPath + "/#", IMAGE_TAG_ID);
         // content://com.dyhpoon.fodex.provider/image_tag/search/1
         matcher.addURI(authority, imageTagPath + "/" + ImageTagEntry.PATH_SEGMENT_SEARCH + "/#", IMAGE_TAG_SEARCH);
+        // content://com.dyhpoon.fodex.provider/image_tag/name/morning
+        matcher.addURI(authority, imageTagPath + "/" + ImageTagEntry.PATH_SEGMENT_NAME + "/*", IMAGE_TAG_NAME);
 
         final String indexImagePath = FodexContract.PATH_INDEXED_IMAGE;
         // content://com.dyhpoon.fodex.provider/indexed_image
@@ -218,7 +221,7 @@ having count(tag.name) = 2
                 }
 
                 cursor = builder.query(
-                        mOpenHelper.getWritableDatabase(),
+                        mOpenHelper.getReadableDatabase(),
                         projection,
                         selection,
                         selectionArgs,
@@ -268,10 +271,40 @@ WHERE image._id = 100
                         " WHERE " + ImageEntry.TABLE_NAME + "." + ImageEntry._ID + " = " + ImageTagEntry.getSearchId(uri) + ")");
 
                 cursor = builder.query(
-                        mOpenHelper.getWritableDatabase(),
+                        mOpenHelper.getReadableDatabase(),
                         projection,
                         selection,
                         selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            }
+            case IMAGE_TAG_NAME:
+                /*
+SELECT tag._id, tag.name, tag.visible
+FROM image_tag
+INNER JOIN tag
+ON tag_id = tag._id
+                 */
+            {
+                final SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+
+                builder.setTables("(SELECT *" +
+                        " FROM " + ImageTagEntry.TABLE_NAME +
+                        " INNER JOIN " + TagEntry.TABLE_NAME + " ON " + TagEntry.TABLE_NAME + "." + TagEntry._ID + " = " + ImageTagEntry.TABLE_NAME + "." + ImageTagEntry.COLUMN_IT_TAG_ID + ")");
+
+                builder.setProjectionMap(new HashMap<String, String>() {{
+                    put(TagEntry._ID, TagEntry._ID);
+                    put(TagEntry.COLUMN_TAG_NAME, TagEntry.COLUMN_TAG_NAME);
+                    put(TagEntry.COLUMN_TAG_VISIBLE, TagEntry.COLUMN_TAG_VISIBLE);
+                }});
+
+                cursor = builder.query(
+                        mOpenHelper.getReadableDatabase(),
+                        projection,
+                        TagEntry.COLUMN_TAG_NAME + "=?",
+                        new String[]{ImageTagEntry.getSearchName(uri)},
                         null,
                         null,
                         sortOrder);
@@ -304,7 +337,7 @@ INNER JOIN image ON recent.image_id = image._id
                 }});
 
                 cursor = builder.query(
-                        mOpenHelper.getWritableDatabase(),
+                        mOpenHelper.getReadableDatabase(),
                         projection,
                         selection,
                         selectionArgs,
@@ -337,7 +370,7 @@ NOT IN (SELECT DISTINCT image_id
                 }});
 
                 cursor = builder.query(
-                        mOpenHelper.getWritableDatabase(),
+                        mOpenHelper.getReadableDatabase(),
                         projection,
                         selection,
                         selectionArgs,
@@ -377,6 +410,8 @@ NOT IN (SELECT DISTINCT image_id
                 return ImageTagEntry.CONTENT_ITEM_TYPE;
             case IMAGE_TAG_SEARCH:
                 return ImageTagEntry.CONTENT_DIR_TYPE;
+            case IMAGE_TAG_NAME:
+                return TagEntry.CONTENT_DIR_TYPE;
             case INDEXED_IMAGE:
                 return ImageEntry.CONTENT_DIR_TYPE;
             case UNINDEXED_IMAGE:

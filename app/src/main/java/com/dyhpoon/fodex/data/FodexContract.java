@@ -135,6 +135,7 @@ public class FodexContract {
 
         // Path Segments
         public static final String PATH_SEGMENT_SEARCH = "search";
+        public static final String PATH_SEGMENT_NAME = "name";
 
         // Building Uris
         // content://com.dyhpoon.fodex.provider/image_tag/1
@@ -159,9 +160,24 @@ public class FodexContract {
                     .build();
         }
 
+        // content://com.dyhpoon.fodex.provider/image_tag/name/morning
+        public static Uri buildSearchName(String tagName) {
+            return CONTENT_URI.buildUpon()
+                    .appendPath(PATH_SEGMENT_NAME)
+                    .appendPath(String.valueOf(tagName))
+                    .build();
+        }
+
         // content://com.dyhpoon.fodex.provider/image_tag/search/123123 => 123123
         public static String getSearchId(Uri uri) {
             if (!uri.getPathSegments().get(0).equals(TABLE_NAME) || !uri.getPathSegments().get(1).equals(PATH_SEGMENT_SEARCH))
+                throw new IllegalArgumentException(ERR_INVALID_URI + uri);
+            return uri.getPathSegments().get(2);
+        }
+
+        // content://com.dyhpoon.fodex.provider/image_tag/name/morning => morning
+        public static String getSearchName(Uri uri) {
+            if (!uri.getPathSegments().get(0).equals(TABLE_NAME) || !uri.getPathSegments().get(1).equals(PATH_SEGMENT_NAME))
                 throw new IllegalArgumentException(ERR_INVALID_URI + uri);
             return uri.getPathSegments().get(2);
         }

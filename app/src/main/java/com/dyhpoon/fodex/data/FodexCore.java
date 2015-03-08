@@ -129,15 +129,35 @@ public class FodexCore {
     }
 
     public static void deleteTagFromPhoto(Context context, long imageId, String tag) {
+        ContentResolver resolver = context.getContentResolver();
+
         // get the id of tag first
         long tagId = getTagId(context, tag);
 
         // remove record
-        context.getContentResolver().delete(
+        int rowsDeleted = resolver.delete(
                 ImageTagEntry.CONTENT_URI,
                 ImageTagEntry.COLUMN_IT_IMAGE_ID + "= ? AND " + ImageTagEntry.COLUMN_IT_TAG_ID + "= ?",
                 new String[]{String.valueOf(imageId), String.valueOf(tagId)}
         );
+
+        // delete tag record if no records in image_tag points to it anymore
+        if (rowsDeleted > 0) {
+            Cursor cursor = resolver.query(
+                    ImageTagEntry.buildSearchName(tag),
+                    null,
+                    null,
+                    null,
+                    null);
+            if (!cursor.moveToFirst()) {
+                // delete tag
+                resolver.delete(
+                        TagEntry.CONTENT_URI,
+                        TagEntry.COLUMN_TAG_NAME + "=?",
+                        new String[]{tag});
+            }
+            cursor.close();
+        }
     }
 
     public static long getTagId(Context context, String tag) {
