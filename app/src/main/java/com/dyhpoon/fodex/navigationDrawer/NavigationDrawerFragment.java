@@ -55,18 +55,6 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
-        }
-
-        // Select either the default item (0) or the last selected item.
-        selectItem(mCurrentSelectedPosition);
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Indicate that this fragment would like to influence the set of actions in the action bar.
@@ -78,6 +66,13 @@ public class NavigationDrawerFragment extends Fragment {
                              Bundle savedInstanceState) {
         View drawer = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
         setupDrawerListView(drawer);
+
+        if (savedInstanceState != null) {
+            mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
+        }
+        // Select either the default item (0) or the last selected item.
+        selectItem(mCurrentSelectedPosition);
+
         return drawer;
     }
 
