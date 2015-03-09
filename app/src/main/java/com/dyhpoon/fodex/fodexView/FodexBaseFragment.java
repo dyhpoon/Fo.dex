@@ -1,18 +1,23 @@
 package com.dyhpoon.fodex.fodexView;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.GenericRequestBuilder;
@@ -25,6 +30,7 @@ import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexCore;
 import com.dyhpoon.fodex.data.FodexImageContract;
 import com.dyhpoon.fodex.data.FodexItem;
+import com.dyhpoon.fodex.data.SearchViewCursorAdapter;
 import com.dyhpoon.fodex.fullscreen.FullscreenActivity;
 import com.dyhpoon.fodex.view.ImageGridItem;
 import com.dyhpoon.fodex.view.InsertTagDialog;
@@ -87,6 +93,36 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
         setupPreload();
 
         return view;
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.clear();
+        getActivity().getMenuInflater().inflate(R.menu.main, menu);
+
+        // setup searchview
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        final SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                Cursor cursor = FodexCore.getMatchedTags(getActivity(), s);
+                SearchViewCursorAdapter adapter = new SearchViewCursorAdapter(getActivity(), cursor, true);
+                searchView.setSuggestionsAdapter(adapter);
+                return true;
+            }
+        });
+
+        // set hints
+        EditText searchText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchText.setHint(R.string.search_bar_hint);
     }
 
     public void reload() {

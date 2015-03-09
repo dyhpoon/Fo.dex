@@ -1,23 +1,16 @@
 package com.dyhpoon.fodex;
 
-import android.app.SearchManager;
-import android.content.Context;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 
 import com.crashlytics.android.Crashlytics;
-import com.dyhpoon.fodex.data.FodexCore;
-import com.dyhpoon.fodex.data.SearchViewCursorAdapter;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerCallbacks;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerData;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerFragment;
@@ -54,31 +47,6 @@ public class MainActivity extends ActionBarActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            getMenuInflater().inflate(R.menu.main, menu);
-
-            // setup searchview
-            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-            final SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String s) {
-                    return true;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String s) {
-                    Cursor cursor = FodexCore.getMatchedTags(MainActivity.this, s);
-                    SearchViewCursorAdapter adapter = new SearchViewCursorAdapter(MainActivity.this, cursor, true);
-                    searchView.setSuggestionsAdapter(adapter);
-                    return true;
-                }
-            });
-
-            // set hints
-            EditText searchText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-            searchText.setHint(R.string.hashtags);
-
             restoreActionBar();
             return true;
         }

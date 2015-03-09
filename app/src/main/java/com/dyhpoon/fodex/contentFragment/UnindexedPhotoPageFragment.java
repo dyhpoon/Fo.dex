@@ -3,6 +3,7 @@ package com.dyhpoon.fodex.contentFragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -33,6 +34,12 @@ public class UnindexedPhotoPageFragment extends FodexBaseFragment<FodexItem> {
         FodexCore.syncAllPhotos(getActivity());
         mItems = FodexCore.getUnindexPhotoItems(getActivity());
         reload();
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        // not to show searchView in this page.
+        menu.clear();
     }
 
     @Override
