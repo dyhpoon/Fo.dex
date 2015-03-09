@@ -47,4 +47,14 @@ public class UnindexedPhotoPageFragment extends FodexBaseFragment<FodexItem> {
         return mItems;
     }
 
+    @Override
+    protected void onQueryTagsSubmitted(List<String> tags) {
+
+    }
+
+    @Override
+    protected void onSearchEnd() {
+
+    }
+
 }

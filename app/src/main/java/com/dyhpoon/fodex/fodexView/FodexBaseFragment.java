@@ -14,6 +14,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -45,6 +46,8 @@ import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter
 import com.felipecsl.asymmetricgridview.library.widget.GridItemViewInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -77,6 +80,17 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
      */
     protected abstract List<T>itemsForAdapters();
 
+    /**
+     * Called when user submits a query in searchView.
+     * @param tags
+     */
+    protected abstract void onQueryTagsSubmitted(List<String> tags);
+
+    /**
+     * Called when user clicks on the cross button in searchView
+     */
+    protected abstract void onSearchEnd();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -101,13 +115,25 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
         menu.clear();
         getActivity().getMenuInflater().inflate(R.menu.main, menu);
 
-        // setup searchview
+        // setup SearchView and EditText
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-        final SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        final MenuItem searchMenuItem = menu.findItem(R.id.menu_search);
+        final SearchView searchView = (SearchView) searchMenuItem.getActionView();
+
+        final EditText searchText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchText.setHint(R.string.search_bar_hint);
+
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                String[] tags = s.split("\\s+");
+                List<String> filteredTags = new LinkedList<>(Arrays.asList(tags));
+                filteredTags.removeAll(Arrays.asList("", null));
+                if (filteredTags.size() != 0) {
+                    onQueryTagsSubmitted(filteredTags);
+                }
+                searchView.clearFocus();
                 return true;
             }
 
@@ -120,9 +146,13 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
             }
         });
 
-        // set hints
-        EditText searchText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchText.setHint(R.string.search_bar_hint);
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                onSearchEnd();
+                return false;
+            }
+        });
     }
 
     public void reload() {

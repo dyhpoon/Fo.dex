@@ -39,4 +39,14 @@ public class IndexedPhotosPageFragment extends FodexBaseFragment<FodexItem> {
     protected List<FodexItem> itemsForAdapters() {
         return mItems;
     }
+
+    @Override
+    protected void onQueryTagsSubmitted(List<String> tags) {
+
+    }
+
+    @Override
+    protected void onSearchEnd() {
+
+    }
 }

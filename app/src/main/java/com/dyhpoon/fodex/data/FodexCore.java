@@ -64,6 +64,19 @@ public class FodexCore {
         return items;
     }
 
+    public static List<FodexItem> getSearchedPhotoItems(Context context, List<String>tagNames) {
+        Cursor cursor = context.getContentResolver().query(
+                ImageTagEntry.buildTagNames(tagNames),
+                null,
+                null,
+                null,
+                null);
+
+        List<FodexItem> items = convertCursorToItems(cursor);
+        cursor.close();
+        return items;
+    }
+
     public static List<String> getTags(Context context, long imageId) {
         Cursor cursor = context.getContentResolver().query(
                 ImageTagEntry.buildSearchId(imageId),
