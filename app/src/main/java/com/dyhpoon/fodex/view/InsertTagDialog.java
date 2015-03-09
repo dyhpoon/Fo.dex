@@ -11,6 +11,10 @@ import android.widget.TextView;
 
 import com.dyhpoon.fodex.R;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 import fr.tvbarthel.lib.blurdialogfragment.SupportBlurDialogFragment;
 
 /**
@@ -81,8 +85,15 @@ public class InsertTagDialog extends SupportBlurDialogFragment {
         public void onClick(View v) {
             if (mListener != null) {
                 String[] tags = mEditText.getText().toString().split("\\s+");
-                if (tags.length == 0 || tags[0].length() == 0) tags = null;
-                mListener.onClick(mDialog, tags, mDialogButtonType);
+                List<String> filteredTags = new LinkedList<>(Arrays.asList(tags));
+                filteredTags.removeAll(Arrays.asList("", null));
+                if (filteredTags.size() == 0) {
+                    filteredTags = null;
+                }
+                mListener.onClick(
+                        mDialog,
+                        filteredTags.toArray(new String[filteredTags.size()]),
+                        mDialogButtonType);
             }
         }
     }
