@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.crashlytics.android.Crashlytics;
+import com.dyhpoon.fodex.fodexView.OnBackPressedHandler;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerCallbacks;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerData;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerFragment;
@@ -42,6 +43,17 @@ public class MainActivity extends ActionBarActivity
 
         mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+    }
+
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
+        if (fragment != null && fragment instanceof OnBackPressedHandler) {
+            boolean isHandled = ((OnBackPressedHandler)fragment).onCustomBackPressed();
+            if (!isHandled) super.onBackPressed();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override

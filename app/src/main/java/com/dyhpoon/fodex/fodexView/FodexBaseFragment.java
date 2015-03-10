@@ -55,7 +55,9 @@ import java.util.List;
 /**
  * Created by darrenpoon on 16/1/15.
  */
-public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
+public abstract class FodexBaseFragment <T extends FodexItem>
+        extends Fragment
+        implements OnBackPressedHandler {
 
     public State state = State.NORMAL;
 
@@ -75,6 +77,7 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
     private List<FodexLayoutSpecItem> mSelectedItems = new ArrayList<>();
     private List<T> mFodexItems;
     private Cursor mSuggestionCursor;
+    private SearchView mSearchView;
 
     /**
      * List of media photo items.
@@ -120,6 +123,16 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
     }
 
     @Override
+    public boolean onCustomBackPressed() {
+        if (!mSearchView.isIconified()) {
+            mSearchView.setIconified(true);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         menu.clear();
@@ -128,20 +141,20 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
         // setup SearchView and EditText
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         final MenuItem searchMenuItem = menu.findItem(R.id.menu_search);
-        final SearchView searchView = (SearchView) searchMenuItem.getActionView();
+        mSearchView = (SearchView) searchMenuItem.getActionView();
 
-        final EditText searchText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        final EditText searchText = (EditText) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         searchText.setHint(R.string.search_bar_hint);
 
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 List<String> filteredTags = StringUtils.tokenize(s);
                 if (filteredTags.size() != 0) {
                     onQueryTagsSubmitted(filteredTags);
                 }
-                searchView.clearFocus();
+                mSearchView.clearFocus();
                 return true;
             }
 
@@ -162,7 +175,7 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
                             getActivity(),
                             mSuggestionCursor,
                             TextUtils.join(" ", filteredTags));
-                    searchView.setSuggestionsAdapter(adapter);
+                    mSearchView.setSuggestionsAdapter(adapter);
                     return true;
                 } else {
                     return false;
@@ -170,7 +183,7 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
             }
         });
 
-        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+        mSearchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
             @Override
             public boolean onSuggestionSelect(int i) {
                 return false;
@@ -200,7 +213,7 @@ public abstract class FodexBaseFragment <T extends FodexItem> extends Fragment {
             }
         });
 
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
                 onSearchEnd();
