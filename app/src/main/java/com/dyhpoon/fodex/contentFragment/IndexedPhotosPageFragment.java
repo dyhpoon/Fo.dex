@@ -42,11 +42,13 @@ public class IndexedPhotosPageFragment extends FodexBaseFragment<FodexItem> {
 
     @Override
     protected void onQueryTagsSubmitted(List<String> tags) {
-
+        mItems = FodexCore.getSearchedPhotoItems(getActivity(), tags);
+        reload();
     }
 
     @Override
     protected void onSearchEnd() {
-
+        mItems = FodexCore.getIndexedPhotoItems(getActivity());
+        reload();
     }
 }

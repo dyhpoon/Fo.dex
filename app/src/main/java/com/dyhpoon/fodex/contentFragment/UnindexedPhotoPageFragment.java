@@ -49,12 +49,12 @@ public class UnindexedPhotoPageFragment extends FodexBaseFragment<FodexItem> {
 
     @Override
     protected void onQueryTagsSubmitted(List<String> tags) {
-
+        // do nothing
     }
 
     @Override
     protected void onSearchEnd() {
-
+        // do nothing
     }
 
 }

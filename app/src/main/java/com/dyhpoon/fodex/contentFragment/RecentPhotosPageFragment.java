@@ -42,12 +42,16 @@ public class RecentPhotosPageFragment extends FodexBaseFragment<FodexItem> {
 
     @Override
     protected void onQueryTagsSubmitted(List<String> tags) {
-
+        // TODO
+        mItems = FodexCore.getSearchedPhotoItems(getActivity(), tags);
+        reload();
     }
 
     @Override
     protected void onSearchEnd() {
-
+        // TODO
+        mItems = FodexCore.getAllPhotoItems(getActivity());
+        reload();
     }
 
 }
