@@ -15,12 +15,11 @@ import com.dyhpoon.fodex.R;
  */
 public class SearchViewCursorAdapter extends CursorAdapter {
 
-    public SearchViewCursorAdapter(Context context, Cursor c, boolean autoRequery) {
-        super(context, c, autoRequery);
-    }
+    private String mAppendedString;
 
-    public SearchViewCursorAdapter(Context context, Cursor c, int flags) {
-        super(context, c, flags);
+    public SearchViewCursorAdapter(Context context, Cursor c, String appendedString) {
+        super(context, c, true);
+        mAppendedString = appendedString;
     }
 
     @Override
@@ -34,7 +33,8 @@ public class SearchViewCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         SearchViewHolder holder = (SearchViewHolder) view.getTag();
-        holder.textview.setText(cursor.getString(cursor.getColumnIndex(FodexContract.TagEntry.COLUMN_TAG_NAME)));
+        String suggestion = mAppendedString + " " + cursor.getString(cursor.getColumnIndex(FodexContract.TagEntry.COLUMN_TAG_NAME));
+        holder.textview.setText(suggestion);
     }
 
     private class SearchViewHolder {
