@@ -29,7 +29,6 @@ import com.dyhpoon.fodex.util.SimpleAnimatorListener;
 import com.dyhpoon.fodex.view.PagerContainer;
 import com.dyhpoon.fodex.view.ShareActionMenu;
 import com.dyhpoon.fodex.view.TouchImageView;
-import com.felipecsl.asymmetricgridview.library.widget.GridItemViewInfo;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 
 import java.util.List;
@@ -45,7 +44,6 @@ public class FullscreenActivity extends Activity {
     public static final String LEFT             = PREFIX + ".LEFT";
     public static final String WIDTH            = PREFIX + ".WIDTH";
     public static final String HEIGHT           = PREFIX + ".HEIGHT";
-    public static final String VIEWS_INFO       = PREFIX + ".VIEWS_INFO";
     public static final String ITEMS_INFO       = PREFIX + ".ITEMS_INFO";
 
     private int mImageIndex;
@@ -53,7 +51,6 @@ public class FullscreenActivity extends Activity {
     private int mTopDelta;
     private float mWidthScale;
     private float mHeightScale;
-    private List<GridItemViewInfo> viewInfos;
     private List<FodexItem> fodexItems;
 
     private ViewSwitcher mSwitcher;
@@ -80,7 +77,6 @@ public class FullscreenActivity extends Activity {
         final int left      = bundle.getInt(LEFT);
         final int width     = bundle.getInt(WIDTH);
         final int height    = bundle.getInt(HEIGHT);
-        viewInfos           = getIntent().getParcelableArrayListExtra(VIEWS_INFO);
         fodexItems          = getIntent().getParcelableArrayListExtra(ITEMS_INFO);
 
         setupViewSwitcher();

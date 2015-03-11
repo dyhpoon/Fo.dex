@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -31,7 +30,6 @@ import com.dyhpoon.fab.FloatingActionsMenu;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexContract;
 import com.dyhpoon.fodex.data.FodexCore;
-import com.dyhpoon.fodex.data.FodexImageContract;
 import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.data.SearchViewCursorAdapter;
 import com.dyhpoon.fodex.fullscreen.FullscreenActivity;
@@ -46,7 +44,6 @@ import com.dyhpoon.fodex.view.ShowTagsDialog;
 import com.felipecsl.asymmetricgridview.library.Utils;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridView;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter;
-import com.felipecsl.asymmetricgridview.library.widget.GridItemViewInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +106,7 @@ public abstract class FodexBaseFragment <T extends FodexItem>
         setupFloatingButtonsAndMenu();
         setupAsymmetricGridView();
         setupPullToRefresh();
-        setupPreload();
+        setupImagePreload();
 
         return view;
     }
@@ -139,94 +136,16 @@ public abstract class FodexBaseFragment <T extends FodexItem>
         getActivity().getMenuInflater().inflate(R.menu.main, menu);
 
         // setup SearchView and EditText
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         final MenuItem searchMenuItem = menu.findItem(R.id.menu_search);
         mSearchView = (SearchView) searchMenuItem.getActionView();
-
-        final EditText searchText = (EditText) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchText.setHint(R.string.search_bar_hint);
-
-        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                List<String> filteredTags = StringUtils.tokenize(s);
-                if (filteredTags.size() != 0) {
-                    onQueryTagsSubmitted(filteredTags);
-                }
-                mSearchView.clearFocus();
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                if (mSuggestionCursor != null) {
-                    mSuggestionCursor.close();
-                }
-
-                List<String> filteredTags = StringUtils.tokenize(s);
-                if (filteredTags.size() != 0) {
-                    String lastTag = filteredTags.remove(filteredTags.size() - 1);
-
-                    mSuggestionCursor = FodexCore.getMatchedTags(
-                            getActivity(),
-                            lastTag);
-                    SearchViewCursorAdapter adapter = new SearchViewCursorAdapter(
-                            getActivity(),
-                            mSuggestionCursor,
-                            TextUtils.join(" ", filteredTags));
-                    mSearchView.setSuggestionsAdapter(adapter);
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        });
-
-        mSearchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
-            @Override
-            public boolean onSuggestionSelect(int i) {
-                return false;
-            }
-
-            @Override
-            public boolean onSuggestionClick(int i) {
-                if (mSuggestionCursor == null) return false;
-
-                // set suggestion word to edit text
-                mSuggestionCursor.moveToPosition(i);
-                String suggestion =
-                        mSuggestionCursor.getString(mSuggestionCursor.getColumnIndex(FodexContract.TagEntry.COLUMN_TAG_NAME));
-
-                // remove the last element and append suggestion word to it
-                List<String> textsInEditText = StringUtils.tokenize(searchText.getText().toString());
-                if (textsInEditText.size() > 0) {
-                    textsInEditText.remove(textsInEditText.size() - 1);
-                }
-                textsInEditText.add(suggestion);
-                searchText.setText(TextUtils.join(" ", textsInEditText));
-
-                // set edit text selection
-                searchText.setSelection(searchText.getText().length());
-
-                return true;
-            }
-        });
-
-        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                onSearchEnd();
-                return false;
-            }
-        });
+        setupSearchView();
     }
 
     public void reload() {
         mFodexItems = itemsForAdapters();
         if (mFodexItems == null) throw new AssertionError("expect itemsForAdapters to be not null.");
 
-        List<FodexLayoutSpecItem> layoutItems = new ArrayList<FodexLayoutSpecItem>();
+        List<FodexLayoutSpecItem> layoutItems = new ArrayList<>();
         for (int i = 0; i < mFodexItems.size(); i++) {
             int index = i % 10;
             int columnSpan;
@@ -302,16 +221,96 @@ public abstract class FodexBaseFragment <T extends FodexItem>
         });
     }
 
-    private void setupPreload() {
+    private void setupImagePreload() {
         mPreloadRequest = Glide.with(this)
                 .fromMediaStore()
                 .fitCenter();
 
-        final AsymmetricSizeProvider sizeProvider =
-                new AsymmetricSizeProvider(mAdapter);
-        final ListPreloader<FodexLayoutSpecItem> preloader =
-                new ListPreloader<FodexLayoutSpecItem>(mAdapter, sizeProvider, PRELOAD_SIZE);
+        final AsymmetricSizeProvider sizeProvider = new AsymmetricSizeProvider(mAdapter);
+        final ListPreloader<FodexLayoutSpecItem> preloader = new ListPreloader<>(mAdapter, sizeProvider, PRELOAD_SIZE);
         mFloatingActionMenu.attachToListView(mGridView, null, preloader);
+    }
+
+    private void setupSearchView() {
+        final EditText searchText = (EditText) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        searchText.setHint(R.string.search_bar_hint);
+
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                List<String> filteredTags = StringUtils.tokenize(s);
+                if (filteredTags.size() != 0) {
+                    onQueryTagsSubmitted(filteredTags);
+                }
+                mSearchView.clearFocus();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                // close adapter if exists, prevent leak
+                if (mSuggestionCursor != null) {
+                    mSuggestionCursor.close();
+                }
+
+                List<String> filteredTags = StringUtils.tokenize(s);
+                if (filteredTags.size() != 0) {
+                    String lastTag = filteredTags.remove(filteredTags.size() - 1);
+                    mSuggestionCursor = FodexCore.getMatchedTags(getActivity(), lastTag);
+                    SearchViewCursorAdapter adapter =
+                            new SearchViewCursorAdapter(getActivity(),
+                                    mSuggestionCursor,
+                                    TextUtils.join(" ", filteredTags));
+
+                    mSearchView.setSuggestionsAdapter(adapter);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+
+        mSearchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int i) {
+                return false;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int i) {
+                if (mSuggestionCursor == null) {
+                    return false;
+                }
+
+                // set suggestion word to edit text
+                mSuggestionCursor.moveToPosition(i);
+                String suggestion =
+                        mSuggestionCursor.getString(mSuggestionCursor.getColumnIndex(FodexContract.TagEntry.COLUMN_TAG_NAME));
+
+                // remove the last element and append suggestion word to it
+                List<String> textsInEditText = StringUtils.tokenize(searchText.getText().toString());
+                if (textsInEditText.size() > 0) {
+                    textsInEditText.remove(textsInEditText.size() - 1);
+                }
+                textsInEditText.add(suggestion);
+                searchText.setText(TextUtils.join(" ", textsInEditText));
+
+                // set edit text selection
+                searchText.setSelection(searchText.getText().length());
+
+                return true;
+            }
+        });
+
+        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                onSearchEnd();
+                return false;
+            }
+        });
     }
 
     private void showAddTagDialog() {
@@ -320,6 +319,7 @@ public abstract class FodexBaseFragment <T extends FodexItem>
             @Override
             public void onClick(DialogInterface dialog, String[] tags, int which) {
                 switch (which) {
+                    // click add
                     case DialogInterface.BUTTON_POSITIVE:
                         if (tags != null) {
                             // add tags to DB
@@ -338,6 +338,7 @@ public abstract class FodexBaseFragment <T extends FodexItem>
                             PleaseInertTagToast.make(getActivity()).show();
                         }
                         break;
+                    // click cancel
                     default:
                         dialog.dismiss();
                         break;
@@ -405,9 +406,6 @@ public abstract class FodexBaseFragment <T extends FodexItem>
             int[] screenLocation = new int[2];
             view.getLocationOnScreen(screenLocation);
 
-            List<GridItemViewInfo> infos =
-                    ((AsymmetricGridViewAdapter)mGridView.getAdapter()).getVisibleViewsInfo();
-
             fullscreenIntent
                     .putExtra(FullscreenActivity.RESOURCE_INDEX, position)
                     .putExtra(FullscreenActivity.RESOURCE_URL, item.fodexItem.uri.toString())
@@ -416,8 +414,6 @@ public abstract class FodexBaseFragment <T extends FodexItem>
                     .putExtra(FullscreenActivity.WIDTH, view.getWidth())
                     .putExtra(FullscreenActivity.HEIGHT, view.getHeight())
 
-                    .putParcelableArrayListExtra(FullscreenActivity.VIEWS_INFO,
-                            (ArrayList<? extends android.os.Parcelable>) infos)
                     .putParcelableArrayListExtra(FullscreenActivity.ITEMS_INFO,
                             (ArrayList<? extends android.os.Parcelable>) mFodexItems)
 
@@ -468,22 +464,6 @@ public abstract class FodexBaseFragment <T extends FodexItem>
         @Override
         public GenericRequestBuilder getPreloadRequestBuilder(FodexLayoutSpecItem item) {
             return mPreloadRequest.load(item.fodexItem.uri);
-        }
-    }
-
-    private class AsymmetricSizeProvider extends FodexPreloadSizeProvider <FodexLayoutSpecItem> {
-
-        private FodexAdapter mAdapter;
-
-        public AsymmetricSizeProvider(@NonNull FodexAdapter adapter) {
-            this.mAdapter = adapter;
-        }
-
-        @Override
-        public int[] getSize(FodexLayoutSpecItem item) {
-            return new int[]{
-                    mAdapter.getRowWidth(item) - FodexImageContract.LEFT_MARGIN - FodexImageContract.RIGHT_MARGIN,
-                    mAdapter.getRowHeight(item) - FodexImageContract.TOP_MARGIN - FodexImageContract.BOTTOM_MARGIN};
         }
     }
 
