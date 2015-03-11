@@ -85,12 +85,16 @@ public class InsertTagDialog extends SupportBlurDialogFragment {
             if (mListener != null) {
                 List<String> filteredTags = StringUtils.tokenize(mEditText.getText().toString());
                 if (filteredTags.size() == 0) {
-                    filteredTags = null;
+                    mListener.onClick(
+                            mDialog,
+                            null,
+                            mDialogButtonType);
+                } else {
+                    mListener.onClick(
+                            mDialog,
+                            filteredTags.toArray(new String[filteredTags.size()]),
+                            mDialogButtonType);
                 }
-                mListener.onClick(
-                        mDialog,
-                        filteredTags.toArray(new String[filteredTags.size()]),
-                        mDialogButtonType);
             }
         }
     }
