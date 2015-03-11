@@ -56,25 +56,29 @@ public abstract class FodexBaseFragment <T extends FodexItem>
         extends Fragment
         implements OnBackPressedHandler {
 
-    public State state = State.NORMAL;
+    private State mCurrentState = State.BROWSE;
 
-    public enum State { NORMAL, SELECTED; }
-
-    private AsymmetricGridView mGridView;
-    private FloatingActionsMenu mFloatingActionMenu;
-    private FloatingActionButton mTagButton;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private enum State {
+        BROWSE,
+        SELECTING_PHOTOS,
+        SEARCHING_PHOTOS,
+    }
 
     private static final int GRID_VIEW_HORIZONTAL_SPACING = 3;
     private static final int GRID_VIEW_COLUMNS_COUNT = 3;
     private static final int PRELOAD_SIZE = 10;
 
-    private FodexAdapter mAdapter;
-    private DrawableRequestBuilder<Uri> mPreloadRequest;
-    private List<FodexLayoutSpecItem> mSelectedItems = new ArrayList<>();
-    private List<T> mFodexItems;
-    private Cursor mSuggestionCursor;
     private SearchView mSearchView;
+    private AsymmetricGridView mGridView;
+    private FloatingActionButton mTagButton;
+    private FloatingActionsMenu mFloatingActionMenu;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    private FodexAdapter mAdapter;
+    private Cursor mSuggestionCursor;
+    private DrawableRequestBuilder<Uri> mPreloadRequest;
+    private List<T> mFodexItems;
+    private List<FodexLayoutSpecItem> mSelectedItems = new ArrayList<>();
 
     /**
      * List of media photo items.
@@ -121,8 +125,8 @@ public abstract class FodexBaseFragment <T extends FodexItem>
 
     @Override
     public boolean onCustomBackPressed() {
-        if (!mSearchView.isIconified()) {
-            mSearchView.setIconified(true);
+        if (mCurrentState == State.SEARCHING_PHOTOS) {
+            setState(State.BROWSE);
             return true;
         } else {
             return false;
@@ -168,12 +172,12 @@ public abstract class FodexBaseFragment <T extends FodexItem>
         mFloatingActionMenu.setOnMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
             @Override
             public void onMenuExpanded() {
-                state = State.SELECTED;
+                setState(State.SELECTING_PHOTOS);
             }
 
             @Override
             public void onMenuCollapsed() {
-                state = State.NORMAL;
+                setState(State.BROWSE);
                 mSelectedItems.clear();
                 List<View> visibleViews =
                         ((AsymmetricGridViewAdapter)mGridView.getAdapter()).getVisibleViews();
@@ -182,7 +186,16 @@ public abstract class FodexBaseFragment <T extends FodexItem>
                 }
             }
         });
-
+        mFloatingActionMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCurrentState == State.SEARCHING_PHOTOS) {
+                    setState(State.BROWSE); // clear searchView if searching
+                } else {
+                    mFloatingActionMenu.toggle();
+                }
+            }
+        });
         mTagButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -307,8 +320,16 @@ public abstract class FodexBaseFragment <T extends FodexItem>
         mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
+                setState(State.BROWSE);
                 onSearchEnd();
                 return false;
+            }
+        });
+
+        mSearchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setState(State.SEARCHING_PHOTOS);
             }
         });
     }
@@ -329,12 +350,12 @@ public abstract class FodexBaseFragment <T extends FodexItem>
                             }
                             FodexCore.addTagsToPhotos(getActivity(), imageIds, tags);
 
-                            // cleanup and show message
+                            // cleanup and show success message
                             dialog.dismiss();
+                            setState(State.BROWSE);
                             InsertTagToast.make(getActivity(), mSelectedItems.size()).show();
-                            mSelectedItems.clear();
-                            if (mFloatingActionMenu.isExpanded()) mFloatingActionMenu.toggle();
                         } else {
+                            // show error
                             PleaseInertTagToast.make(getActivity()).show();
                         }
                         break;
@@ -346,6 +367,39 @@ public abstract class FodexBaseFragment <T extends FodexItem>
             }
         });
         dialog.show(getActivity().getSupportFragmentManager(), "insert_tag");
+    }
+
+    private void setState(State state) {
+        if (mCurrentState != state) {
+            mCurrentState = state;
+            switch (mCurrentState) {
+                case BROWSE:
+                    if (mFloatingActionMenu.isExpanded()) {
+                        mFloatingActionMenu.collapse();
+                    }
+                    if (!mSearchView.isIconified()) {
+                        mSearchView.setIconified(true);
+                    }
+                    mSelectedItems.clear();
+                    break;
+                case SELECTING_PHOTOS:
+                    if (!mSearchView.isIconified()) {
+                        mSearchView.setIconified(true);
+                    }
+                    break;
+                case SEARCHING_PHOTOS:
+                    if (mFloatingActionMenu.isExpanded()) {
+                        mFloatingActionMenu.collapse();
+                    }
+                    if (mSearchView.isIconified()) {
+                        mSearchView.setIconified(false);
+                    }
+                    mSelectedItems.clear();
+                    break;
+                default:
+                    throw new IllegalArgumentException("state not handled: " + state);
+            }
+        }
     }
 
     private AdapterView.OnItemLongClickListener imageOnLongClickListener = new AdapterView.OnItemLongClickListener() {
@@ -366,6 +420,7 @@ public abstract class FodexBaseFragment <T extends FodexItem>
                     @Override
                     public void onDelete(CharSequence tag) {
                         FodexCore.deleteTagFromPhoto(getActivity(), item.id, tag.toString());
+                        // close dialog if the last tag is deleted
                         if (FodexCore.getTags(getActivity(), item.id).size() == 0) {
                             dialog.dismiss();
                         }
@@ -385,7 +440,7 @@ public abstract class FodexBaseFragment <T extends FodexItem>
             FodexLayoutSpecItem item = (FodexLayoutSpecItem) mGridView.getItemAtPosition(position);
             ImageGridItem itemView = (ImageGridItem) view;
 
-            if (state == State.SELECTED) {
+            if (mCurrentState == State.SELECTING_PHOTOS) {
                 setSelectedItem(item, itemView);
             } else {
                 startFullscreen(position, item, itemView.imageView);
