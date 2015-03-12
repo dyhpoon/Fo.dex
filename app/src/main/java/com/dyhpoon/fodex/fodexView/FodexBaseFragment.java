@@ -33,6 +33,7 @@ import com.dyhpoon.fodex.data.FodexCore;
 import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.data.SearchViewCursorAdapter;
 import com.dyhpoon.fodex.fullscreen.FullscreenActivity;
+import com.dyhpoon.fodex.util.KeyboardUtils;
 import com.dyhpoon.fodex.util.StringUtils;
 import com.dyhpoon.fodex.view.ImageGridItem;
 import com.dyhpoon.fodex.view.InsertTagDialog;
@@ -52,16 +53,15 @@ import java.util.List;
 /**
  * Created by darrenpoon on 16/1/15.
  */
-public abstract class FodexBaseFragment <T extends FodexItem>
+public abstract class FodexBaseFragment<T extends FodexItem>
         extends Fragment
         implements OnBackPressedHandler {
-
-    private State mCurrentState = State.BROWSE;
 
     private enum State {
         BROWSE,
         SELECTING_PHOTOS,
         SEARCHING_PHOTOS,
+        SELECTING_FILTERED_PHOTOS,
     }
 
     private static final int GRID_VIEW_HORIZONTAL_SPACING = 3;
@@ -82,12 +82,14 @@ public abstract class FodexBaseFragment <T extends FodexItem>
 
     /**
      * List of media photo items.
+     *
      * @return
      */
-    protected abstract List<T>itemsForAdapters();
+    protected abstract List<T> itemsForAdapters();
 
     /**
      * Called when user submits a query in searchView.
+     *
      * @param tags
      */
     protected abstract void onQueryTagsSubmitted(List<String> tags);
@@ -125,8 +127,13 @@ public abstract class FodexBaseFragment <T extends FodexItem>
 
     @Override
     public boolean onCustomBackPressed() {
-        if (mCurrentState == State.SEARCHING_PHOTOS) {
-            setState(State.BROWSE);
+        State currentState = getState();
+        if (currentState == State.SEARCHING_PHOTOS) {
+            mSearchView.setIconified(true);
+            return true;
+        } else if (currentState == State.SELECTING_FILTERED_PHOTOS ||
+                currentState == State.SELECTING_PHOTOS) {
+            mFloatingActionMenu.collapse();
             return true;
         } else {
             return false;
@@ -147,7 +154,8 @@ public abstract class FodexBaseFragment <T extends FodexItem>
 
     public void reload() {
         mFodexItems = itemsForAdapters();
-        if (mFodexItems == null) throw new AssertionError("expect itemsForAdapters to be not null.");
+        if (mFodexItems == null)
+            throw new AssertionError("expect itemsForAdapters to be not null.");
 
         List<FodexLayoutSpecItem> layoutItems = new ArrayList<>();
         for (int i = 0; i < mFodexItems.size(); i++) {
@@ -165,23 +173,22 @@ public abstract class FodexBaseFragment <T extends FodexItem>
             FodexLayoutSpecItem item = new FodexLayoutSpecItem(columnSpan, 1, mFodexItems.get(i));
             layoutItems.add(i, item);
         }
-        ((AsymmetricGridViewAdapter)mGridView.getAdapter()).setItems(layoutItems);
+        ((AsymmetricGridViewAdapter) mGridView.getAdapter()).setItems(layoutItems);
+        mFloatingActionMenu.collapse();
     }
 
     private void setupFloatingButtonsAndMenu() {
         mFloatingActionMenu.setOnMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
             @Override
             public void onMenuExpanded() {
-                setState(State.SELECTING_PHOTOS);
             }
 
             @Override
             public void onMenuCollapsed() {
-                setState(State.BROWSE);
                 mSelectedItems.clear();
                 List<View> visibleViews =
-                        ((AsymmetricGridViewAdapter)mGridView.getAdapter()).getVisibleViews();
-                for (View view: visibleViews) {
+                        ((AsymmetricGridViewAdapter) mGridView.getAdapter()).getVisibleViews();
+                for (View view : visibleViews) {
                     view.setSelected(false);
                 }
             }
@@ -189,8 +196,9 @@ public abstract class FodexBaseFragment <T extends FodexItem>
         mFloatingActionMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mCurrentState == State.SEARCHING_PHOTOS) {
-                    setState(State.BROWSE); // clear searchView if searching
+                // dont toggle menu if keyboard is shown
+                if (getState() == State.SEARCHING_PHOTOS && KeyboardUtils.isShown(getActivity())) {
+                    mSearchView.setIconified(true);
                 } else {
                     mFloatingActionMenu.toggle();
                 }
@@ -320,7 +328,6 @@ public abstract class FodexBaseFragment <T extends FodexItem>
         mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                setState(State.BROWSE);
                 onSearchEnd();
                 return false;
             }
@@ -329,7 +336,7 @@ public abstract class FodexBaseFragment <T extends FodexItem>
         mSearchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setState(State.SEARCHING_PHOTOS);
+                mFloatingActionMenu.collapse();
             }
         });
     }
@@ -352,8 +359,8 @@ public abstract class FodexBaseFragment <T extends FodexItem>
 
                             // cleanup and show success message
                             dialog.dismiss();
-                            setState(State.BROWSE);
                             InsertTagToast.make(getActivity(), mSelectedItems.size()).show();
+                            if (mFloatingActionMenu.isExpanded()) mFloatingActionMenu.collapse();
                         } else {
                             // show error
                             PleaseInertTagToast.make(getActivity()).show();
@@ -369,36 +376,15 @@ public abstract class FodexBaseFragment <T extends FodexItem>
         dialog.show(getActivity().getSupportFragmentManager(), "insert_tag");
     }
 
-    private void setState(State state) {
-        if (mCurrentState != state) {
-            mCurrentState = state;
-            switch (mCurrentState) {
-                case BROWSE:
-                    if (mFloatingActionMenu.isExpanded()) {
-                        mFloatingActionMenu.collapse();
-                    }
-                    if (!mSearchView.isIconified()) {
-                        mSearchView.setIconified(true);
-                    }
-                    mSelectedItems.clear();
-                    break;
-                case SELECTING_PHOTOS:
-                    if (!mSearchView.isIconified()) {
-                        mSearchView.setIconified(true);
-                    }
-                    break;
-                case SEARCHING_PHOTOS:
-                    if (mFloatingActionMenu.isExpanded()) {
-                        mFloatingActionMenu.collapse();
-                    }
-                    if (mSearchView.isIconified()) {
-                        mSearchView.setIconified(false);
-                    }
-                    mSelectedItems.clear();
-                    break;
-                default:
-                    throw new IllegalArgumentException("state not handled: " + state);
-            }
+    private State getState() {
+        if (mFloatingActionMenu.isExpanded() && !mSearchView.isIconified()) {
+            return State.SELECTING_FILTERED_PHOTOS;
+        } else if (mFloatingActionMenu.isExpanded()) {
+            return State.SELECTING_PHOTOS;
+        } else if (!mSearchView.isIconified()) {
+            return State.SEARCHING_PHOTOS;
+        } else {
+            return State.BROWSE;
         }
     }
 
@@ -437,10 +423,17 @@ public abstract class FodexBaseFragment <T extends FodexItem>
     private AdapterView.OnItemClickListener imageOnClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
+            // if keyboard is shown, hide it
+            if (KeyboardUtils.isShown(getActivity())) {
+                mSearchView.setIconified(true);
+                return;
+            }
             FodexLayoutSpecItem item = (FodexLayoutSpecItem) mGridView.getItemAtPosition(position);
             ImageGridItem itemView = (ImageGridItem) view;
 
-            if (mCurrentState == State.SELECTING_PHOTOS) {
+            State currentState = getState();
+            if (currentState == State.SELECTING_FILTERED_PHOTOS ||
+                    currentState == State.SELECTING_PHOTOS) {
                 setSelectedItem(item, itemView);
             } else {
                 startFullscreen(position, item, itemView.imageView);
@@ -483,8 +476,8 @@ public abstract class FodexBaseFragment <T extends FodexItem>
     };
 
     private class FodexAdapter
-            extends AsymmetricGridViewAdapter <FodexLayoutSpecItem>
-            implements ListPreloader.PreloadModelProvider <FodexLayoutSpecItem> {
+            extends AsymmetricGridViewAdapter<FodexLayoutSpecItem>
+            implements ListPreloader.PreloadModelProvider<FodexLayoutSpecItem> {
 
         public FodexAdapter(Context context, AsymmetricGridView listView, List items) {
             super(context, listView, items);
