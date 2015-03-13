@@ -333,10 +333,12 @@ public abstract class FodexBaseFragment<T extends FodexItem>
             }
         });
 
-        mSearchView.setOnSearchClickListener(new View.OnClickListener() {
+        EditText editText = (EditText) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View v) {
-                mFloatingActionMenu.collapse();
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus)
+                    mFloatingActionMenu.collapse();
             }
         });
     }
