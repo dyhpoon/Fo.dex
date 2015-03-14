@@ -13,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,7 +38,7 @@ import com.dyhpoon.fodex.data.FodexCore;
 import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.data.SearchViewCursorAdapter;
 import com.dyhpoon.fodex.fullscreen.FullscreenActivity;
-import com.dyhpoon.fodex.util.DrawableUtils;
+import com.dyhpoon.fodex.util.CacheImageManager;
 import com.dyhpoon.fodex.util.KeyboardUtils;
 import com.dyhpoon.fodex.util.StringUtils;
 import com.dyhpoon.fodex.view.ImageGridItem;
@@ -85,7 +84,6 @@ public abstract class FodexBaseFragment<T extends FodexItem>
     private Cursor mSuggestionCursor;
     private DrawableRequestBuilder<Uri> mPreloadRequest;
     private List<T> mFodexItems;
-    private LruCache<String, Bitmap> mMemoryCache;
     private List<FodexLayoutSpecItem> mSelectedItems = new ArrayList<>();
 
     /**
@@ -121,9 +119,14 @@ public abstract class FodexBaseFragment<T extends FodexItem>
         setupAsymmetricGridView();
         setupPullToRefresh();
         setupImagePreload();
-        setupImageCache();
 
         return view;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        CacheImageManager.clear();
     }
 
     @Override
@@ -162,6 +165,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
     }
 
     public void reload() {
+        CacheImageManager.clear();
         mFodexItems = itemsForAdapters();
         if (mFodexItems == null)
             throw new AssertionError("expect itemsForAdapters to be not null.");
@@ -261,17 +265,6 @@ public abstract class FodexBaseFragment<T extends FodexItem>
         final AsymmetricSizeProvider sizeProvider = new AsymmetricSizeProvider(mAdapter);
         final ListPreloader<FodexLayoutSpecItem> preloader = new ListPreloader<>(mAdapter, sizeProvider, PRELOAD_SIZE);
         mFloatingActionMenu.attachToListView(mGridView, null, preloader);
-    }
-
-    private void setupImageCache() {
-        final int maxMemory = (int) Runtime.getRuntime().maxMemory() / 1024;
-        final int cacheSize = maxMemory / 6;
-        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
-            @Override
-            protected int sizeOf(String key, Bitmap value) {
-                return value.getByteCount() / 1024;
-            }
-        };
     }
 
     private void setupSearchView() {
@@ -400,16 +393,6 @@ public abstract class FodexBaseFragment<T extends FodexItem>
         dialog.show(getActivity().getSupportFragmentManager(), "insert_tag");
     }
 
-    private void addBitmapToMemoryCache(String key, Bitmap bitmap) {
-        if (getBitmapFromMemCache(key) == null) {
-            mMemoryCache.put(key, bitmap);
-        }
-    }
-
-    private Bitmap getBitmapFromMemCache(String key) {
-        return mMemoryCache.get(key);
-    }
-
     private State getState() {
         if (mFloatingActionMenu.isExpanded() && !mSearchView.isIconified()) {
             return State.SELECTING_FILTERED_PHOTOS;
@@ -528,7 +511,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
             }
             gridItem.setSelected(mSelectedItems.contains(item));
 
-            final Bitmap bitmap = getBitmapFromMemCache(String.valueOf(item.fodexItem.uri));
+            final Bitmap bitmap = CacheImageManager.getCache(item.fodexItem.uri);
             if (bitmap != null && !bitmap.isRecycled()) {
                 Glide.clear(gridItem.imageView);    // if is loading in glide, cancel it.
                 gridItem.imageView.setImageBitmap(bitmap);
@@ -542,9 +525,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
                             @Override
                             public void onResourceReady(final GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
                                 super.onResourceReady(resource, animation);
-                                addBitmapToMemoryCache(
-                                        String.valueOf(item.fodexItem.uri),
-                                        DrawableUtils.toBitmap(resource));
+                                CacheImageManager.cacheImage(item.fodexItem.uri, resource);
                             }
                         });
             }
