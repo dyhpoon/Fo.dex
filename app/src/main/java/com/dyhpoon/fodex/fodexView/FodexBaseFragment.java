@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -237,6 +238,17 @@ public abstract class FodexBaseFragment<T extends FodexItem>
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(imageOnClickListener);
         mGridView.setOnItemLongClickListener(imageOnLongClickListener);
+        mGridView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (KeyboardUtils.isShown(getActivity())) {
+                    mSearchView.clearFocus();
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
     }
 
     private void setupPullToRefresh() {
@@ -442,7 +454,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
         public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
             // if keyboard is shown, hide it
             if (KeyboardUtils.isShown(getActivity())) {
-                mSearchView.setIconified(true);
+                mSearchView.clearFocus();
                 return;
             }
             FodexLayoutSpecItem item = (FodexLayoutSpecItem) mGridView.getItemAtPosition(position);
