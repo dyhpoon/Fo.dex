@@ -31,6 +31,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.dyhpoon.fab.FloatingActionButton;
 import com.dyhpoon.fab.FloatingActionsMenu;
 import com.dyhpoon.fodex.R;
@@ -472,8 +474,10 @@ public abstract class FodexBaseFragment<T extends FodexItem>
         private void setSelectedItem(FodexLayoutSpecItem item, ImageGridItem itemView) {
             itemView.setSelected(!itemView.isSelected());
             if (itemView.isSelected()) {
+                YoYo.with(Techniques.Tada).duration(200).playOn(itemView);
                 mSelectedItems.add(item);
             } else {
+                YoYo.with(Techniques.Pulse).duration(200).playOn(itemView);
                 mSelectedItems.remove(item);
             }
         }
