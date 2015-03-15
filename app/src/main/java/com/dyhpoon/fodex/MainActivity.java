@@ -95,6 +95,7 @@ public class MainActivity extends ActionBarActivity
             fragment = (Fragment) info.classType.newInstance();
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     .replace(R.id.container, fragment)
                     .commit();
         } catch (InstantiationException e) {

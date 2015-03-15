@@ -118,6 +118,17 @@ public class FullscreenActivity extends Activity {
     }
 
     @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, android.R.anim.fade_out);
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(RESOURCE_INDEX, mPager.getCurrentItem());
