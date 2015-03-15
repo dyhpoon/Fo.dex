@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.ContentUris;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -102,6 +103,7 @@ public class FullscreenActivity extends Activity {
                         @Override
                         public void didFinish() {
                             mSwitcher.showNext();
+                            endFakeView();
                         }
                     });
 
@@ -110,6 +112,7 @@ public class FullscreenActivity extends Activity {
             });
         } else {
             mSwitcher.showNext();
+            endFakeView();
         }
         mShareActionMenu = new ShareActionMenu(this, FloatingActionButton.POSITION_CENTER);
     }
@@ -139,6 +142,14 @@ public class FullscreenActivity extends Activity {
         int height = metrics.heightPixels;
         Bitmap bm = MediaImage.getDecodedBitmap(FullscreenActivity.this, Uri.parse(imageUrl), width, height);
         mFakeImageView.setImageBitmap(bm);
+    }
+
+    private void endFakeView() {
+        Bitmap bitmap = ((BitmapDrawable)mFakeImageView.getDrawable()).getBitmap();
+        mFakeImageView.setImageDrawable(null);
+        if (bitmap != null) {
+            bitmap.recycle();
+        }
     }
 
     private void setupFullscreenPager(final List<FodexItem> items, int position) {
