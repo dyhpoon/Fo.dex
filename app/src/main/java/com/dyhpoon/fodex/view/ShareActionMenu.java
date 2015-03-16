@@ -6,11 +6,11 @@ import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.dyhpoon.fodex.R;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.OnBounceListener;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.animation.BouncyAnimationHandler;
 
@@ -55,9 +55,30 @@ public class ShareActionMenu {
 
         // setup menu
         mMenu = new FloatingActionMenu.Builder(context)
-                .addSubActionView(buttonsBuilder.setContentView(facebookIcon).build())
-                .addSubActionView(buttonsBuilder.setContentView(whatsappIcon).build())
-                .addSubActionView(buttonsBuilder.setContentView(googlePlusIcon).build())
+                .addSubActionView(buttonsBuilder
+                        .setContentView(facebookIcon)
+                        .setBounceListener(new OnBounceListener() {
+                            @Override
+                            public void onBounce() {
+                                // TODO: share image to facebook
+                            }
+                        }).build())
+                .addSubActionView(buttonsBuilder
+                        .setContentView(whatsappIcon)
+                        .setBounceListener(new OnBounceListener() {
+                            @Override
+                            public void onBounce() {
+                                // TODO: share image to whatsapp
+                            }
+                        }).build())
+                .addSubActionView(buttonsBuilder
+                        .setContentView(googlePlusIcon)
+                        .setBounceListener(new OnBounceListener() {
+                            @Override
+                            public void onBounce() {
+                                // TODO: share image to google+
+                            }
+                        }).build())
                 .setAnimationHandler(new BouncyAnimationHandler())
                 .setStartAngle(-25)
                 .setEndAngle(-150)
