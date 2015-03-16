@@ -412,7 +412,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
             return State.SELECTING_FILTERED_PHOTOS;
         } else if (mFloatingActionMenu.isExpanded()) {
             return State.SELECTING_PHOTOS;
-        } else if (!mSearchView.isIconified()) {
+        } else if (mSearchView != null && !mSearchView.isIconified()) {
             return State.SEARCHING_PHOTOS;
         } else {
             return State.BROWSE;
