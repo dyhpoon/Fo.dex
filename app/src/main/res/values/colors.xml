@@ -10,11 +10,13 @@
 
     <color name="colorPrimaryText">#212121</color>
     <color name="colorSecondaryText">#727272</color>
+    <color name="colorTitleGreen">#407F7F</color>
 
     <color name="colorDivider">#b6b6b6</color>
     <color name="colorTextIcons">#ffffff</color>
 
     <color name="buttonTextColor">#1e88e5</color>
+    <color name="buttonSwitchColor">#1e88e5</color>
     <color name="backgroundDimWhite">#f1f1f1</color>
 
     <color name="red">#FFC93437</color>

@@ -16,6 +16,7 @@ import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerCallbacks;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerData;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerFragment;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerInfo;
+import com.dyhpoon.fodex.setting.SettingFragment;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -107,7 +108,11 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onNavigationDrawerUtilityItemSelected(int position) {
-        // TODO: start Setting Activity.
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .replace(R.id.container, new SettingFragment())
+                .commit();
     }
 
     public void onSectionAttached(int number) {
