@@ -21,6 +21,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class ShareActionMenu {
 
+    public enum ShareType {
+        GOOGLE,
+        FACEBOOK,
+        WHATSAPP
+    }
+
+    public interface OnClickListener {
+        public void onClick(ShareType type);
+    }
+
+    private OnClickListener mListener;
     private FloatingActionButton mFabButton;
     private FloatingActionMenu mMenu;
 
@@ -60,7 +71,8 @@ public class ShareActionMenu {
                         .setBounceListener(new OnBounceListener() {
                             @Override
                             public void onBounce() {
-                                // TODO: share image to facebook
+                                if (mListener != null)
+                                    mListener.onClick(ShareType.FACEBOOK);
                             }
                         }).build())
                 .addSubActionView(buttonsBuilder
@@ -68,7 +80,8 @@ public class ShareActionMenu {
                         .setBounceListener(new OnBounceListener() {
                             @Override
                             public void onBounce() {
-                                // TODO: share image to whatsapp
+                                if (mListener != null)
+                                    mListener.onClick(ShareType.WHATSAPP);
                             }
                         }).build())
                 .addSubActionView(buttonsBuilder
@@ -76,7 +89,8 @@ public class ShareActionMenu {
                         .setBounceListener(new OnBounceListener() {
                             @Override
                             public void onBounce() {
-                                // TODO: share image to google+
+                                if (mListener != null)
+                                    mListener.onClick(ShareType.GOOGLE);
                             }
                         }).build())
                 .setAnimationHandler(new BouncyAnimationHandler())
@@ -120,6 +134,10 @@ public class ShareActionMenu {
         circleIcon.setBorderWidth(borderWidth);
         circleIcon.setBorderColor(Color.WHITE);
         return circleIcon;
+    }
+
+    public void setOnClickListener(OnClickListener listener) {
+        mListener = listener;
     }
 
 }

@@ -6,9 +6,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.DisplayMetrics;
-import android.widget.Toast;
 
 import com.dyhpoon.fodex.util.MediaImage;
+import com.dyhpoon.fodex.util.OnCompleteListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -23,7 +23,7 @@ public class WhatsappSharing extends Sharing {
     private static final String WHATSAPP_PACKAGE = "com.whatsapp";
 
     @Override
-    public void shareImage(Context context, Uri uri) {
+    public void shareImage(Context context, Uri uri, OnCompleteListener listener) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         int width = metrics.widthPixels;
         int height = metrics.heightPixels;
@@ -45,10 +45,11 @@ public class WhatsappSharing extends Sharing {
         shareIntent.putExtra(Intent.EXTRA_STREAM,
                 Uri.parse(Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg"));
         if (isPackageInstalled(WHATSAPP_PACKAGE, context)) {
+            listener.didComplete();
             shareIntent.setPackage(WHATSAPP_PACKAGE);
             context.startActivity(Intent.createChooser(shareIntent, "Share Image"));
         } else {
-            Toast.makeText(context, "Please Install Whatsapp", Toast.LENGTH_LONG).show();
+            listener.didFail();
         }
     }
 }

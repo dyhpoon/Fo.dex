@@ -24,10 +24,13 @@ import android.widget.ViewSwitcher;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexImageContract;
 import com.dyhpoon.fodex.data.FodexItem;
+import com.dyhpoon.fodex.share.WhatsappSharing;
 import com.dyhpoon.fodex.util.MediaImage;
+import com.dyhpoon.fodex.util.OnCompleteListener;
 import com.dyhpoon.fodex.util.OnFinishListener;
 import com.dyhpoon.fodex.util.SimpleAnimatorListener;
 import com.dyhpoon.fodex.view.PagerContainer;
+import com.dyhpoon.fodex.view.PleaseInstallWhatsappToast;
 import com.dyhpoon.fodex.view.ShareActionMenu;
 import com.dyhpoon.fodex.view.TouchImageView;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
@@ -52,7 +55,7 @@ public class FullscreenActivity extends Activity {
     private int mTopDelta;
     private float mWidthScale;
     private float mHeightScale;
-    private List<FodexItem> fodexItems;
+    private List<FodexItem> mFodexItems;
 
     private ViewSwitcher mSwitcher;
     private ImageView mFakeImageView;
@@ -78,11 +81,12 @@ public class FullscreenActivity extends Activity {
         final int left      = bundle.getInt(LEFT);
         final int width     = bundle.getInt(WIDTH);
         final int height    = bundle.getInt(HEIGHT);
-        fodexItems          = getIntent().getParcelableArrayListExtra(ITEMS_INFO);
+        mFodexItems = getIntent().getParcelableArrayListExtra(ITEMS_INFO);
 
         setupViewSwitcher();
-        setupFullscreenPager(fodexItems, mImageIndex);
+        setupFullscreenPager(mFodexItems, mImageIndex);
         setupFakeView(url);
+        setupShareActionMenu();
         if (savedInstanceState == null) {
             mBackground.setAlpha(0);    // prevent flashing
             ViewTreeObserver observer = mPager.getViewTreeObserver();
@@ -114,7 +118,6 @@ public class FullscreenActivity extends Activity {
             mSwitcher.showNext();
             endFakeView();
         }
-        mShareActionMenu = new ShareActionMenu(this, FloatingActionButton.POSITION_CENTER);
     }
 
     @Override
@@ -161,6 +164,40 @@ public class FullscreenActivity extends Activity {
         if (bitmap != null) {
             bitmap.recycle();
         }
+    }
+
+    private void setupShareActionMenu() {
+        mShareActionMenu = new ShareActionMenu(this, FloatingActionButton.POSITION_CENTER);
+        mShareActionMenu.setOnClickListener(new ShareActionMenu.OnClickListener() {
+            @Override
+            public void onClick(final ShareActionMenu.ShareType type) {
+                Uri uri = ContentUris.withAppendedId(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        mFodexItems.get(mPager.getCurrentItem()).imageId);
+                OnCompleteListener completeListener = new OnCompleteListener() {
+                    @Override
+                    public void didComplete() {
+                        // TODO: update DB
+                    }
+
+                    @Override
+                    public void didFail() {
+                        if (type == ShareActionMenu.ShareType.WHATSAPP) {
+                            PleaseInstallWhatsappToast.make(FullscreenActivity.this).show();
+                        }
+                    }
+                };
+                switch (type) {
+                    case FACEBOOK:
+                        break;
+                    case WHATSAPP:
+                        new WhatsappSharing().shareImage(FullscreenActivity.this, uri, completeListener);
+                        break;
+                    case GOOGLE:
+                        break;
+                }
+            }
+        });
     }
 
     private void setupFullscreenPager(final List<FodexItem> items, int position) {

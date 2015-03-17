@@ -10,11 +10,11 @@ import android.widget.Toast;
 import com.dyhpoon.fodex.R;
 
 /**
- * Created by darrenpoon on 24/2/15.
+ * Created by darrenpoon on 17/3/15.
  */
-public class PleaseInertTagToast extends Toast {
+public class PleaseInstallWhatsappToast extends Toast {
 
-    private PleaseInertTagToast(Context context) {
+    private PleaseInstallWhatsappToast(Context context) {
         super(context);
     }
 
@@ -29,7 +29,7 @@ public class PleaseInertTagToast extends Toast {
         }
         return CustomToast.make(
                 context,
-                res.getString(R.string.message_please_insert_tag),
+                res.getString(R.string.message_please_install_whatsapp),
                 res.getColor(R.color.red),
                 drawable);
     }
