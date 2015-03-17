@@ -64,6 +64,8 @@ dependencies {
     aarLinkSources 'com.rengwuxian.materialedittext:library:1.8.3:sources@jar'
     compile 'com.github.navasmdc:MaterialDesign:1.+@aar'
     aarLinkSources 'com.github.navasmdc:MaterialDesign:1.+@aar'
+    compile 'com.facebook.android:facebook-android-sdk:3.23.1'
+    aarLinkSources 'com.facebook.android:facebook-android-sdk:3.23.1:sources@jar'
     compile('com.crashlytics.sdk.android:crashlytics:2.2.2@aar') {
         transitive = true;
     }

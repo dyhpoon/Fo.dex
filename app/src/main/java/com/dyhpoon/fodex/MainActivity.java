@@ -17,6 +17,7 @@ import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerData;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerFragment;
 import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerInfo;
 import com.dyhpoon.fodex.setting.SettingFragment;
+import com.facebook.AppEventsLogger;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -44,6 +45,18 @@ public class MainActivity extends ActionBarActivity
 
         mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AppEventsLogger.activateApp(this);  // facebook analytics
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AppEventsLogger.deactivateApp(this); // facebook analytics
     }
 
     @Override
