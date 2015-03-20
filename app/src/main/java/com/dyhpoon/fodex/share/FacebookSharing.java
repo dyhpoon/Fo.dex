@@ -20,14 +20,13 @@ public class FacebookSharing extends Sharing {
             Intent shareIntent = new Intent();
             shareIntent.setAction(Intent.ACTION_SEND);
             shareIntent.setType("image/*");
-            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-
-            listener.didComplete();
             shareIntent.setPackage(FACEBOOK_PACKAGE);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
             shareIntent.putExtra(
                     "com.facebook.platform.extra.APPLICATION_ID",
                     context.getResources().getString(R.string.facebook_app_id));
-            shareIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
+            listener.didComplete();
             context.startActivity(Intent.createChooser(shareIntent, "Share"));
         } else {
             listener.didFail();

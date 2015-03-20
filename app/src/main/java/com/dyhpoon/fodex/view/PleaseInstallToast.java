@@ -12,14 +12,14 @@ import com.dyhpoon.fodex.R;
 /**
  * Created by darrenpoon on 17/3/15.
  */
-public class PleaseInstallWhatsappToast extends Toast {
+public class PleaseInstallToast extends Toast {
 
-    private PleaseInstallWhatsappToast(Context context) {
+    private PleaseInstallToast(Context context) {
         super(context);
     }
 
     @TargetApi(21)
-    public static Toast make(Context context) {
+    public static Toast make(Context context, String text) {
         Resources res = context.getResources();
         Drawable drawable;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -29,7 +29,7 @@ public class PleaseInstallWhatsappToast extends Toast {
         }
         return CustomToast.make(
                 context,
-                res.getString(R.string.message_please_install_whatsapp),
+                text,
                 res.getColor(R.color.red),
                 drawable);
     }

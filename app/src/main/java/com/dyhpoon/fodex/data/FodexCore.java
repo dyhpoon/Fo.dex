@@ -14,7 +14,6 @@ import com.dyhpoon.fodex.data.FodexContract.ImageTagEntry;
 import com.dyhpoon.fodex.data.FodexContract.IndexImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.TagEntry;
 import com.dyhpoon.fodex.data.FodexContract.UnindexedImageEntry;
-import com.dyhpoon.fodex.util.OnCompleteListener;
 
 import java.util.ArrayList;
 import java.util.List;

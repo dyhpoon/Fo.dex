@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
-import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.util.OnCompleteListener;
 import com.google.android.gms.plus.PlusShare;
 

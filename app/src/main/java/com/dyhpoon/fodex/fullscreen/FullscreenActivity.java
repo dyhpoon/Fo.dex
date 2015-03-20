@@ -24,13 +24,17 @@ import android.widget.ViewSwitcher;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexImageContract;
 import com.dyhpoon.fodex.data.FodexItem;
+import com.dyhpoon.fodex.share.FacebookSharing;
+import com.dyhpoon.fodex.share.GoogleSharing;
+import com.dyhpoon.fodex.share.InstagramSharing;
+import com.dyhpoon.fodex.share.Sharing;
 import com.dyhpoon.fodex.share.WhatsappSharing;
 import com.dyhpoon.fodex.util.MediaImage;
 import com.dyhpoon.fodex.util.OnCompleteListener;
 import com.dyhpoon.fodex.util.OnFinishListener;
 import com.dyhpoon.fodex.util.SimpleAnimatorListener;
 import com.dyhpoon.fodex.view.PagerContainer;
-import com.dyhpoon.fodex.view.PleaseInstallWhatsappToast;
+import com.dyhpoon.fodex.view.PleaseInstallToast;
 import com.dyhpoon.fodex.view.ShareActionMenu;
 import com.dyhpoon.fodex.view.TouchImageView;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
@@ -55,6 +59,7 @@ public class FullscreenActivity extends Activity {
     private int mTopDelta;
     private float mWidthScale;
     private float mHeightScale;
+    private boolean mIsSharing;
     private List<FodexItem> mFodexItems;
 
     private ViewSwitcher mSwitcher;
@@ -121,6 +126,12 @@ public class FullscreenActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mIsSharing = false;
+    }
+
+    @Override
     public void onBackPressed() {
         finish();
     }
@@ -159,7 +170,7 @@ public class FullscreenActivity extends Activity {
     }
 
     private void endFakeView() {
-        Bitmap bitmap = ((BitmapDrawable)mFakeImageView.getDrawable()).getBitmap();
+        Bitmap bitmap = ((BitmapDrawable) mFakeImageView.getDrawable()).getBitmap();
         mFakeImageView.setImageDrawable(null);
         if (bitmap != null) {
             bitmap.recycle();
@@ -171,31 +182,63 @@ public class FullscreenActivity extends Activity {
         mShareActionMenu.setOnClickListener(new ShareActionMenu.OnClickListener() {
             @Override
             public void onClick(final ShareActionMenu.ShareType type) {
-                Uri uri = ContentUris.withAppendedId(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        mFodexItems.get(mPager.getCurrentItem()).imageId);
+                if (mIsSharing) return; // ignore onClick if startActivity is already called
+
+                // listener for sharing activity
                 OnCompleteListener completeListener = new OnCompleteListener() {
                     @Override
                     public void didComplete() {
+                        mIsSharing = true;
                         // TODO: update DB
                     }
 
                     @Override
                     public void didFail() {
-                        if (type == ShareActionMenu.ShareType.WHATSAPP) {
-                            PleaseInstallWhatsappToast.make(FullscreenActivity.this).show();
+                        String message;
+                        switch (type) {
+                            case WHATSAPP:
+                                message = getString(R.string.message_please_install_whatsapp);
+                                break;
+                            case FACEBOOK:
+                                message = getString(R.string.message_please_install_facebook);
+                                break;
+                            case GOOGLE:
+                                message = getString(R.string.message_please_install_google);
+                                break;
+                            case INSTAGRAM:
+                                message = getString(R.string.message_please_install_instagram);
+                                break;
+                            default:
+                                throw new IllegalArgumentException("Unhandled type: " + type);
                         }
+                        PleaseInstallToast
+                                .make(FullscreenActivity.this, message)
+                                .show();
                     }
                 };
+
+                // start sharing activity
+                Sharing social;
                 switch (type) {
                     case FACEBOOK:
+                        social = new FacebookSharing();
                         break;
                     case WHATSAPP:
-                        new WhatsappSharing().shareImage(FullscreenActivity.this, uri, completeListener);
+                        social = new WhatsappSharing();
                         break;
                     case GOOGLE:
+                        social = new GoogleSharing();
                         break;
+                    case INSTAGRAM:
+                        social = new InstagramSharing();
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Unhandled type: " + type);
                 }
+                Uri uri = ContentUris.withAppendedId(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        mFodexItems.get(mPager.getCurrentItem()).imageId);
+                social.shareImage(FullscreenActivity.this, uri, completeListener);
             }
         });
     }
@@ -289,7 +332,7 @@ public class FullscreenActivity extends Activity {
         TouchImageView view = null;
         PagerAdapter adapter = mPager.getAdapter();
         if (adapter != null) {
-            view = ((ReusableFullscreenAdapter)adapter).currentView;
+            view = ((ReusableFullscreenAdapter) adapter).currentView;
         }
         return view;
     }

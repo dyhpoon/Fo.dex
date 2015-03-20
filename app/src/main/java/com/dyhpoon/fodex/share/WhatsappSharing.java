@@ -15,13 +15,13 @@ public class WhatsappSharing extends Sharing {
 
     @Override
     public void shareImage(Context context, Uri uri, OnCompleteListener listener) {
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("image/jpeg");
-
-        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
         if (isPackageInstalled(WHATSAPP_PACKAGE, context)) {
-            listener.didComplete();
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("image/jpeg");
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
             shareIntent.setPackage(WHATSAPP_PACKAGE);
+
+            listener.didComplete();
             context.startActivity(Intent.createChooser(shareIntent, "Share Image"));
         } else {
             listener.didFail();
