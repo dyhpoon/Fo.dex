@@ -24,7 +24,8 @@ public class ShareActionMenu {
     public enum ShareType {
         GOOGLE,
         FACEBOOK,
-        WHATSAPP
+        WHATSAPP,
+        INSTAGRAM,
     }
 
     public interface OnClickListener {
@@ -63,6 +64,9 @@ public class ShareActionMenu {
         // - Google+
         CircleImageView googlePlusIcon =
                 createCircleButton(context, R.drawable.ic_googleplus, subSize, borderWidth);
+        // - Instagram
+        CircleImageView instagramIcon =
+                createCircleButton(context, R.drawable.ic_instagram, subSize, borderWidth);
 
         // setup menu
         mMenu = new FloatingActionMenu.Builder(context)
@@ -93,9 +97,18 @@ public class ShareActionMenu {
                                     mListener.onClick(ShareType.GOOGLE);
                             }
                         }).build())
+                .addSubActionView(buttonsBuilder
+                        .setContentView(instagramIcon)
+                        .setBounceListener(new OnBounceListener() {
+                            @Override
+                            public void onBounce() {
+                                if (mListener != null)
+                                    mListener.onClick(ShareType.INSTAGRAM);
+                            }
+                        }).build())
                 .setAnimationHandler(new BouncyAnimationHandler())
-                .setStartAngle(-25)
-                .setEndAngle(-150)
+                .setStartAngle(-5)
+                .setEndAngle(-175)
                 .attachTo(mFabButton)
                 .build();
 
