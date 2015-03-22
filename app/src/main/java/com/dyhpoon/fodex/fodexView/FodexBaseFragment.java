@@ -2,7 +2,6 @@ package com.dyhpoon.fodex.fodexView;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -43,14 +42,10 @@ import com.dyhpoon.fodex.data.SearchViewCursorAdapter;
 import com.dyhpoon.fodex.fullscreen.FullscreenActivity;
 import com.dyhpoon.fodex.util.CacheImageManager;
 import com.dyhpoon.fodex.util.KeyboardUtils;
+import com.dyhpoon.fodex.util.SimpleCompleteListener;
 import com.dyhpoon.fodex.util.StringUtils;
 import com.dyhpoon.fodex.view.ImageGridItem;
-import com.dyhpoon.fodex.view.InsertTagDialog;
-import com.dyhpoon.fodex.view.InsertTagToast;
 import com.dyhpoon.fodex.view.NoPhotoToast;
-import com.dyhpoon.fodex.view.NoTagToast;
-import com.dyhpoon.fodex.view.PleaseInertTagToast;
-import com.dyhpoon.fodex.view.ShowTagsDialog;
 import com.felipecsl.asymmetricgridview.library.Utils;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridView;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter;
@@ -373,38 +368,16 @@ public abstract class FodexBaseFragment<T extends FodexItem>
     }
 
     private void showAddTagDialog() {
-        InsertTagDialog dialog = InsertTagDialog.newInstance(mSelectedItems.size());
-        dialog.setOnClickListener(new InsertTagDialog.OnClickListener() {
+        long[] imageIds = new long[mSelectedItems.size()];
+        for (int i = 0; i < mSelectedItems.size(); i++) {
+            imageIds[i] = mSelectedItems.get(i).fodexItem.id;
+        }
+        FodexWidget.addTags(getActivity(), imageIds, new SimpleCompleteListener() {
             @Override
-            public void onClick(DialogInterface dialog, String[] tags, int which) {
-                switch (which) {
-                    // click add
-                    case DialogInterface.BUTTON_POSITIVE:
-                        if (tags != null) {
-                            // add tags to DB
-                            long[] imageIds = new long[mSelectedItems.size()];
-                            for (int i = 0; i < mSelectedItems.size(); i++) {
-                                imageIds[i] = mSelectedItems.get(i).fodexItem.id;
-                            }
-                            FodexCore.addTagsToPhotos(getActivity(), imageIds, tags);
-
-                            // cleanup and show success message
-                            dialog.dismiss();
-                            InsertTagToast.make(getActivity(), mSelectedItems.size()).show();
-                            if (mFloatingActionMenu.isExpanded()) mFloatingActionMenu.collapse();
-                        } else {
-                            // show error
-                            PleaseInertTagToast.make(getActivity()).show();
-                        }
-                        break;
-                    // click cancel
-                    default:
-                        dialog.dismiss();
-                        break;
-                }
+            public void didComplete() {
+                if (mFloatingActionMenu.isExpanded()) mFloatingActionMenu.collapse();
             }
         });
-        dialog.show(getActivity().getSupportFragmentManager(), "insert_tag");
     }
 
     private State getState() {
@@ -422,31 +395,8 @@ public abstract class FodexBaseFragment<T extends FodexItem>
     private AdapterView.OnItemLongClickListener imageOnLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            final FodexItem item =
-                    ((FodexLayoutSpecItem) mGridView.getItemAtPosition(position)).fodexItem;
-            List<String> tags = FodexCore.getTags(getActivity(), item.id);
-            if (tags.size() > 0) {
-                final ShowTagsDialog dialog = ShowTagsDialog.newInstance(tags);
-                dialog.setOnClickListener(new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                dialog.setOnDeleteListener(new ShowTagsDialog.OnDeleteListener() {
-                    @Override
-                    public void onDelete(CharSequence tag) {
-                        FodexCore.deleteTagFromPhoto(getActivity(), item.id, tag.toString());
-                        // close dialog if the last tag is deleted
-                        if (FodexCore.getTags(getActivity(), item.id).size() == 0) {
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                dialog.show(getActivity().getSupportFragmentManager(), "show_tag");
-            } else {
-                NoTagToast.make(getActivity()).show();
-            }
+            final FodexItem item = ((FodexLayoutSpecItem) mGridView.getItemAtPosition(position)).fodexItem;
+            FodexWidget.showTags(getActivity(), item.id);
             return true;
         }
     };

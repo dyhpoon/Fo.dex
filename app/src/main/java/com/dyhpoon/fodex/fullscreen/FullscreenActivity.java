@@ -3,7 +3,6 @@ package com.dyhpoon.fodex.fullscreen;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.ContentUris;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -13,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
@@ -24,6 +24,7 @@ import android.widget.ViewSwitcher;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexImageContract;
 import com.dyhpoon.fodex.data.FodexItem;
+import com.dyhpoon.fodex.fodexView.FodexWidget;
 import com.dyhpoon.fodex.share.FacebookSharing;
 import com.dyhpoon.fodex.share.GoogleSharing;
 import com.dyhpoon.fodex.share.InstagramSharing;
@@ -33,15 +34,16 @@ import com.dyhpoon.fodex.util.MediaImage;
 import com.dyhpoon.fodex.util.OnCompleteListener;
 import com.dyhpoon.fodex.util.OnFinishListener;
 import com.dyhpoon.fodex.util.SimpleAnimatorListener;
+import com.dyhpoon.fodex.view.FullscreenActionMenu;
+import com.dyhpoon.fodex.view.FullscreenActionMenu.ActionType;
 import com.dyhpoon.fodex.view.PagerContainer;
 import com.dyhpoon.fodex.view.PleaseInstallToast;
-import com.dyhpoon.fodex.view.ShareActionMenu;
 import com.dyhpoon.fodex.view.TouchImageView;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 
 import java.util.List;
 
-public class FullscreenActivity extends Activity {
+public class FullscreenActivity extends FragmentActivity {
 
     private static final int ANIM_DURATION = 250;
     private static final String PREFIX = FullscreenActivity.class.getName();
@@ -66,7 +68,7 @@ public class FullscreenActivity extends Activity {
     private ImageView mFakeImageView;
     private PagerContainer mContainer;
     private FullscreenViewPager mPager;
-    private ShareActionMenu mShareActionMenu;
+    private FullscreenActionMenu mFullscreenActionMenu;
 
     final private ColorDrawable mBackground = new ColorDrawable(Color.BLACK);
 
@@ -178,67 +180,27 @@ public class FullscreenActivity extends Activity {
     }
 
     private void setupShareActionMenu() {
-        mShareActionMenu = new ShareActionMenu(this, FloatingActionButton.POSITION_CENTER);
-        mShareActionMenu.setOnClickListener(new ShareActionMenu.OnClickListener() {
+        mFullscreenActionMenu = new FullscreenActionMenu(this, FloatingActionButton.POSITION_CENTER);
+        mFullscreenActionMenu.setOnClickListener(new FullscreenActionMenu.OnClickListener() {
             @Override
-            public void onClick(final ShareActionMenu.ShareType type) {
+            public void onClick(final FullscreenActionMenu.ActionType type) {
                 if (mIsSharing) return; // ignore onClick if startActivity is already called
 
-                // listener for sharing activity
-                OnCompleteListener completeListener = new OnCompleteListener() {
-                    @Override
-                    public void didComplete() {
-                        mIsSharing = true;
-                        // TODO: update DB
-                    }
-
-                    @Override
-                    public void didFail() {
-                        String message;
-                        switch (type) {
-                            case WHATSAPP:
-                                message = getString(R.string.message_please_install_whatsapp);
-                                break;
-                            case FACEBOOK:
-                                message = getString(R.string.message_please_install_facebook);
-                                break;
-                            case GOOGLE:
-                                message = getString(R.string.message_please_install_google);
-                                break;
-                            case INSTAGRAM:
-                                message = getString(R.string.message_please_install_instagram);
-                                break;
-                            default:
-                                throw new IllegalArgumentException("Unhandled type: " + type);
-                        }
-                        PleaseInstallToast
-                                .make(FullscreenActivity.this, message)
-                                .show();
-                    }
-                };
-
-                // start sharing activity
-                Sharing social;
+                FodexItem item = mFodexItems.get(mPager.getCurrentItem());
                 switch (type) {
-                    case FACEBOOK:
-                        social = new FacebookSharing();
+                    case SHOWTAGS:
+                        FodexWidget.showTags(FullscreenActivity.this, item.id);
                         break;
-                    case WHATSAPP:
-                        social = new WhatsappSharing();
-                        break;
-                    case GOOGLE:
-                        social = new GoogleSharing();
-                        break;
-                    case INSTAGRAM:
-                        social = new InstagramSharing();
+                    case ADDTAGS:
+                        long[] imageIds = new long[] {
+                                item.id
+                        };
+                        FodexWidget.addTags(FullscreenActivity.this, imageIds, null);
                         break;
                     default:
-                        throw new IllegalArgumentException("Unhandled type: " + type);
+                        showShare(type, item);
+                        break;
                 }
-                Uri uri = ContentUris.withAppendedId(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        mFodexItems.get(mPager.getCurrentItem()).imageId);
-                social.shareImage(FullscreenActivity.this, uri, completeListener);
             }
         });
     }
@@ -270,19 +232,19 @@ public class FullscreenActivity extends Activity {
 
             @Override
             public void onLongClick(int position) {
-                mShareActionMenu.open();
+                mFullscreenActionMenu.open();
             }
 
             @Override
             public void onClick(int position) {
-                mShareActionMenu.close();
+                mFullscreenActionMenu.close();
             }
         });
         mPager.setCurrentItem(position);
         mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageScrollStateChanged(int state) {
-                mShareActionMenu.close();
+                mFullscreenActionMenu.close();
             }
         });
     }
@@ -335,6 +297,64 @@ public class FullscreenActivity extends Activity {
             view = ((ReusableFullscreenAdapter) adapter).currentView;
         }
         return view;
+    }
+
+    private void showShare(final ActionType type, FodexItem item) {
+        // listener for sharing activity
+        OnCompleteListener completeListener = new OnCompleteListener() {
+            @Override
+            public void didComplete() {
+                mIsSharing = true;
+                // TODO: update DB
+            }
+
+            @Override
+            public void didFail() {
+                String message;
+                switch (type) {
+                    case WHATSAPP:
+                        message = getString(R.string.message_please_install_whatsapp);
+                        break;
+                    case FACEBOOK:
+                        message = getString(R.string.message_please_install_facebook);
+                        break;
+                    case GOOGLE:
+                        message = getString(R.string.message_please_install_google);
+                        break;
+                    case INSTAGRAM:
+                        message = getString(R.string.message_please_install_instagram);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Unhandled type: " + type);
+                }
+                PleaseInstallToast
+                        .make(FullscreenActivity.this, message)
+                        .show();
+            }
+        };
+
+        Sharing social;
+        switch (type) {
+            case FACEBOOK:
+                social = new FacebookSharing();
+                break;
+            case WHATSAPP:
+                social = new WhatsappSharing();
+                break;
+            case GOOGLE:
+                social = new GoogleSharing();
+                break;
+            case INSTAGRAM:
+                social = new InstagramSharing();
+                break;
+            default:
+                throw new IllegalArgumentException("Unhandled type: " + type);
+        }
+
+        Uri uri = ContentUris.withAppendedId(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                item.imageId);
+        social.shareImage(FullscreenActivity.this, uri, completeListener);
     }
 
 }

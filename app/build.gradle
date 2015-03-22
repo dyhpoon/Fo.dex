@@ -52,6 +52,7 @@ dependencies {
     compile project(':libraries:CircularFloatingActionMenu')
     compile 'com.github.bumptech.glide:glide:3.5.2'
     compile 'de.hdodenhof:circleimageview:1.2.2'
+    aarLinkSources 'de.hdodenhof:circleimageview:1.2.2:sources@jar'
     compile 'com.facebook.stetho:stetho:1.0.1'
     aarLinkSources 'com.facebook.stetho:stetho:1.0.1:sources@jar'
     compile 'fr.tvbarthel.lib.blurdialogfragment:lib:1.1.0@aar'

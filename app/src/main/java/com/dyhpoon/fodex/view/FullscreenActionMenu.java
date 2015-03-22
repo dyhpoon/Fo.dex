@@ -19,24 +19,26 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by darrenpoon on 13/2/15.
  */
-public class ShareActionMenu {
+public class FullscreenActionMenu {
 
-    public enum ShareType {
+    public enum ActionType {
         GOOGLE,
         FACEBOOK,
         WHATSAPP,
         INSTAGRAM,
+        SHOWTAGS,
+        ADDTAGS,
     }
 
     public interface OnClickListener {
-        public void onClick(ShareType type);
+        public void onClick(ActionType type);
     }
 
     private OnClickListener mListener;
     private FloatingActionButton mFabButton;
     private FloatingActionMenu mMenu;
 
-    public ShareActionMenu(Context context, int position) {
+    public FullscreenActionMenu(Context context, int position) {
         Resources resources = context.getResources();
 
         // Floating Action Button - cross button
@@ -57,26 +59,32 @@ public class ShareActionMenu {
                 .setLayoutParams(new FrameLayout.LayoutParams(subSize, subSize));
         // - Facebook
         CircleImageView facebookIcon =
-                createCircleButton(context, R.drawable.ic_facebook, subSize, borderWidth);
+                createCircleButton(context, R.drawable.ic_facebook_60, borderWidth);
         // - WhatsApp
         CircleImageView whatsappIcon =
-                createCircleButton(context, R.drawable.ic_whatsapp, subSize, borderWidth);
+                createCircleButton(context, R.drawable.ic_whatsapp_60, borderWidth);
         // - Google+
         CircleImageView googlePlusIcon =
-                createCircleButton(context, R.drawable.ic_googleplus, subSize, borderWidth);
+                createCircleButton(context, R.drawable.ic_googleplus_60, borderWidth);
         // - Instagram
         CircleImageView instagramIcon =
-                createCircleButton(context, R.drawable.ic_instagram, subSize, borderWidth);
+                createCircleButton(context, R.drawable.ic_instagram_60, borderWidth);
+        // - Show Tags
+        CircleImageView showTagsIcon =
+                createCircleButton(context, R.drawable.ic_tag_60_orange, borderWidth);
+        // - Add tags
+        CircleImageView addTagsIcon =
+                createCircleButton(context, R.drawable.ic_add_60_purple, borderWidth);
 
         // setup menu
         mMenu = new FloatingActionMenu.Builder(context)
                 .addSubActionView(buttonsBuilder
-                        .setContentView(facebookIcon)
+                        .setContentView(instagramIcon)
                         .setBounceListener(new OnBounceListener() {
                             @Override
                             public void onBounce() {
                                 if (mListener != null)
-                                    mListener.onClick(ShareType.FACEBOOK);
+                                    mListener.onClick(ActionType.INSTAGRAM);
                             }
                         }).build())
                 .addSubActionView(buttonsBuilder
@@ -85,7 +93,23 @@ public class ShareActionMenu {
                             @Override
                             public void onBounce() {
                                 if (mListener != null)
-                                    mListener.onClick(ShareType.WHATSAPP);
+                                    mListener.onClick(ActionType.WHATSAPP);
+                            }
+                        }).build())
+                .addSubActionView(buttonsBuilder.setContentView(showTagsIcon)
+                        .setBounceListener(new OnBounceListener() {
+                            @Override
+                            public void onBounce() {
+                                if (mListener != null)
+                                    mListener.onClick(ActionType.SHOWTAGS);
+                            }
+                        }).build())
+                .addSubActionView(buttonsBuilder.setContentView(addTagsIcon)
+                        .setBounceListener(new OnBounceListener() {
+                            @Override
+                            public void onBounce() {
+                                if (mListener != null)
+                                    mListener.onClick(ActionType.ADDTAGS);
                             }
                         }).build())
                 .addSubActionView(buttonsBuilder
@@ -94,21 +118,21 @@ public class ShareActionMenu {
                             @Override
                             public void onBounce() {
                                 if (mListener != null)
-                                    mListener.onClick(ShareType.GOOGLE);
+                                    mListener.onClick(ActionType.GOOGLE);
                             }
                         }).build())
                 .addSubActionView(buttonsBuilder
-                        .setContentView(instagramIcon)
+                        .setContentView(facebookIcon)
                         .setBounceListener(new OnBounceListener() {
                             @Override
                             public void onBounce() {
                                 if (mListener != null)
-                                    mListener.onClick(ShareType.INSTAGRAM);
+                                    mListener.onClick(ActionType.FACEBOOK);
                             }
                         }).build())
                 .setAnimationHandler(new BouncyAnimationHandler())
-                .setStartAngle(-5)
-                .setEndAngle(-175)
+                .setStartAngle(240)
+                .setEndAngle(-60)
                 .attachTo(mFabButton)
                 .build();
 
@@ -137,7 +161,7 @@ public class ShareActionMenu {
         }
     }
 
-    private CircleImageView createCircleButton(Context context, int resId, int size, int borderWidth) {
+    private CircleImageView createCircleButton(Context context, int resId, int borderWidth) {
         CircleImageView circleIcon = new CircleImageView(context);
         circleIcon.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,

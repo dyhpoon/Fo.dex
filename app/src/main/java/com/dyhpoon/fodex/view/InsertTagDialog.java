@@ -33,6 +33,10 @@ public class InsertTagDialog extends SupportBlurDialogFragment {
         this.mNumberOfPhotos = numberOfPhotos;
     }
 
+    public static InsertTagDialog newInstance() {
+        return newInstance(1);
+    }
+
     public static InsertTagDialog newInstance(int numberOfPhotos) {
         InsertTagDialog dialog = new InsertTagDialog(numberOfPhotos);
         return dialog;
