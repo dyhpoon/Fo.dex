@@ -3,13 +3,13 @@ package com.dyhpoon.fodex.fodexView;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -53,6 +53,12 @@ import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter
 import java.util.ArrayList;
 import java.util.List;
 
+import in.srain.cube.views.ptr.PtrClassicFrameLayout;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
+import in.srain.cube.views.ptr.header.MaterialHeader;
+
 
 /**
  * Created by darrenpoon on 16/1/15.
@@ -76,7 +82,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
     private AsymmetricGridView mGridView;
     private FloatingActionButton mTagButton;
     private FloatingActionsMenu mFloatingActionMenu;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private PtrClassicFrameLayout mPtrLayout;
 
     private FodexAdapter mAdapter;
     private Cursor mSuggestionCursor;
@@ -103,6 +109,11 @@ public abstract class FodexBaseFragment<T extends FodexItem>
      */
     protected abstract void onSearchEnd();
 
+    /**
+     * Called when refresh has begun
+     */
+    protected abstract void onRefreshBegin();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -111,7 +122,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
         mGridView = (AsymmetricGridView) view.findViewById(R.id.grid_view);
         mFloatingActionMenu = (FloatingActionsMenu) view.findViewById(R.id.floating_menu);
         mTagButton = (FloatingActionButton) view.findViewById(R.id.floating_tag_button);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
+        mPtrLayout = (PtrClassicFrameLayout) view.findViewById(R.id.swipe_container);
 
         setupFloatingButtonsAndMenu();
         setupAsymmetricGridView();
@@ -188,6 +199,18 @@ public abstract class FodexBaseFragment<T extends FodexItem>
         mFloatingActionMenu.collapse();
     }
 
+    public void refreshComplete() {
+        mPtrLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mPtrLayout.refreshComplete();
+                mGridView.setAlpha(0.f);
+                reload();
+                YoYo.with(Techniques.FadeIn).duration(800).playOn(mGridView);
+            }
+        });
+    }
+
     private void setupFloatingButtonsAndMenu() {
         mFloatingActionMenu.setOnMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
             @Override
@@ -249,19 +272,29 @@ public abstract class FodexBaseFragment<T extends FodexItem>
     }
 
     private void setupPullToRefresh() {
-        int[] colors = getResources().getIntArray(R.array.google_colors);
-        mSwipeRefreshLayout.setColorSchemeColors(colors);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mPtrLayout.setLastUpdateTimeRelateObject(this);
+        mPtrLayout.setPtrHandler(new PtrHandler() {
             @Override
-            public void onRefresh() {
-                mSwipeRefreshLayout.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 2000);
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                FodexBaseFragment.this.onRefreshBegin();
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
             }
         });
+
+        Resources res = getActivity().getResources();
+        final MaterialHeader header = new MaterialHeader(getActivity());
+        final int topPadding = res.getDimensionPixelSize(R.dimen.pulltorefresh_top_padding);
+        final int bottomPadding = res.getDimensionPixelSize(R.dimen.pulltorefresh_bottom_padding);
+        header.setColorSchemeColors(res.getIntArray(R.array.google_colors));
+        header.setLayoutParams(new PtrFrameLayout.LayoutParams(-1, -2));
+        header.setPadding(0, topPadding, 0, bottomPadding);
+        header.setPtrFrameLayout(mPtrLayout);
+        mPtrLayout.setHeaderView(header);
+        mPtrLayout.addPtrUIHandler(header);
     }
 
     private void setupImagePreload() {
@@ -380,7 +413,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
     }
 
     private State getState() {
-        if (mFloatingActionMenu.isExpanded() && !mSearchView.isIconified()) {
+        if (mFloatingActionMenu.isExpanded() && mSearchView != null && !mSearchView.isIconified()) {
             return State.SELECTING_FILTERED_PHOTOS;
         } else if (mFloatingActionMenu.isExpanded()) {
             return State.SELECTING_PHOTOS;

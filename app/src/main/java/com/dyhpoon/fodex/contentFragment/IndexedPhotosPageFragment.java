@@ -12,6 +12,9 @@ import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.fodexView.FodexBaseFragment;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created by darrenpoon on 26/2/15.
@@ -56,6 +59,29 @@ public class IndexedPhotosPageFragment extends FodexBaseFragment<FodexItem> {
             mItems = FodexCore.getIndexedPhotoItems(getActivity());
             reload();
             mSearchedWords = "";
+        }
+    }
+
+    @Override
+    protected void onRefreshBegin() {
+        final AtomicReference<Boolean> isTaskCompleted = new AtomicReference<>(false);
+        final AtomicReference<Boolean> isTimeIsUp = new AtomicReference<>(false);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                isTimeIsUp.set(true);
+                if (isTaskCompleted.get()) {
+                    refreshComplete();
+                }
+            }
+        }, 1300);   // set minimum loading time
+
+        FodexCore.syncAllPhotos(getActivity());
+        mItems = FodexCore.getIndexedPhotoItems(getActivity());
+        isTaskCompleted.set(true);
+        if (isTimeIsUp.get()) {
+            refreshComplete();
         }
     }
 }
