@@ -60,11 +60,7 @@ public class NavigationDrawerData {
     public static List<NavigationDrawerInfo> getUtilityItems(Context context) {
         if (mUtilityItems == null) {
             mUtilityItems = Arrays.asList(
-                    new NavigationDrawerInfo(
-                            TAG_SETTINGS,
-                            context.getString(R.string.title_settings),
-                            context.getResources().getDrawable(R.drawable.ic_settings),
-                            AllPhotosPageFragment.class)
+                    // TODO: add utlility items. Ex. setting page
             );
         }
         return mUtilityItems;
