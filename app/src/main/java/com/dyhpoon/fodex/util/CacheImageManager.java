@@ -45,7 +45,7 @@ public class CacheImageManager {
     private CacheImageManager() {
         mCacheQueue = new LinkedBlockingQueue<>();
         final int maxMemory = (int) Runtime.getRuntime().maxMemory() / 1024;
-        final int cacheSize = maxMemory / 6;
+        final int cacheSize = maxMemory / 8;
         mCache = new LruCache<String, Bitmap>(cacheSize) {
             @Override
             protected int sizeOf(String key, Bitmap value) {

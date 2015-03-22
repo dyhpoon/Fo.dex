@@ -268,7 +268,6 @@ public abstract class FodexBaseFragment<T extends FodexItem>
         mPreloadRequest = Glide.with(this)
                 .fromMediaStore()
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
                 .fitCenter();
 
         final AsymmetricSizeProvider sizeProvider = new AsymmetricSizeProvider(mAdapter);
