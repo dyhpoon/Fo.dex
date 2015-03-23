@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.dyhpoon.fodex.data.FodexContract.ImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.ImageTagEntry;
+import com.dyhpoon.fodex.data.FodexContract.ShareEntry;
 import com.dyhpoon.fodex.data.FodexContract.TagEntry;
 
 
@@ -49,9 +50,17 @@ public class FodexDbHelper extends SQLiteOpenHelper {
                 "UNIQUE (" + ImageTagEntry.COLUMN_IT_TAG_ID + ", " + ImageTagEntry.COLUMN_IT_IMAGE_ID  + ") ON CONFLICT REPLACE" +
                 " );";
 
+        final String SQL_CREATE_SHARE_TABLE = "CREATE TABLE " + ShareEntry.TABLE_NAME + " (" +
+                ShareEntry._ID + " INTEGER PRIMARY KEY, " +
+                ShareEntry.COLUMN_SHARE_IMAGE_ID + " INTEGER NOT NULL, " +
+                "FOREIGN KEY (" + ShareEntry.COLUMN_SHARE_IMAGE_ID + ") REFERENCES " + ImageEntry.TABLE_NAME + "(" + ImageEntry._ID + ") ON DELETE CASCADE, " +
+                "UNIQUE (" + ShareEntry.COLUMN_SHARE_IMAGE_ID + ") ON CONFLICT IGNORE" +
+                " );";
+
         db.execSQL(SQL_CREATE_IMAGE_TABLE);
         db.execSQL(SQL_CREATE_TAG_TABLE);
         db.execSQL(SQL_CREATE_IMAGE_TAG_TABLE);
+        db.execSQL(SQL_CREATE_SHARE_TABLE);
     }
 
     @Override
@@ -68,5 +77,6 @@ public class FodexDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + ImageTagEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + ImageEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TagEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + ShareEntry.TABLE_NAME);
     }
 }

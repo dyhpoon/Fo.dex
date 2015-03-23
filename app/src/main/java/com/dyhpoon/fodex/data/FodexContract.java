@@ -29,6 +29,7 @@ public class FodexContract {
     public static final String PATH_IMAGE = "image";
     public static final String PATH_TAG = "tag";
     public static final String PATH_IMAGE_TAG = "image_tag";
+    public static final String PATH_SHARE = "share";
     public static final String PATH_INDEXED_IMAGE = "indexed_image";
     public static final String PATH_UNINDEXED_IMAGE = "unindexed_image";
 
@@ -221,6 +222,27 @@ public class FodexContract {
             return new ArrayList<String>(decodedNames);
         }
 
+    }
+
+    public static final class ShareEntry implements BaseColumns {
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_SHARE).build();
+
+        // Type
+        public static final String CONTENT_ITEM_TYPE = "fodex.cursor.item/" + CONTENT_AUTHORITY + "/" + PATH_SHARE;
+        public static final String CONTENT_DIR_TYPE = "fodex.cursor.dir/" + CONTENT_AUTHORITY + "/" + PATH_SHARE;
+
+        // Table Name
+        public static final String TABLE_NAME = "share";
+
+        // Columns
+        public static final String COLUMN_SHARE_IMAGE_ID = "image_id";
+
+        // Building Uris
+        // content://com.dyhpoon.fodex.provider/share/1
+        public static Uri buildShareUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
     }
 
     public static final class IndexImageEntry implements BaseColumns {

@@ -5,8 +5,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
+import com.dyhpoon.fodex.data.FodexContract;
 import com.dyhpoon.fodex.data.FodexContract.ImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.ImageTagEntry;
+import com.dyhpoon.fodex.data.FodexContract.ShareEntry;
 import com.dyhpoon.fodex.data.FodexContract.TagEntry;
 import com.dyhpoon.fodex.data.FodexDbHelper;
 
@@ -46,6 +48,12 @@ public class DatabaseTest extends AndroidTestCase {
         Cursor imageTagCursor = database.query(ImageTagEntry.TABLE_NAME, null, null, null, null, null, null);
         validateCursor(imageTagCursor, testImageTagValues);
 
+        ContentValues testShareValues = createShareValues(imageRowId);
+        long shareRowId = database.insert(ShareEntry.TABLE_NAME, null, testShareValues);
+        assertTrue(shareRowId != -1);
+        Cursor shareCursor = database.query(ShareEntry.TABLE_NAME, null, null, null, null, null, null);
+        validateCursor(shareCursor, testShareValues);
+
         database.close();
     }
 
@@ -69,6 +77,12 @@ public class DatabaseTest extends AndroidTestCase {
         imageTagValues.put(ImageTagEntry.COLUMN_IT_TAG_ID, tagRowId);
         imageTagValues.put(ImageTagEntry.COLUMN_IT_DATE_ADDED, System.currentTimeMillis());
         return imageTagValues;
+    }
+
+    static ContentValues createShareValues(long imageRowId) {
+        ContentValues shareValues = new ContentValues();
+        shareValues.put(FodexContract.ShareEntry.COLUMN_SHARE_IMAGE_ID, imageRowId);
+        return shareValues;
     }
 
     static void validateCursor(Cursor valueCursor, ContentValues expectedValues) {

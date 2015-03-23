@@ -12,6 +12,7 @@ import android.net.Uri;
 
 import com.dyhpoon.fodex.data.FodexContract.ImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.ImageTagEntry;
+import com.dyhpoon.fodex.data.FodexContract.ShareEntry;
 import com.dyhpoon.fodex.data.FodexContract.TagEntry;
 
 import java.util.HashMap;
@@ -43,6 +44,9 @@ public class FodexProvider extends ContentProvider {
     private static final int INDEXED_IMAGE = 400;
 
     private static final int UNINDEXED_IMAGE = 500;
+
+    private static final int SHARE = 600;
+    private static final int SHARE_ID = 601;
 
     private static final String ERR_UNSUPPORTED_URI = "Unsupported uri: ";
     private static final String ERR_INSERT_FAILED = "Failed to insert row into: ";
@@ -88,6 +92,12 @@ public class FodexProvider extends ContentProvider {
         final String unindexedImagePath = FodexContract.PATH_UNINDEXED_IMAGE;
         // content://com.dyhpoon.fodex.provider/unindexed_image
         matcher.addURI(authority, unindexedImagePath, UNINDEXED_IMAGE);
+
+        final String sharePath = FodexContract.PATH_SHARE;
+        // content://com.dyhpoon.fodex.provider/share
+        matcher.addURI(authority, sharePath, SHARE);
+        // content://com.dyhpoon.fodex.provider/share/1
+        matcher.addURI(authority, sharePath + "/#", SHARE_ID);
 
         return matcher;
     }
@@ -378,6 +388,26 @@ NOT IN (SELECT DISTINCT image_id
                         sortOrder);
                 break;
             }
+            case SHARE:
+                cursor = mOpenHelper.getReadableDatabase().query(
+                        ShareEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case SHARE_ID:
+                cursor = mOpenHelper.getReadableDatabase().query(
+                        ShareEntry.TABLE_NAME,
+                        projection,
+                        ShareEntry._ID + " =?",
+                        new String[]{String.valueOf(ContentUris.parseId(uri))},
+                        null,
+                        null,
+                        sortOrder);
+                break;
             default:
                 throw new UnsupportedOperationException(ERR_UNSUPPORTED_URI + uri);
         }
@@ -415,6 +445,10 @@ NOT IN (SELECT DISTINCT image_id
                 return ImageEntry.CONTENT_DIR_TYPE;
             case UNINDEXED_IMAGE:
                 return ImageEntry.CONTENT_DIR_TYPE;
+            case SHARE:
+                return ShareEntry.CONTENT_DIR_TYPE;
+            case SHARE_ID:
+                return ShareEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException(ERR_UNSUPPORTED_URI + uri);
         }
@@ -449,6 +483,14 @@ NOT IN (SELECT DISTINCT image_id
                     throw new SQLException(ERR_INSERT_FAILED + uri);
                 break;
             }
+            case SHARE: {
+                long _id = database.insert(ShareEntry.TABLE_NAME, null, values);
+                if (_id > 0)
+                    returnUri = ShareEntry.buildShareUri(_id);
+                else
+                    throw new SQLException(ERR_INSERT_FAILED + uri);
+                break;
+            }
             default:
                 throw new UnsupportedOperationException(ERR_UNSUPPORTED_URI + uri);
 
@@ -469,6 +511,9 @@ NOT IN (SELECT DISTINCT image_id
             }
             case IMAGE_TAG: {
                 return bulkInsertHelper(ImageTagEntry.TABLE_NAME, database, uri, values);
+            }
+            case SHARE: {
+                return bulkInsertHelper(ShareEntry.TABLE_NAME, database, uri, values);
             }
             default:
                 return super.bulkInsert(uri, values);
@@ -511,6 +556,9 @@ NOT IN (SELECT DISTINCT image_id
             case IMAGE_TAG:
                 rowsDeleted = database.delete(ImageTagEntry.TABLE_NAME, selection, selectionArgs);
                 break;
+            case SHARE:
+                rowsDeleted = database.delete(ShareEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException(ERR_UNSUPPORTED_URI + uri);
         }
@@ -533,6 +581,9 @@ NOT IN (SELECT DISTINCT image_id
                 break;
             case IMAGE_TAG:
                 rowsUpdated = database.update(ImageTagEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case SHARE:
+                rowsUpdated = database.update(ShareEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException(ERR_UNSUPPORTED_URI + uri);

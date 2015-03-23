@@ -8,6 +8,7 @@ import android.test.AndroidTestCase;
 
 import com.dyhpoon.fodex.data.FodexContract.ImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.ImageTagEntry;
+import com.dyhpoon.fodex.data.FodexContract.ShareEntry;
 import com.dyhpoon.fodex.data.FodexContract.TagEntry;
 
 import java.util.Arrays;
@@ -22,9 +23,11 @@ public class ProviderTest extends AndroidTestCase {
     private long mImageRowId = -1;
     private long mTagRowId = -1;
     private long mImageTagRowId = -1;
+    private long mShareRowId = -1;
     private ContentValues mImageValues = createImageValues();
     private ContentValues mTagValues = createTagValues();
     private ContentValues mImageTagValues;
+    private ContentValues mShareValues;
 
     @Override
     protected void setUp() throws Exception {
@@ -50,6 +53,13 @@ public class ProviderTest extends AndroidTestCase {
         Uri imageTagUri = mContext.getContentResolver().insert(ImageTagEntry.CONTENT_URI, mImageTagValues);
         mImageTagRowId = ContentUris.parseId(imageTagUri);
         assertTrue(mImageRowId != -1);
+
+        mShareValues = createShareValues(mImageRowId);
+        assertNotNull(mShareValues);
+
+        Uri shareUri = mContext.getContentResolver().insert(ShareEntry.CONTENT_URI, mShareValues);
+        mShareRowId = ContentUris.parseId(shareUri);
+        assertTrue(mShareRowId != -1);
     }
 
     public void testImageUri() {
@@ -148,6 +158,18 @@ public class ProviderTest extends AndroidTestCase {
         imageTagCursor.close();
     }
 
+    public void testShareUri() {
+        Cursor shareCursor = mContext.getContentResolver().query(
+                ShareEntry.buildShareUri(mShareRowId),
+                null,
+                null,
+                null,
+                null);
+        assertEquals(1, shareCursor.getCount());
+        validateCursor(shareCursor, mShareValues);
+        shareCursor.close();
+    }
+
     static ContentValues createImageValues() {
         ContentValues imageValues = new ContentValues();
         imageValues.put(ImageEntry.COLUMN_IMAGE_ID, "93523");
@@ -168,6 +190,12 @@ public class ProviderTest extends AndroidTestCase {
         imageTagValues.put(ImageTagEntry.COLUMN_IT_TAG_ID, tagRowId);
         imageTagValues.put(ImageTagEntry.COLUMN_IT_DATE_ADDED, System.currentTimeMillis());
         return imageTagValues;
+    }
+
+    static ContentValues createShareValues(long imageRowId) {
+        ContentValues shareValues = new ContentValues();
+        shareValues.put(ShareEntry.COLUMN_SHARE_IMAGE_ID, imageRowId);
+        return shareValues;
     }
 
     static void validateCursor(Cursor valueCursor, ContentValues expectedValues) {
