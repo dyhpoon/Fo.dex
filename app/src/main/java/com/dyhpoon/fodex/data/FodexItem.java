@@ -26,6 +26,15 @@ public class FodexItem implements Parcelable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (o instanceof FodexItem) {
+            FodexItem item = (FodexItem) o;
+            return this.id == item.id;
+        }
+        return false;
+    }
+
+    @Override
     public String toString() {
         return "\n" + super.toString() +
                 "\n id: " + id +

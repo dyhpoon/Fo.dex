@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
 import com.dyhpoon.fodex.R;
+import com.dyhpoon.fodex.data.FodexCore;
 import com.dyhpoon.fodex.data.FodexImageContract;
 import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.fodexView.FodexWidget;
@@ -299,13 +300,13 @@ public class FullscreenActivity extends FragmentActivity {
         return view;
     }
 
-    private void showShare(final ActionType type, FodexItem item) {
+    private void showShare(final ActionType type, final FodexItem item) {
         // listener for sharing activity
         OnCompleteListener completeListener = new OnCompleteListener() {
             @Override
             public void didComplete() {
                 mIsSharing = true;
-                // TODO: update DB
+                FodexCore.addSharePhotos(FullscreenActivity.this, new long[] {item.id});
             }
 
             @Override

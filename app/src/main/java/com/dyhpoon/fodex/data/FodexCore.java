@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import com.dyhpoon.fodex.data.FodexContract.ImageEntry;
 import com.dyhpoon.fodex.data.FodexContract.ImageTagEntry;
 import com.dyhpoon.fodex.data.FodexContract.IndexImageEntry;
+import com.dyhpoon.fodex.data.FodexContract.ShareEntry;
 import com.dyhpoon.fodex.data.FodexContract.TagEntry;
 import com.dyhpoon.fodex.data.FodexContract.UnindexedImageEntry;
 
@@ -63,7 +64,20 @@ public class FodexCore {
         return items;
     }
 
-    public static List<FodexItem> getSearchedPhotoItems(Context context, List<String>tagNames) {
+    public static List<FodexItem> getSharedPhotoItems(Context context) {
+        Cursor cursor = context.getContentResolver().query(
+                ShareEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+
+        List<FodexItem> items = convertCursorToItems(cursor);
+        cursor.close();
+        return items;
+    }
+
+    public static List<FodexItem> getSearchedPhotoItems(Context context, List<String> tagNames) {
         Cursor cursor = context.getContentResolver().query(
                 ImageTagEntry.buildTagNames(tagNames),
                 null,
@@ -138,6 +152,17 @@ public class FodexCore {
         }
         ContentValues[] serializedBulk = bulkToInsert.toArray(new ContentValues[bulkToInsert.size()]);
         context.getContentResolver().bulkInsert(ImageTagEntry.CONTENT_URI, serializedBulk);
+    }
+
+    public static void addSharePhotos(Context context, long[] imageIds) {
+        List<ContentValues> bulkToInsert = new ArrayList<>();
+        for (long imageId : imageIds) {
+            ContentValues values = new ContentValues();
+            values.put(ShareEntry.COLUMN_SHARE_IMAGE_ID, imageId);
+            bulkToInsert.add(values);
+        }
+        ContentValues[] serializedBulk = bulkToInsert.toArray(new ContentValues[bulkToInsert.size()]);
+        context.getContentResolver().bulkInsert(ShareEntry.CONTENT_URI, serializedBulk);
     }
 
     public static void deleteTagFromPhoto(Context context, long imageId, String tag) {
@@ -224,7 +249,7 @@ public class FodexCore {
                 case LEFT: {
                     // add records from left
                     ContentValues values = new ContentValues();
-                    values.put(ImageEntry.COLUMN_IMAGE_ID, mediaCursor.getInt(mediaCursor.getColumnIndex(MediaStore.Images.Media._ID)));
+                    values.put(ImageEntry.COLUMN_IMAGE_ID, mediaCursor.getLong(mediaCursor.getColumnIndex(MediaStore.Images.Media._ID)));
                     values.put(ImageEntry.COLUMN_IMAGE_DATA, mediaCursor.getString(mediaCursor.getColumnIndex(MediaStore.Images.Media.DATA)));
                     values.put(ImageEntry.COLUMN_IMAGE_DATE_TAKEN, mediaCursor.getLong(mediaCursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN)));
                     insertContentValues.add(values);
@@ -233,7 +258,7 @@ public class FodexCore {
                 case RIGHT: {
                     // remove records from right
                     ContentValues values = new ContentValues();
-                    values.put(ImageEntry.COLUMN_IMAGE_ID, fodexCursor.getInt(fodexCursor.getColumnIndex(ImageEntry.COLUMN_IMAGE_ID)));
+                    values.put(ImageEntry.COLUMN_IMAGE_ID, fodexCursor.getLong(fodexCursor.getColumnIndex(ImageEntry.COLUMN_IMAGE_ID)));
                     values.put(ImageEntry.COLUMN_IMAGE_DATA, fodexCursor.getString(fodexCursor.getColumnIndex(ImageEntry.COLUMN_IMAGE_DATA)));
                     values.put(ImageEntry.COLUMN_IMAGE_DATE_TAKEN, fodexCursor.getLong(fodexCursor.getColumnIndex(ImageEntry.COLUMN_IMAGE_DATE_TAKEN)));
                     removeContentValues.add(values);

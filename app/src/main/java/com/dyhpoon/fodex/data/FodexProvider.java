@@ -389,8 +389,26 @@ NOT IN (SELECT DISTINCT image_id
                 break;
             }
             case SHARE:
-                cursor = mOpenHelper.getReadableDatabase().query(
-                        ShareEntry.TABLE_NAME,
+                /*
+SELECT image._id, image.photo_id, image.data, image.date_taken
+FROM share
+INNER JOIN image
+ON share.image_id = image._id
+                 */
+            {
+                final SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+
+                builder.setTables("(SELECT " +
+                        ImageEntry.TABLE_NAME + "." + ImageEntry._ID + ", " +
+                        ImageEntry.TABLE_NAME + "." + ImageEntry.COLUMN_IMAGE_ID + ", " +
+                        ImageEntry.TABLE_NAME + "." + ImageEntry.COLUMN_IMAGE_DATA + ", " +
+                        ImageEntry.TABLE_NAME + "." + ImageEntry.COLUMN_IMAGE_DATE_TAKEN +
+                        " FROM " + ShareEntry.TABLE_NAME +
+                        " INNER JOIN " + ImageEntry.TABLE_NAME + " ON " + ShareEntry.TABLE_NAME + "." + ShareEntry.COLUMN_SHARE_IMAGE_ID + "=" + ImageEntry.TABLE_NAME + "." + ImageEntry._ID +
+                        ")");
+
+                cursor = builder.query(
+                        mOpenHelper.getReadableDatabase(),
                         projection,
                         selection,
                         selectionArgs,
@@ -398,6 +416,7 @@ NOT IN (SELECT DISTINCT image_id
                         null,
                         sortOrder);
                 break;
+            }
             case SHARE_ID:
                 cursor = mOpenHelper.getReadableDatabase().query(
                         ShareEntry.TABLE_NAME,

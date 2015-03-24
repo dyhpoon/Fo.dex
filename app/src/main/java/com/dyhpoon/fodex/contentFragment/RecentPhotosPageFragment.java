@@ -11,6 +11,7 @@ import com.dyhpoon.fodex.data.FodexCore;
 import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.fodexView.FodexBaseFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,7 +37,7 @@ public class RecentPhotosPageFragment extends FodexBaseFragment<FodexItem> {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         FodexCore.syncAllPhotos(getActivity());
-        mItems = FodexCore.getAllPhotoItems(getActivity());
+        mItems = FodexCore.getSharedPhotoItems(getActivity());
         reload();
         mSearchedWords = "";
     }
@@ -48,17 +49,18 @@ public class RecentPhotosPageFragment extends FodexBaseFragment<FodexItem> {
 
     @Override
     protected void onQueryTagsSubmitted(List<String> tags) {
-        // TODO
-        mItems = FodexCore.getSearchedPhotoItems(getActivity(), tags);
+        // get intersection of shared and tagged photos
+        List<FodexItem> left = FodexCore.getSearchedPhotoItems(getActivity(), tags);
+        List<FodexItem> right = FodexCore.getSharedPhotoItems(getActivity());
+        mItems = getIntersection(left, right);
         mSearchedWords = TextUtils.join(" ", tags);
         reload();
     }
 
     @Override
     protected void onSearchEnd() {
-        // TODO
         if (!mSearchedWords.equals("")) {
-            mItems = FodexCore.getAllPhotoItems(getActivity());
+            mItems = FodexCore.getSharedPhotoItems(getActivity());
             reload();
             mSearchedWords = "";
         }
@@ -80,11 +82,21 @@ public class RecentPhotosPageFragment extends FodexBaseFragment<FodexItem> {
         }, 1300);   // set minimum loading time
 
         FodexCore.syncAllPhotos(getActivity());
-        mItems = FodexCore.getAllPhotoItems(getActivity());
+        mItems = FodexCore.getSharedPhotoItems(getActivity());
         isTaskCompleted.set(true);
         if (isTimeIsUp.get()) {
             refreshComplete();
         }
+    }
+
+    private List<FodexItem> getIntersection(List<FodexItem> left, List<FodexItem> right) {
+        List<FodexItem> intersection = new ArrayList<>();
+        for (FodexItem item: left) {
+            if (right.contains(item)) {
+                intersection.add(item);
+            }
+        }
+        return intersection;
     }
 
 }

@@ -8,7 +8,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="title_all_photos">All Photos</string>
-    <string name="title_recent_photos">Recent Photos</string>
+    <string name="title_recently_shared_photos">Recently Shared Photos</string>
     <string name="title_indexed_photos">Indexed Photos</string>
     <string name="title_unindexed_photos">Unindexed Photos</string>
     <string name="title_settings">Settings</string>
