@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -34,6 +35,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.dyhpoon.fab.FloatingActionButton;
 import com.dyhpoon.fab.FloatingActionsMenu;
+import com.dyhpoon.fodex.MainActivity;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexContract;
 import com.dyhpoon.fodex.data.FodexCore;
@@ -130,6 +132,16 @@ public abstract class FodexBaseFragment<T extends FodexItem>
         setupImagePreload();
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // make sure drawer is unlock
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).drawerLayout
+                    .setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        }
     }
 
     @Override
@@ -470,6 +482,12 @@ public abstract class FodexBaseFragment<T extends FodexItem>
         }
 
         private void startFullscreen(int position, FodexLayoutSpecItem item, View view) {
+            // lock drawer, prevent user to open drawer when transitioning to fullscreen.
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).drawerLayout
+                        .setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            }
+
             Intent fullscreenIntent = new Intent(getActivity(), FullscreenActivity.class);
             int[] screenLocation = new int[2];
             view.getLocationOnScreen(screenLocation);

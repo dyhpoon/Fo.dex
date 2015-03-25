@@ -29,6 +29,7 @@ public class MainActivity extends ActionBarActivity
     private CharSequence mTitle;
     private Toolbar mToolbar;
     private NavigationDrawerFragment mNavigationDrawerFragment;
+    public DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +42,9 @@ public class MainActivity extends ActionBarActivity
 
         mTitle = getTitle();
 
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+        mNavigationDrawerFragment.setUp(R.id.navigation_drawer, drawerLayout);
     }
 
     @Override
