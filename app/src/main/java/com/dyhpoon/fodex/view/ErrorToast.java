@@ -7,21 +7,20 @@ import android.widget.Toast;
 import com.dyhpoon.fodex.R;
 
 /**
- * Created by darrenpoon on 24/2/15.
+ * Created by darrenpoon on 3/3/15.
  */
-public class NoPhotoToast extends CustomToast {
+public class ErrorToast extends CustomToast {
 
-    private NoPhotoToast(Context context) {
+    private ErrorToast(Context context) {
         super(context);
     }
 
-    public static Toast make(Context context) {
+    public static Toast make(Context context, String message) {
         Resources res = context.getResources();
         return CustomToast.make(
                 context,
-                res.getString(R.string.message_no_photo),
+                message,
                 res.getColor(R.color.red),
                 res.getDrawable(R.drawable.ic_cross_fit_15));
     }
-
 }

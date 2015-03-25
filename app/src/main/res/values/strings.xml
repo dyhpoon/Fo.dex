@@ -39,6 +39,7 @@
     <string name="message_please_install_instagram">Please Install Instagram</string>
     <string name="message_no_photo">You must select a photo first</string>
     <string name="message_no_tag">Oh, no tags are found</string>
+    <string name="message_no_photos_found">No photos found</string>
 
     <string name="setting_title_accounts">Accounts</string>
     <string name="setting_title_account_facebook">Facebook</string>

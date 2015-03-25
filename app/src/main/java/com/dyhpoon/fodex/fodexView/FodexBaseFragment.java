@@ -44,8 +44,8 @@ import com.dyhpoon.fodex.util.CacheImageManager;
 import com.dyhpoon.fodex.util.KeyboardUtils;
 import com.dyhpoon.fodex.util.SimpleCompleteListener;
 import com.dyhpoon.fodex.util.StringUtils;
+import com.dyhpoon.fodex.view.ErrorToast;
 import com.dyhpoon.fodex.view.ImageGridItem;
-import com.dyhpoon.fodex.view.NoPhotoToast;
 import com.felipecsl.asymmetricgridview.library.Utils;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridView;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter;
@@ -197,6 +197,11 @@ public abstract class FodexBaseFragment<T extends FodexItem>
         }
         ((AsymmetricGridViewAdapter) mGridView.getAdapter()).setItems(layoutItems);
         mFloatingActionMenu.collapse();
+
+        // notify user no photos found
+        if (layoutItems.size() == 0) {
+            ErrorToast.make(getActivity(), getString(R.string.message_no_photos_found)).show();
+        }
     }
 
     public void refreshComplete() {
@@ -244,7 +249,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
                 if (mSelectedItems.size() > 0) {
                     showAddTagDialog();
                 } else {
-                    NoPhotoToast.make(getActivity()).show();
+                    ErrorToast.make(getActivity(), getString(R.string.message_no_photo)).show();
                 }
             }
         });

@@ -3,11 +3,12 @@ package com.dyhpoon.fodex.fodexView;
 import android.content.DialogInterface;
 import android.support.v4.app.FragmentActivity;
 
+import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexCore;
 import com.dyhpoon.fodex.util.OnCompleteListener;
+import com.dyhpoon.fodex.view.ErrorToast;
 import com.dyhpoon.fodex.view.InsertTagDialog;
 import com.dyhpoon.fodex.view.InsertTagToast;
-import com.dyhpoon.fodex.view.NoTagToast;
 import com.dyhpoon.fodex.view.PleaseInertTagToast;
 import com.dyhpoon.fodex.view.ShowTagsDialog;
 
@@ -40,7 +41,7 @@ public class FodexWidget {
             });
             dialog.show(activity.getSupportFragmentManager(), "show_tag");
         } else {
-            NoTagToast.make(activity).show();
+            ErrorToast.make(activity, activity.getString(R.string.message_no_tag)).show();
         }
     }
 
