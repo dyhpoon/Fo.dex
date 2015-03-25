@@ -46,7 +46,7 @@ public class NavigationDrawerData {
                             UnindexedPhotoPageFragment.class),
                     new NavigationDrawerInfo(
                             TAG_RECENT_PHOTOS,
-                            context.getString(R.string.title_recently_shared_photos),
+                            context.getString(R.string.title_shared_photos),
                             context.getResources().getDrawable(R.drawable.ic_clock),
                             RecentPhotosPageFragment.class)
             );
