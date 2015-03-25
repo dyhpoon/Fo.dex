@@ -145,6 +145,10 @@ public class FullscreenActionMenu {
         });
     }
 
+    public boolean isOpen() {
+        return mMenu.isOpen();
+    }
+
     public void open() {
         if (!mMenu.isOpen()) {
             mFabButton.setVisibility(View.VISIBLE);

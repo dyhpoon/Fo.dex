@@ -136,7 +136,11 @@ public class FullscreenActivity extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
-        finish();
+        if (mFullscreenActionMenu.isOpen()) {
+            mFullscreenActionMenu.close();
+        } else {
+            finish();
+        }
     }
 
     @Override
