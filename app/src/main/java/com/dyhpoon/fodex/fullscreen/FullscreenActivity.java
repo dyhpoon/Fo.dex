@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
@@ -23,8 +22,9 @@ import android.widget.ViewSwitcher;
 
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexCore;
-import com.dyhpoon.fodex.data.FodexImageContract;
 import com.dyhpoon.fodex.data.FodexItem;
+import com.dyhpoon.fodex.data.actual.FodexImageContract;
+import com.dyhpoon.fodex.di.BaseFragmentActivity;
 import com.dyhpoon.fodex.fodexView.FodexWidget;
 import com.dyhpoon.fodex.share.FacebookSharing;
 import com.dyhpoon.fodex.share.GoogleSharing;
@@ -44,7 +44,9 @@ import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 
 import java.util.List;
 
-public class FullscreenActivity extends FragmentActivity {
+import javax.inject.Inject;
+
+public class FullscreenActivity extends BaseFragmentActivity {
 
     private static final int ANIM_DURATION = 250;
     private static final String PREFIX = FullscreenActivity.class.getName();
@@ -56,6 +58,8 @@ public class FullscreenActivity extends FragmentActivity {
     public static final String WIDTH            = PREFIX + ".WIDTH";
     public static final String HEIGHT           = PREFIX + ".HEIGHT";
     public static final String ITEMS_INFO       = PREFIX + ".ITEMS_INFO";
+
+    @Inject FodexCore fodexCore;
 
     private int mImageIndex;
     private int mLeftDelta;
@@ -194,13 +198,13 @@ public class FullscreenActivity extends FragmentActivity {
                 FodexItem item = mFodexItems.get(mPager.getCurrentItem());
                 switch (type) {
                     case SHOWTAGS:
-                        FodexWidget.showTags(FullscreenActivity.this, item.id);
+                        FodexWidget.showTags(FullscreenActivity.this, fodexCore, item.id);
                         break;
                     case ADDTAGS:
                         long[] imageIds = new long[] {
                                 item.id
                         };
-                        FodexWidget.addTags(FullscreenActivity.this, imageIds, null);
+                        FodexWidget.addTags(FullscreenActivity.this, fodexCore, imageIds, null);
                         break;
                     default:
                         showShare(type, item);
@@ -310,7 +314,7 @@ public class FullscreenActivity extends FragmentActivity {
             @Override
             public void didComplete() {
                 mIsSharing = true;
-                FodexCore.addSharePhotos(FullscreenActivity.this, new long[] {item.id});
+                fodexCore.addSharePhotos(FullscreenActivity.this, new long[] {item.id});
             }
 
             @Override

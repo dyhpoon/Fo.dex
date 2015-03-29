@@ -2,7 +2,7 @@ package com.dyhpoon.fodex.fodexView;
 
 import android.support.annotation.NonNull;
 
-import com.dyhpoon.fodex.data.FodexImageContract;
+import com.dyhpoon.fodex.data.actual.FodexImageContract;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter;
 
 /**

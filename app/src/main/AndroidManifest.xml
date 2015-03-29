@@ -61,7 +61,7 @@
             android:theme="@style/Transparent"></activity>
 
         <provider
-            android:name=".data.FodexProvider"
+            android:name=".data.actual.FodexProvider"
             android:authorities="com.dyhpoon.fodex.provider" />
 
         <meta-data

@@ -16,10 +16,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.inject.Inject;
+
 /**
  * Created by darrenpoon on 26/2/15.
  */
 public class UnindexedPhotoPageFragment extends FodexBaseFragment<FodexItem> {
+
+    @Inject FodexCore fodexCore;
 
     private List<FodexItem> mItems;
 
@@ -34,8 +38,8 @@ public class UnindexedPhotoPageFragment extends FodexBaseFragment<FodexItem> {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        FodexCore.syncAllPhotos(getActivity());
-        mItems = FodexCore.getUnindexPhotoItems(getActivity());
+        fodexCore.syncAllPhotos(getActivity());
+        mItems = fodexCore.getUnindexPhotoItems(getActivity());
         reload();
     }
 
@@ -75,8 +79,8 @@ public class UnindexedPhotoPageFragment extends FodexBaseFragment<FodexItem> {
             }
         }, 1300);   // set minimum loading time
 
-        FodexCore.syncAllPhotos(getActivity());
-        mItems = FodexCore.getUnindexPhotoItems(getActivity());
+        fodexCore.syncAllPhotos(getActivity());
+        mItems = fodexCore.getUnindexPhotoItems(getActivity());
         isTaskCompleted.set(true);
         if (isTimeIsUp.get()) {
             refreshComplete();

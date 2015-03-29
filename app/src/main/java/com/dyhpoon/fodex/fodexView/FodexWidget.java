@@ -19,8 +19,8 @@ import java.util.List;
  */
 public class FodexWidget {
 
-    public static void showTags(final FragmentActivity activity, final long fodexId) {
-        List<String> tags = FodexCore.getTags(activity, fodexId);
+    public static void showTags(final FragmentActivity activity, final FodexCore fodexCore, final long fodexId) {
+        List<String> tags = fodexCore.getTags(activity, fodexId);
         if (tags.size() > 0) {
             final ShowTagsDialog dialog = ShowTagsDialog.newInstance(tags);
             dialog.setOnClickListener(new DialogInterface.OnClickListener() {
@@ -32,9 +32,9 @@ public class FodexWidget {
             dialog.setOnDeleteListener(new ShowTagsDialog.OnDeleteListener() {
                 @Override
                 public void onDelete(CharSequence tag) {
-                    FodexCore.deleteTagFromPhoto(activity, fodexId, tag.toString());
+                    fodexCore.deleteTagFromPhoto(activity, fodexId, tag.toString());
                     // close dialog if the last tag is deleted
-                    if (FodexCore.getTags(activity, fodexId).size() == 0) {
+                    if (fodexCore.getTags(activity, fodexId).size() == 0) {
                         dialog.dismiss();
                     }
                 }
@@ -45,7 +45,7 @@ public class FodexWidget {
         }
     }
 
-    public static void addTags(final FragmentActivity activity, final long[] imageIds, final OnCompleteListener listener) {
+    public static void addTags(final FragmentActivity activity, final FodexCore fodexCore, final long[] imageIds, final OnCompleteListener listener) {
         InsertTagDialog dialog = InsertTagDialog.newInstance(imageIds.length);
         dialog.setOnClickListener(new InsertTagDialog.OnClickListener() {
             @Override
@@ -55,7 +55,7 @@ public class FodexWidget {
                     case DialogInterface.BUTTON_POSITIVE:
                         if (tags != null) {
                             // add tags to DB
-                            FodexCore.addTagsToPhotos(activity, imageIds, tags);
+                            fodexCore.addTagsToPhotos(activity, imageIds, tags);
 
                             // cleanup and show success message
                             dialog.dismiss();

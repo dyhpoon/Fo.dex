@@ -1,4 +1,4 @@
-package com.dyhpoon.fodex.data;
+package com.dyhpoon.fodex.fodexView;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.dyhpoon.fodex.R;
+import com.dyhpoon.fodex.data.actual.FodexContract;
 
 /**
  * Created by darrenpoon on 8/3/15.

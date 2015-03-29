@@ -17,10 +17,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.inject.Inject;
+
 /**
  * Created by darrenpoon on 8/12/14.
  */
 public class RecentPhotosPageFragment extends FodexBaseFragment<FodexItem> {
+
+    @Inject FodexCore fodexCore;
 
     private List<FodexItem> mItems;
     private String mSearchedWords;
@@ -36,8 +40,8 @@ public class RecentPhotosPageFragment extends FodexBaseFragment<FodexItem> {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        FodexCore.syncAllPhotos(getActivity());
-        mItems = FodexCore.getSharedPhotoItems(getActivity());
+        fodexCore.syncAllPhotos(getActivity());
+        mItems = fodexCore.getSharedPhotoItems(getActivity());
         reload();
         mSearchedWords = "";
     }
@@ -50,8 +54,8 @@ public class RecentPhotosPageFragment extends FodexBaseFragment<FodexItem> {
     @Override
     protected void onQueryTagsSubmitted(List<String> tags) {
         // get intersection of shared and tagged photos
-        List<FodexItem> left = FodexCore.getSearchedPhotoItems(getActivity(), tags);
-        List<FodexItem> right = FodexCore.getSharedPhotoItems(getActivity());
+        List<FodexItem> left = fodexCore.getSearchedPhotoItems(getActivity(), tags);
+        List<FodexItem> right = fodexCore.getSharedPhotoItems(getActivity());
         mItems = getIntersection(left, right);
         mSearchedWords = TextUtils.join(" ", tags);
         reload();
@@ -60,7 +64,7 @@ public class RecentPhotosPageFragment extends FodexBaseFragment<FodexItem> {
     @Override
     protected void onSearchEnd() {
         if (!mSearchedWords.equals("")) {
-            mItems = FodexCore.getSharedPhotoItems(getActivity());
+            mItems = fodexCore.getSharedPhotoItems(getActivity());
             reload();
             mSearchedWords = "";
         }
@@ -81,8 +85,8 @@ public class RecentPhotosPageFragment extends FodexBaseFragment<FodexItem> {
             }
         }, 1300);   // set minimum loading time
 
-        FodexCore.syncAllPhotos(getActivity());
-        mItems = FodexCore.getSharedPhotoItems(getActivity());
+        fodexCore.syncAllPhotos(getActivity());
+        mItems = fodexCore.getSharedPhotoItems(getActivity());
         isTaskCompleted.set(true);
         if (isTimeIsUp.get()) {
             refreshComplete();

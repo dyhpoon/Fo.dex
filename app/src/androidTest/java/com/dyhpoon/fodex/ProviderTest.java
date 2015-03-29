@@ -6,10 +6,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.test.AndroidTestCase;
 
-import com.dyhpoon.fodex.data.FodexContract.ImageEntry;
-import com.dyhpoon.fodex.data.FodexContract.ImageTagEntry;
-import com.dyhpoon.fodex.data.FodexContract.ShareEntry;
-import com.dyhpoon.fodex.data.FodexContract.TagEntry;
+import com.dyhpoon.fodex.data.actual.FodexContract.ImageEntry;
+import com.dyhpoon.fodex.data.actual.FodexContract.ImageTagEntry;
+import com.dyhpoon.fodex.data.actual.FodexContract.ShareEntry;
+import com.dyhpoon.fodex.data.actual.FodexContract.TagEntry;
 
 import java.util.Arrays;
 import java.util.Map;

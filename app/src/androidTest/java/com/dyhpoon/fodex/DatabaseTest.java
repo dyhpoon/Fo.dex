@@ -5,12 +5,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
-import com.dyhpoon.fodex.data.FodexContract;
-import com.dyhpoon.fodex.data.FodexContract.ImageEntry;
-import com.dyhpoon.fodex.data.FodexContract.ImageTagEntry;
-import com.dyhpoon.fodex.data.FodexContract.ShareEntry;
-import com.dyhpoon.fodex.data.FodexContract.TagEntry;
-import com.dyhpoon.fodex.data.FodexDbHelper;
+import com.dyhpoon.fodex.data.actual.FodexContract;
+import com.dyhpoon.fodex.data.actual.FodexContract.ImageEntry;
+import com.dyhpoon.fodex.data.actual.FodexContract.ImageTagEntry;
+import com.dyhpoon.fodex.data.actual.FodexContract.ShareEntry;
+import com.dyhpoon.fodex.data.actual.FodexContract.TagEntry;
+import com.dyhpoon.fodex.data.actual.FodexDbHelper;
 
 import java.util.Map;
 import java.util.Set;

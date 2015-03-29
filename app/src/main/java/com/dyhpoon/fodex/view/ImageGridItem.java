@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.dyhpoon.fodex.R;
-import com.dyhpoon.fodex.data.FodexImageContract;
+import com.dyhpoon.fodex.data.actual.FodexImageContract;
 
 import java.util.Random;
 

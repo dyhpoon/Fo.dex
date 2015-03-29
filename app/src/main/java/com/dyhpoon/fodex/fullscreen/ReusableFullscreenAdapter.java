@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.dyhpoon.fodex.data.FodexImageContract;
+import com.dyhpoon.fodex.data.actual.FodexImageContract;
 import com.dyhpoon.fodex.util.MediaImage;
 import com.dyhpoon.fodex.view.TouchImageView;
 

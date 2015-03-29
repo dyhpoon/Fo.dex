@@ -16,10 +16,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.inject.Inject;
+
 /**
  * Created by darrenpoon on 26/2/15.
  */
 public class IndexedPhotosPageFragment extends FodexBaseFragment<FodexItem> {
+
+    @Inject FodexCore fodexCore;
 
     private List<FodexItem> mItems;
     private String mSearchedWords;
@@ -35,8 +39,8 @@ public class IndexedPhotosPageFragment extends FodexBaseFragment<FodexItem> {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        FodexCore.syncAllPhotos(getActivity());
-        mItems = FodexCore.getIndexedPhotoItems(getActivity());
+        fodexCore.syncAllPhotos(getActivity());
+        mItems = fodexCore.getIndexedPhotoItems(getActivity());
         reload();
         mSearchedWords = "";
     }
@@ -48,7 +52,7 @@ public class IndexedPhotosPageFragment extends FodexBaseFragment<FodexItem> {
 
     @Override
     protected void onQueryTagsSubmitted(List<String> tags) {
-        mItems = FodexCore.getSearchedPhotoItems(getActivity(), tags);
+        mItems = fodexCore.getSearchedPhotoItems(getActivity(), tags);
         mSearchedWords = TextUtils.join(" ", tags);
         reload();
     }
@@ -56,7 +60,7 @@ public class IndexedPhotosPageFragment extends FodexBaseFragment<FodexItem> {
     @Override
     protected void onSearchEnd() {
         if (!mSearchedWords.equals("")) {
-            mItems = FodexCore.getIndexedPhotoItems(getActivity());
+            mItems = fodexCore.getIndexedPhotoItems(getActivity());
             reload();
             mSearchedWords = "";
         }
@@ -77,8 +81,8 @@ public class IndexedPhotosPageFragment extends FodexBaseFragment<FodexItem> {
             }
         }, 1300);   // set minimum loading time
 
-        FodexCore.syncAllPhotos(getActivity());
-        mItems = FodexCore.getIndexedPhotoItems(getActivity());
+        fodexCore.syncAllPhotos(getActivity());
+        mItems = fodexCore.getIndexedPhotoItems(getActivity());
         isTaskCompleted.set(true);
         if (isTimeIsUp.get()) {
             refreshComplete();

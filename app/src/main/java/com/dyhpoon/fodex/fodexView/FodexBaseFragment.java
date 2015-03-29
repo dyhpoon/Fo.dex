@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
@@ -37,10 +36,10 @@ import com.dyhpoon.fab.FloatingActionButton;
 import com.dyhpoon.fab.FloatingActionsMenu;
 import com.dyhpoon.fodex.MainActivity;
 import com.dyhpoon.fodex.R;
-import com.dyhpoon.fodex.data.FodexContract;
 import com.dyhpoon.fodex.data.FodexCore;
 import com.dyhpoon.fodex.data.FodexItem;
-import com.dyhpoon.fodex.data.SearchViewCursorAdapter;
+import com.dyhpoon.fodex.data.actual.FodexContract;
+import com.dyhpoon.fodex.di.BaseFragment;
 import com.dyhpoon.fodex.fullscreen.FullscreenActivity;
 import com.dyhpoon.fodex.util.CacheImageManager;
 import com.dyhpoon.fodex.util.KeyboardUtils;
@@ -55,6 +54,8 @@ import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -66,7 +67,7 @@ import in.srain.cube.views.ptr.header.MaterialHeader;
  * Created by darrenpoon on 16/1/15.
  */
 public abstract class FodexBaseFragment<T extends FodexItem>
-        extends Fragment
+        extends BaseFragment
         implements OnBackPressedHandler {
 
     private enum State {
@@ -79,6 +80,8 @@ public abstract class FodexBaseFragment<T extends FodexItem>
     private static final int GRID_VIEW_HORIZONTAL_SPACING = 3;
     private static final int GRID_VIEW_COLUMNS_COUNT = 3;
     private static final int PRELOAD_SIZE = 10;
+
+    @Inject FodexCore fodexCore;
 
     private SearchView mSearchView;
     private AsymmetricGridView mGridView;
@@ -352,7 +355,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
                 List<String> filteredTags = StringUtils.tokenize(s);
                 if (filteredTags.size() != 0) {
                     String lastTag = filteredTags.remove(filteredTags.size() - 1);
-                    mSuggestionCursor = FodexCore.getMatchedTags(getActivity(), lastTag);
+                    mSuggestionCursor = fodexCore.getMatchedTags(getActivity(), lastTag);
                     SearchViewCursorAdapter adapter =
                             new SearchViewCursorAdapter(getActivity(),
                                     mSuggestionCursor,
@@ -421,7 +424,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
         for (int i = 0; i < mSelectedItems.size(); i++) {
             imageIds[i] = mSelectedItems.get(i).fodexItem.id;
         }
-        FodexWidget.addTags(getActivity(), imageIds, new SimpleCompleteListener() {
+        FodexWidget.addTags(getActivity(), fodexCore, imageIds, new SimpleCompleteListener() {
             @Override
             public void didComplete() {
                 if (mFloatingActionMenu.isExpanded()) mFloatingActionMenu.collapse();
@@ -445,7 +448,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
             final FodexItem item = ((FodexLayoutSpecItem) mGridView.getItemAtPosition(position)).fodexItem;
-            FodexWidget.showTags(getActivity(), item.id);
+            FodexWidget.showTags(getActivity(), fodexCore, item.id);
             return true;
         }
     };
