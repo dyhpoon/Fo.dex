@@ -34,12 +34,15 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.dyhpoon.fab.FloatingActionButton;
 import com.dyhpoon.fab.FloatingActionsMenu;
+import com.dyhpoon.fodex.BuildConfig;
 import com.dyhpoon.fodex.MainActivity;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexCore;
 import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.data.actual.FodexContract;
 import com.dyhpoon.fodex.di.BaseFragment;
+import com.dyhpoon.fodex.di.FodexCoreMockModule;
+import com.dyhpoon.fodex.di.FodexCoreModule;
 import com.dyhpoon.fodex.fullscreen.FullscreenActivity;
 import com.dyhpoon.fodex.util.CacheImageManager;
 import com.dyhpoon.fodex.util.KeyboardUtils;
@@ -56,6 +59,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import dagger.ObjectGraph;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -151,6 +155,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
     public void onPause() {
         super.onPause();
         CacheImageManager.clear();
+        Glide.get(getActivity()).clearMemory();
     }
 
     @Override
@@ -180,12 +185,30 @@ public abstract class FodexBaseFragment<T extends FodexItem>
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         menu.clear();
-        getActivity().getMenuInflater().inflate(R.menu.main, menu);
+        if (BuildConfig.DEBUG) {
+            getActivity().getMenuInflater().inflate(R.menu.debug_main, menu);
+        } else {
+            getActivity().getMenuInflater().inflate(R.menu.main, menu);
+        }
 
         // setup SearchView and EditText
         final MenuItem searchMenuItem = menu.findItem(R.id.menu_search);
         mSearchView = (SearchView) searchMenuItem.getActionView();
         setupSearchView();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_mock:
+                ObjectGraph.create(new FodexCoreMockModule()).inject(this);
+                return true;
+            case R.id.menu_unmock:
+                ObjectGraph.create(new FodexCoreModule()).inject(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void reload() {

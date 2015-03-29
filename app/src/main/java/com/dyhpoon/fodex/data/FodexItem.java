@@ -18,11 +18,21 @@ public class FodexItem implements Parcelable {
     public Uri uri;
 
     public FodexItem(long id, long imageId, long date, String data) {
+        this(
+                id,
+                imageId,
+                date,
+                data,
+                ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageId)
+        );
+    }
+
+    public FodexItem(long id, long imageId, long date, String data, Uri uri) {
         this.id = id;
         this.imageId = imageId;
         this.date = date;
         this.data = data;
-        uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageId);
+        this.uri = uri;
     }
 
     @Override
