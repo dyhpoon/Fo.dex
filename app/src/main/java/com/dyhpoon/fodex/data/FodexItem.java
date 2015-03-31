@@ -50,7 +50,8 @@ public class FodexItem implements Parcelable {
                 "\n id: " + id +
                 "\n imageId: " + imageId +
                 "\n date: " + date +
-                "\n data: " + data;
+                "\n data: " + data +
+                "\n uri: " + uri;
     }
 
     public FodexItem(Parcel in) {
@@ -58,6 +59,7 @@ public class FodexItem implements Parcelable {
         this.imageId = in.readLong();
         this.date = in.readLong();
         this.data = in.readString();
+        this.uri = Uri.parse(in.readString());
     }
 
     @Override
@@ -71,6 +73,7 @@ public class FodexItem implements Parcelable {
         dest.writeLong(this.imageId);
         dest.writeLong(this.date);
         dest.writeString(this.data);
+        dest.writeString(this.uri.toString());
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

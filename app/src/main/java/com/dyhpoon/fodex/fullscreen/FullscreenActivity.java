@@ -3,7 +3,6 @@ package com.dyhpoon.fodex.fullscreen;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
-import android.content.ContentUris;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -11,7 +10,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
@@ -234,9 +232,7 @@ public class FullscreenActivity extends BaseFragmentActivity {
 
             @Override
             public Uri imageUriAtPosition(int position) {
-                return ContentUris.withAppendedId(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        items.get(position).imageId);
+                return items.get(position).uri;
             }
 
             @Override
@@ -360,9 +356,7 @@ public class FullscreenActivity extends BaseFragmentActivity {
                 throw new IllegalArgumentException("Unhandled type: " + type);
         }
 
-        Uri uri = ContentUris.withAppendedId(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                item.imageId);
+        Uri uri = item.uri;
         social.shareImage(FullscreenActivity.this, uri, completeListener);
     }
 
