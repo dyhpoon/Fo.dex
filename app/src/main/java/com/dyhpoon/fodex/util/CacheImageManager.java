@@ -15,8 +15,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class CacheImageManager {
 
-    // Sets the initial threadpool size to 8
-    private static final int CORE_POOL_SIZE = 8;
+    // Sets the initial threadpool size to 1
+    private static final int CORE_POOL_SIZE = 1;
     // Sets the maximum threadpool size to 8
     private static final int MAXIMUM_POOL_SIZE = 8;
     // Sets the amount of time an idle thread will wait for a task before terminating
