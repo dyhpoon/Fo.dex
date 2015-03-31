@@ -95,7 +95,7 @@ public class MediaImage {
 
         @Override
         protected Bitmap doInBackground(Uri... params) {
-            android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
+            android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DISPLAY);
             if (imageViewWeakReference != null) {
                 final ImageView imageView = imageViewWeakReference.get();
                 if (imageView != null) {
