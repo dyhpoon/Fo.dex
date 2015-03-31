@@ -174,7 +174,7 @@ public class FullscreenActivity extends BaseFragmentActivity {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         int width = metrics.widthPixels;
         int height = metrics.heightPixels;
-        Bitmap bm = MediaImage.getDecodedBitmap(FullscreenActivity.this, Uri.parse(imageUrl), width, height);
+        Bitmap bm = MediaImage.loadBitmapSynchronously(FullscreenActivity.this, Uri.parse(imageUrl), width, height);
         mFakeImageView.setImageBitmap(bm);
     }
 

@@ -1,7 +1,6 @@
 package com.dyhpoon.fodex.fullscreen;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
@@ -52,8 +51,7 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
         final ImageView photoView = (ImageView) createOrRecycleView(mContext);
-        Bitmap bm = MediaImage.getDecodedBitmap(mContext, imageUriAtPosition(position), mWidth, mHeight);
-        photoView.setImageBitmap(bm);
+        MediaImage.loadBitmapAsynchronously(photoView, imageUriAtPosition(position), mWidth, mHeight);
         container.addView(photoView, 0);
         photoView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
