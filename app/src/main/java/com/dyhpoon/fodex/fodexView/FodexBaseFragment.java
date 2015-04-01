@@ -92,6 +92,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
     private FloatingActionButton mTagButton;
     private FloatingActionsMenu mFloatingActionMenu;
     private PtrClassicFrameLayout mPtrLayout;
+    private boolean isAfterOnSaveInstanceState;
 
     private FodexAdapter mAdapter;
     private Cursor mSuggestionCursor;
@@ -149,6 +150,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
             ((MainActivity) getActivity()).drawerLayout
                     .setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
+        isAfterOnSaveInstanceState = false;
     }
 
     @Override
@@ -164,6 +166,12 @@ public abstract class FodexBaseFragment<T extends FodexItem>
         if (mSuggestionCursor != null) {
             mSuggestionCursor.close();
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        isAfterOnSaveInstanceState = true;
     }
 
     @Override
@@ -470,9 +478,14 @@ public abstract class FodexBaseFragment<T extends FodexItem>
     private AdapterView.OnItemLongClickListener imageOnLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            final FodexItem item = ((FodexLayoutSpecItem) mGridView.getItemAtPosition(position)).fodexItem;
-            FodexWidget.showTags(getActivity(), fodexCore, item.id);
-            return true;
+            if (isAfterOnSaveInstanceState) {
+                // fix crash Fatal Exception: java.lang.IllegalStateException Can not perform this action after onSaveInstanceState
+                return false;
+            } else {
+                final FodexItem item = ((FodexLayoutSpecItem) mGridView.getItemAtPosition(position)).fodexItem;
+                FodexWidget.showTags(getActivity(), fodexCore, item.id);
+                return true;
+            }
         }
     };
 
