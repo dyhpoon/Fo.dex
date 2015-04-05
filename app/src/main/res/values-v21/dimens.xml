@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="status_bar_height_padding">0dp</dimen>
+
+    <dimen name="grid_item_left_margin">3px</dimen>
+    <dimen name="grid_item_top_margin">3px</dimen>
+    <dimen name="grid_item_right_margin">3px</dimen>
+    <dimen name="grid_item_bottom_margin">3px</dimen>
 </resources>

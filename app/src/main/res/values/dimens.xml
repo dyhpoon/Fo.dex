@@ -40,4 +40,10 @@
     <dimen name="dialog_lower_part_margin_top">6dp</dimen>
     <dimen name="dialog_item_text_size">25dp</dimen>
     <dimen name="dialog_button_text_size">18dp</dimen>
+
+    <!-- Grid item -->
+    <dimen name="grid_item_left_margin">0px</dimen>
+    <dimen name="grid_item_top_margin">0px</dimen>
+    <dimen name="grid_item_right_margin">0px</dimen>
+    <dimen name="grid_item_bottom_margin">0px</dimen>
 </resources>

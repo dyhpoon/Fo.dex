@@ -1,4 +1,4 @@
-package com.dyhpoon.fodex.data.actual;
+package com.dyhpoon.fodex.fodexView;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,11 +10,6 @@ import android.widget.ImageView;
  * Created by darrenpoon on 4/2/15.
  */
 public class FodexImageContract {
-
-    public static int LEFT_MARGIN    = 5;
-    public static int TOP_MARGIN     = 5;
-    public static int RIGHT_MARGIN   = 5;
-    public static int BOTTOM_MARGIN  = 5;
 
     public static ImageView.ScaleType PREFERRED_SCALE_TYPE = ImageView.ScaleType.CENTER_CROP;
 

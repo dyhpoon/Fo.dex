@@ -365,7 +365,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .fitCenter();
 
-        final AsymmetricSizeProvider sizeProvider = new AsymmetricSizeProvider(mAdapter);
+        final AsymmetricSizeProvider sizeProvider = new AsymmetricSizeProvider(getActivity(), mAdapter);
         final ListPreloader<FodexLayoutSpecItem> preloader = new ListPreloader<>(mAdapter, sizeProvider, PRELOAD_SIZE);
         mFloatingActionMenu.attachToListView(mGridView, null, preloader);
     }

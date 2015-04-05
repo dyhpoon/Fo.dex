@@ -1,6 +1,7 @@
 package com.dyhpoon.fodex.view;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.CardView;
@@ -9,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.dyhpoon.fodex.R;
-import com.dyhpoon.fodex.data.actual.FodexImageContract;
+import com.dyhpoon.fodex.fodexView.FodexImageContract;
 
 import java.util.Random;
 
@@ -29,11 +30,16 @@ public class ImageGridItem extends LinearLayout {
         LinearLayout.LayoutParams params = new LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
+        Resources res = getContext().getResources();
+        final int leftMargin    = res.getDimensionPixelSize(R.dimen.grid_item_left_margin);
+        final int topMargin     = res.getDimensionPixelSize(R.dimen.grid_item_top_margin);
+        final int rightMargin   = res.getDimensionPixelSize(R.dimen.grid_item_right_margin);
+        final int bottomMargin  = res.getDimensionPixelSize(R.dimen.grid_item_bottom_margin);
         params.setMargins(
-                FodexImageContract.LEFT_MARGIN,
-                FodexImageContract.TOP_MARGIN,
-                FodexImageContract.RIGHT_MARGIN,
-                FodexImageContract.BOTTOM_MARGIN
+                leftMargin,
+                topMargin,
+                rightMargin,
+                bottomMargin
         );
         cardView.setLayoutParams(params);
         cardView.setCardElevation(14.5f);
