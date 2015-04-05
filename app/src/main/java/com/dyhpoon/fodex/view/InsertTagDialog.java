@@ -128,4 +128,9 @@ public class InsertTagDialog extends SupportBlurDialogFragment {
         return 8;
     }
 
+    @Override
+    protected boolean isRenderScriptEnable() {
+        return true;
+    }
+
 }

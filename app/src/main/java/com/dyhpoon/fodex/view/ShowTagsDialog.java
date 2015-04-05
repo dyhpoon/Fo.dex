@@ -118,6 +118,11 @@ public class ShowTagsDialog extends SupportBlurDialogFragment {
         return 8;
     }
 
+    @Override
+    protected boolean isRenderScriptEnable() {
+        return true;
+    }
+
     private class TagAdapter extends RecyclerSwipeAdapter<TagAdapter.TagViewHolder> {
 
         private Context mContext;
