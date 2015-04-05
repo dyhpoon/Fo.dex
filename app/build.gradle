@@ -55,9 +55,9 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.5.2'
     compile 'de.hdodenhof:circleimageview:1.2.2'
     aarLinkSources 'de.hdodenhof:circleimageview:1.2.2:sources@jar'
-    compile 'com.facebook.stetho:stetho:1.0.1'
-    aarLinkSources 'com.facebook.stetho:stetho:1.0.1:sources@jar'
-    compile 'fr.tvbarthel.lib.blurdialogfragment:lib:1.1.0@aar'
+    compile 'com.facebook.stetho:stetho:1.1.0'
+    aarLinkSources 'com.facebook.stetho:stetho:1.1.0:sources@jar'
+    compile 'fr.tvbarthel.lib.blurdialogfragment:lib:2.0.0@aar'
     compile 'com.daimajia.swipelayout:library:1.1.9'
     aarLinkSources 'com.daimajia.swipelayout:library:1.1.9:sources@jar'
     compile 'com.daimajia.easing:library:1.0.2@aar'
@@ -76,7 +76,7 @@ dependencies {
     }
 
     // instrumentation test
-    androidTestCompile 'com.squareup.spoon:spoon-client:1.1.8'
+    androidTestCompile 'com.squareup.spoon:spoon-client:1.1.9'
 
     // unit test
     testCompile 'junit:junit:4.12'
