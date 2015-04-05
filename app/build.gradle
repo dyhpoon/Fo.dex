@@ -27,6 +27,8 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        renderscriptTargetApi 22
+        renderscriptSupportModeEnabled true
     }
     buildTypes {
         release {
@@ -58,12 +60,15 @@ dependencies {
     compile project(':libraries:AsymmetricGridView')
     compile project(':libraries:FloatingActionButton')
     compile project(':libraries:CircularFloatingActionMenu')
+    compile (project(':libraries:BlurDialogFragment')) {
+        exclude group: 'com.android.support', module:'support-v4'
+        exclude group: 'com.android.support', module:'appcompat-v7'
+    }
     compile 'com.github.bumptech.glide:glide:3.5.2'
     compile 'de.hdodenhof:circleimageview:1.2.2'
     aarLinkSources 'de.hdodenhof:circleimageview:1.2.2:sources@jar'
     compile 'com.facebook.stetho:stetho:1.1.0'
     aarLinkSources 'com.facebook.stetho:stetho:1.1.0:sources@jar'
-    compile 'fr.tvbarthel.lib.blurdialogfragment:lib:2.0.0@aar'
     compile 'com.daimajia.swipelayout:library:1.1.9'
     aarLinkSources 'com.daimajia.swipelayout:library:1.1.9:sources@jar'
     compile 'com.daimajia.easing:library:1.0.2@aar'
