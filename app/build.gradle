@@ -10,6 +10,7 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply plugin: 'aar-link-sources'
+apply plugin: 'spoon'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -39,6 +40,11 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+}
+
+spoon {
+    debug = true
+    className = 'com.dyhpoon.fodex.ScreenshotTest'
 }
 
 dependencies {
@@ -77,6 +83,7 @@ dependencies {
 
     // instrumentation test
     androidTestCompile 'com.squareup.spoon:spoon-client:1.1.9'
+    androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.3.1'
 
     // unit test
     testCompile 'junit:junit:4.12'

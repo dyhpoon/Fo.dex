@@ -209,14 +209,25 @@ public abstract class FodexBaseFragment<T extends FodexItem>
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_mock:
-                ObjectGraph.create(new FodexCoreMockModule()).inject(this);
+                injectMock(true);
                 return true;
             case R.id.menu_unmock:
-                ObjectGraph.create(new FodexCoreModule()).inject(this);
+                injectMock(false);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void injectMock(boolean isInject) {
+        if (!BuildConfig.DEBUG) {
+            return;
+        }
+
+        if (isInject)
+            ObjectGraph.create(new FodexCoreMockModule()).inject(this);
+        else
+            ObjectGraph.create(new FodexCoreModule()).inject(this);
     }
 
     public void reload() {
