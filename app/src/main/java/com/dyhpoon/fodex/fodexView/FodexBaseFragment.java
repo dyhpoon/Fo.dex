@@ -590,7 +590,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
                 mPreloadRequest
                         .load(item.fodexItem.uri)
                         .priority(Priority.HIGH)
-                        .fitCenter()
+                        .centerCrop()
                         .placeholder(gridItem.colorDrawable)
                         .into(new GlideDrawableImageViewTarget(gridItem.imageView) {
                             @Override
