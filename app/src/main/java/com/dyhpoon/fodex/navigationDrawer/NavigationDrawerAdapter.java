@@ -1,11 +1,9 @@
 package com.dyhpoon.fodex.navigationDrawer;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.dyhpoon.fodex.R;
 
@@ -99,25 +97,18 @@ public class NavigationDrawerAdapter extends SectionAdapter {
 
     private View inflateProfile(View convertView) {
         if (convertView == null) {
-            convertView = new ImageView(mContext);
-            convertView.setLayoutParams(new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    mContext.getResources().getDimensionPixelSize(R.dimen.navigation_drawer_top_image_height)
-            ));
-            Drawable backgroundImage = mContext.getResources().getDrawable(R.drawable.bg_blue);
-            ((ImageView)convertView).setImageDrawable(backgroundImage);
-            ((ImageView) convertView).setScaleType(ImageView.ScaleType.FIT_XY);
+            LayoutInflater inflater =
+                    (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.list_item_profile, null);
         }
         return convertView;
     }
 
     private View inflateWhiteSpace(View convertView) {
         if (convertView == null) {
-            convertView = new View(mContext);
-            convertView.setLayoutParams(new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    mContext.getResources().getDimensionPixelSize(R.dimen.navigation_drawer_list_padding)
-            ));
+            LayoutInflater inflater =
+                    (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.list_item_whitespace, null);
         }
         return convertView;
     }

@@ -2,8 +2,6 @@ package com.dyhpoon.fodex.navigationDrawer;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.Gravity;
-import android.view.ViewGroup;
 import android.widget.Checkable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,16 +35,6 @@ public class NavigationDrawerItem extends LinearLayout implements Checkable {
 
     private void setup() {
         inflate(getContext(), R.layout.list_item_navigation_drawer, this);
-
-        // add attributes here, since layout.xml is using 'merge' as the root element
-        // see http://trickyandroid.com/protip-inflating-layout-for-your-custom-view/
-        setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                getResources().getDimensionPixelSize(R.dimen.navigation_drawer_list_item_height)
-        ));
-        setMinimumHeight(getResources().getDimensionPixelSize(R.dimen.navigation_drawer_list_item_height));
-        setOrientation(LinearLayout.HORIZONTAL);
-        setVerticalGravity(Gravity.CENTER_VERTICAL);
 
         int color = getResources().getColor(R.color.colorPrimaryText);
         iconImageView = (ImageView) findViewById(R.id.icon);
