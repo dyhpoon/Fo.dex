@@ -3,6 +3,9 @@ package com.dyhpoon.fodex.di;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.android.debug.hv.ViewServer;
+import com.dyhpoon.fodex.BuildConfig;
+
 import dagger.ObjectGraph;
 
 /**
@@ -13,5 +16,24 @@ public class BaseFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ObjectGraph.create(new FodexCoreModule()).inject(this);
+        if (BuildConfig.DEBUG) {
+            ViewServer.get(getActivity()).addWindow(getActivity());
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (BuildConfig.DEBUG) {
+            ViewServer.get(getActivity()).setFocusedWindow(getActivity());
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (BuildConfig.DEBUG) {
+            ViewServer.get(getActivity()).removeWindow(getActivity());
+        }
     }
 }

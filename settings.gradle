@@ -2,7 +2,9 @@ include ':app',
         ':libraries:AsymmetricGridView',
         ':libraries:FloatingActionButton',
         ':libraries:CircularFloatingActionMenu',
-        ':libraries:BlurDialogFragment'
+        ':libraries:BlurDialogFragment',
+        ':libraries:ViewServer'
 project(':libraries:FloatingActionButton').projectDir = new File('libraries/FloatingActionButton/library')
 project(':libraries:CircularFloatingActionMenu').projectDir = new File('libraries/CircularFloatingActionMenu/library')
 project(':libraries:BlurDialogFragment').projectDir = new File('libraries/BlurDialogFragment/lib')
+project(':libraries:ViewServer').projectDir = new File('libraries/ViewServer/viewserver')
