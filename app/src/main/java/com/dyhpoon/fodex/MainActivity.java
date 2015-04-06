@@ -37,6 +37,8 @@ public class MainActivity extends ActionBarActivity
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
+        getWindow().setBackgroundDrawable(null);
+
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(mToolbar);
 

@@ -3,6 +3,7 @@ package com.dyhpoon.fodex.view;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -55,6 +56,7 @@ public class InsertTagDialog extends SupportBlurDialogFragment {
 
         // setup title
         TextView tv = (TextView) view.findViewById(R.id.text_view);
+        tv.setBackgroundColor(Color.TRANSPARENT);
         tv.setText(getActivity().getResources().getQuantityString(R.plurals.dialog_index_photo, mNumberOfPhotos));
 
         // setup editText

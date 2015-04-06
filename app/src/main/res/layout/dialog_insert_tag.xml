@@ -9,7 +9,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/backgroundDimWhite"
         android:paddingBottom="@dimen/dialog_padding_bottom"
         android:paddingLeft="@dimen/dialog_padding_left"
         android:paddingRight="@dimen/dialog_padding_right"
@@ -20,7 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:background="@color/backgroundDimWhite"
             android:paddingLeft="3dp"
             android:textColor="@android:color/black"
             android:textSize="20dip"
@@ -44,7 +42,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dialog_lower_part_margin_bottom"
         android:layout_marginTop="@dimen/dialog_lower_part_margin_top"
-        android:background="@color/backgroundDimWhite"
         android:gravity="right"
         android:orientation="horizontal">
 
