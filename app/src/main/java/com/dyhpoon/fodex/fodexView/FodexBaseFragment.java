@@ -35,14 +35,13 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.dyhpoon.fab.FloatingActionButton;
 import com.dyhpoon.fab.FloatingActionsMenu;
 import com.dyhpoon.fodex.BuildConfig;
+import com.dyhpoon.fodex.FodexApplication;
 import com.dyhpoon.fodex.MainActivity;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexCore;
 import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.data.actual.FodexContract;
 import com.dyhpoon.fodex.di.BaseFragment;
-import com.dyhpoon.fodex.di.FodexCoreMockModule;
-import com.dyhpoon.fodex.di.FodexCoreModule;
 import com.dyhpoon.fodex.fullscreen.FullscreenActivity;
 import com.dyhpoon.fodex.util.CacheImageManager;
 import com.dyhpoon.fodex.util.KeyboardUtils;
@@ -59,7 +58,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import dagger.ObjectGraph;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -219,15 +217,9 @@ public abstract class FodexBaseFragment<T extends FodexItem>
         }
     }
 
-    public void injectMock(boolean isInject) {
-        if (!BuildConfig.DEBUG) {
-            return;
-        }
-
-        if (isInject)
-            ObjectGraph.create(new FodexCoreMockModule()).inject(this);
-        else
-            ObjectGraph.create(new FodexCoreModule()).inject(this);
+    public void injectMock(boolean isMock) {
+        FodexApplication fodexApp = (FodexApplication) getActivity().getApplication();
+        fodexApp.injectMock(isMock, this);
     }
 
     public void reload() {
