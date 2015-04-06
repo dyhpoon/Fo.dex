@@ -22,7 +22,7 @@ import javax.inject.Inject;
 /**
  * Created by darrenpoon on 8/12/14.
  */
-public class RecentPhotosPageFragment extends FodexBaseFragment<FodexItem> {
+public class SharedPhotosPageFragment extends FodexBaseFragment<FodexItem> {
 
     @Inject FodexCore fodexCore;
 

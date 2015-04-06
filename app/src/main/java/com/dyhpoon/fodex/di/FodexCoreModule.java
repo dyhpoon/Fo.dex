@@ -2,7 +2,7 @@ package com.dyhpoon.fodex.di;
 
 import com.dyhpoon.fodex.contentFragment.AllPhotosPageFragment;
 import com.dyhpoon.fodex.contentFragment.IndexedPhotosPageFragment;
-import com.dyhpoon.fodex.contentFragment.RecentPhotosPageFragment;
+import com.dyhpoon.fodex.contentFragment.SharedPhotosPageFragment;
 import com.dyhpoon.fodex.contentFragment.UnindexedPhotoPageFragment;
 import com.dyhpoon.fodex.data.FodexCore;
 import com.dyhpoon.fodex.data.actual.FodexCoreImpl;
@@ -20,7 +20,7 @@ import dagger.Provides;
         injects = {
                 AllPhotosPageFragment.class,
                 IndexedPhotosPageFragment.class,
-                RecentPhotosPageFragment.class,
+                SharedPhotosPageFragment.class,
                 UnindexedPhotoPageFragment.class,
                 FullscreenActivity.class,
         },

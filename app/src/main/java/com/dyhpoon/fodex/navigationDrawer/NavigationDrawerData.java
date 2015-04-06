@@ -5,7 +5,7 @@ import android.content.Context;
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.contentFragment.AllPhotosPageFragment;
 import com.dyhpoon.fodex.contentFragment.IndexedPhotosPageFragment;
-import com.dyhpoon.fodex.contentFragment.RecentPhotosPageFragment;
+import com.dyhpoon.fodex.contentFragment.SharedPhotosPageFragment;
 import com.dyhpoon.fodex.contentFragment.UnindexedPhotoPageFragment;
 
 import java.util.Arrays;
@@ -48,7 +48,7 @@ public class NavigationDrawerData {
                             TAG_RECENT_PHOTOS,
                             context.getString(R.string.title_shared_photos),
                             context.getResources().getDrawable(R.drawable.ic_clock),
-                            RecentPhotosPageFragment.class)
+                            SharedPhotosPageFragment.class)
             );
         }
         return mPageItems;
