@@ -27,6 +27,7 @@ public class ImageGridItem extends LinearLayout {
     public ImageGridItem(Context context) {
         super(context);
         CardView cardView = new CardView(context);
+        cardView.setCardBackgroundColor(Color.TRANSPARENT);
         LinearLayout.LayoutParams params = new LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
