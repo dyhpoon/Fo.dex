@@ -47,6 +47,21 @@ public class ScreenshotTest extends ActivityInstrumentationTestCase2<MainActivit
         Spoon.screenshot(solo.getCurrentActivity(), "main_dialog");
     }
 
+    public void testScreenshotNavigation() {
+        Point deviceSize = new Point();
+        solo.getCurrentActivity().getWindowManager().getDefaultDisplay().getSize(deviceSize);
+
+        int screenWidth = deviceSize.x;
+        int screenHeight = deviceSize.y;
+        int fromX = 0;
+        int toX = screenWidth / 2;
+        int fromY = screenHeight / 2;
+        int toY = fromY;
+
+        solo.drag(fromX, toX, fromY, toY, 1);
+        Spoon.screenshot(solo.getCurrentActivity(), "navigation");
+    }
+
     public void testScreenshotFullscreen() {
         gotoFullscreen();
         Spoon.screenshot(solo.getCurrentActivity(), "fullscreen");
