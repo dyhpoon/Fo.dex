@@ -58,6 +58,7 @@ dependencies {
     compile project(':libraries:AsymmetricGridView')
     compile project(':libraries:FloatingActionButton')
     compile project(':libraries:CircularFloatingActionMenu')
+    compile project(':libraries:ViewServer')
     compile (project(':libraries:BlurDialogFragment')) {
         transitive = true
         exclude group: 'com.android.support', module:'support-v4'

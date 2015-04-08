@@ -27,6 +27,7 @@ public class ImageGridItem extends LinearLayout {
     public ImageGridItem(Context context) {
         super(context);
         CardView cardView = new CardView(context);
+        cardView.setCardBackgroundColor(Color.TRANSPARENT);
         LinearLayout.LayoutParams params = new LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
@@ -54,7 +55,6 @@ public class ImageGridItem extends LinearLayout {
         cardView.addView(imageView);
 
         mSelectedImageView = new ImageView(context);
-        mSelectedImageView.setBackgroundColor(Color.BLACK);
         mSelectedImageView.setScaleType(ImageView.ScaleType.CENTER);
         mSelectedImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_selected));
         mSelectedImageView.setAlpha(0.8f);
@@ -74,9 +74,11 @@ public class ImageGridItem extends LinearLayout {
             super.setSelected(isSelected);
             if (isSelected) {
                 mSelectedImageView.setVisibility(VISIBLE);
+                mSelectedImageView.setBackgroundColor(Color.BLACK);
 
             } else {
                 mSelectedImageView.setVisibility(INVISIBLE);
+                mSelectedImageView.setBackgroundColor(Color.TRANSPARENT);
             }
         }
     }
