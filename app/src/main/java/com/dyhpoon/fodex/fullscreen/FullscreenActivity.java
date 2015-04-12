@@ -184,6 +184,7 @@ public class FullscreenActivity extends BaseFragmentActivity {
         if (bitmap != null) {
             bitmap.recycle();
         }
+        mSwitcher.removeViewAt(0);  // mFakeImageView is not longer used after animation, free up for more memory
     }
 
     private void setupShareActionMenu() {

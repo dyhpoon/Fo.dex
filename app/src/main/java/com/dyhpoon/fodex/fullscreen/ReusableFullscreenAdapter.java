@@ -28,13 +28,11 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
     public abstract void onLongClick(int position);
     public abstract void onClick(int position);
 
-    private Context mContext;
     private int mWidth, mHeight;
     private Stack<View> mRecycledViews = new Stack<>();
 
     public ReusableFullscreenAdapter(Context context) {
-        mContext = context;
-        DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         mWidth = metrics.widthPixels;
         mHeight = metrics.heightPixels;
     }
@@ -51,7 +49,7 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
-        final ImageView photoView = (ImageView) createOrRecycleView(mContext);
+        final ImageView photoView = (ImageView) createOrRecycleView(container.getContext());
         Uri uri = imageUriAtPosition(position);
 
         // load bitmap in main thread if the image is in local disk.
@@ -97,7 +95,7 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
             ));
-            photoView.setMinimumHeight(FodexImageContract.preferredMinimumHeight(mContext));
+            photoView.setMinimumHeight(FodexImageContract.preferredMinimumHeight(context));
         } else {
             photoView = mRecycledViews.pop();
         }
