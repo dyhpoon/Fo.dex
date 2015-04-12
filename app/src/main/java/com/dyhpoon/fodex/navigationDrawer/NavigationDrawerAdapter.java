@@ -1,7 +1,6 @@
 package com.dyhpoon.fodex.navigationDrawer;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -97,18 +96,14 @@ public class NavigationDrawerAdapter extends SectionAdapter {
 
     private View inflateProfile(View convertView) {
         if (convertView == null) {
-            LayoutInflater inflater =
-                    (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.list_item_profile, null);
+            convertView = View.inflate(mContext, R.layout.list_item_profile, null);
         }
         return convertView;
     }
 
     private View inflateWhiteSpace(View convertView) {
         if (convertView == null) {
-            LayoutInflater inflater =
-                    (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.list_item_whitespace, null);
+            convertView = View.inflate(mContext, R.layout.list_item_whitespace, null);
         }
         return convertView;
     }
@@ -135,9 +130,7 @@ public class NavigationDrawerAdapter extends SectionAdapter {
 
     private View inflateListDivider(View convertView) {
         if (convertView == null) {
-            LayoutInflater inflater =
-                    (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.list_item_divider, null);
+            convertView = View.inflate(mContext, R.layout.list_item_divider, null);
         }
         return convertView;
     }

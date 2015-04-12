@@ -4,15 +4,15 @@
     tools:context=".MainActivity">
     <item
         android:id="@+id/menu_search"
-        android:title="search"
+        android:title="@string/menu_search"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always" />
     <item
         android:id="@+id/menu_mock"
-        android:title="mock"
+        android:title="@string/menu_mock"
         app:showAsAction="never" />
     <item
         android:id="@+id/menu_unmock"
-        android:title="unmock"
+        android:title="@string/menu_unmock"
         app:showAsAction="never" />
 </menu>

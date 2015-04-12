@@ -315,6 +315,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
         mGridView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                v.performClick();
                 if (KeyboardUtils.isShown(getActivity())) {
                     mSearchView.clearFocus();
                     return true;
@@ -443,8 +444,7 @@ public abstract class FodexBaseFragment<T extends FodexItem>
             }
         });
 
-        EditText editText = (EditText) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        searchText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus)

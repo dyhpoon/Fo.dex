@@ -30,16 +30,13 @@ public class InsertTagDialog extends SupportBlurDialogFragment {
         public void onClick(DialogInterface dialog, String[] tags, int which);
     }
 
-    private InsertTagDialog(int numberOfPhotos) {
-        this.mNumberOfPhotos = numberOfPhotos;
-    }
-
     public static InsertTagDialog newInstance() {
         return newInstance(1);
     }
 
     public static InsertTagDialog newInstance(int numberOfPhotos) {
-        InsertTagDialog dialog = new InsertTagDialog(numberOfPhotos);
+        InsertTagDialog dialog = new InsertTagDialog();
+        dialog.mNumberOfPhotos = numberOfPhotos;
         return dialog;
     }
 
@@ -50,7 +47,7 @@ public class InsertTagDialog extends SupportBlurDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_insert_tag, null);
+        View view = View.inflate(getActivity(), R.layout.dialog_insert_tag, null);
         builder.setView(view);
         final AlertDialog dialog = builder.create();
 

@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="5dp"
+            android:layout_toEndOf="@id/trash_image_view"
             android:layout_toRightOf="@id/trash_image_view"
             android:text="@string/title_should_delete_tag"
             android:textColor="@color/backgroundDimWhite"

@@ -43,12 +43,9 @@ public class ShowTagsDialog extends SupportBlurDialogFragment {
     private DialogInterface.OnClickListener mListener;
     private OnDeleteListener mDeleteListener;
 
-    public ShowTagsDialog(List<String> tags) {
-        mTags = tags;
-    }
-
     public static ShowTagsDialog newInstance(List<String> tags) {
-        ShowTagsDialog dialog = new ShowTagsDialog(tags);
+        ShowTagsDialog dialog = new ShowTagsDialog();
+        dialog.mTags = tags;
         return dialog;
     }
 
@@ -64,7 +61,7 @@ public class ShowTagsDialog extends SupportBlurDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_show_tag, null);
+        View view = View.inflate(getActivity(), R.layout.dialog_show_tag, null);
         builder.setView(view);
         final AlertDialog dialog = builder.create();
 

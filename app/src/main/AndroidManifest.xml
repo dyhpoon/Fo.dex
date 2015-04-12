@@ -58,11 +58,12 @@
             android:name=".fullscreen.FullscreenActivity"
             android:label="@string/title_activity_fullscreen"
             android:screenOrientation="portrait"
-            android:theme="@style/Transparent"></activity>
+            android:theme="@style/Transparent" />
 
         <provider
             android:name=".data.actual.FodexProvider"
-            android:authorities="com.dyhpoon.fodex.provider" />
+            android:authorities="com.dyhpoon.fodex.provider"
+            android:exported="false" />
 
         <meta-data
             android:name="com.crashlytics.ApiKey"

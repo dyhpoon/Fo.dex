@@ -11,7 +11,6 @@
     <string name="title_shared_photos">Shared Photos</string>
     <string name="title_indexed_photos">Indexed Photos</string>
     <string name="title_unindexed_photos">Unindexed Photos</string>
-    <string name="title_settings">Settings</string>
     <string name="title_should_delete_tag">Delete Tag?</string>
 
     <string name="search_bar_hint">Tags</string>
@@ -41,8 +40,7 @@
     <string name="message_no_tag">Oh, no tags are found</string>
     <string name="message_no_photos_found">No photos found</string>
 
-    <string name="setting_title_accounts">Accounts</string>
-    <string name="setting_title_account_facebook">Facebook</string>
-    <string name="setting_title_account_google_plus">Google+</string>
-
+    <string name="menu_search">search</string>
+    <string name="menu_mock">mock</string>
+    <string name="menu_unmock">unmock</string>
 </resources>
