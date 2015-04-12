@@ -3,6 +3,8 @@ package com.dyhpoon.fodex.fullscreen;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
 import android.util.DisplayMetrics;
@@ -51,16 +53,7 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, final int position) {
         final ImageView photoView = (ImageView) createOrRecycleView(container.getContext());
         Uri uri = imageUriAtPosition(position);
-
-        // load bitmap in main thread if the image is in local disk.
-        if (uri.toString().contains("content")) {
-            Bitmap bitmap = MediaImage.loadBitmapSynchronously(photoView.getContext(), uri, mWidth, mHeight);
-            photoView.setImageBitmap(bitmap);
-        }
-        // otherwise, load image asynchronously
-        else {
-            MediaImage.loadBitmapAsynchronously(photoView, uri, mWidth, mHeight);
-        }
+        MediaImage.loadBitmapAsynchronously(photoView, uri, mWidth, mHeight);
         container.addView(photoView, 0);
         photoView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -105,7 +98,14 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
 
     private void cleanView(TouchImageView v) {
         v.setLayerType(View.LAYER_TYPE_NONE, null);
-        v.setImageDrawable(null);
+        Drawable drawable = v.getDrawable();
+        if (drawable instanceof BitmapDrawable) {
+            Bitmap bitmap = ((BitmapDrawable)v.getDrawable()).getBitmap();
+            v.setImageDrawable(null);
+            bitmap.recycle();
+        } else {
+            v.setImageDrawable(null);
+        }
         v.resetZoom();
     }
 }
