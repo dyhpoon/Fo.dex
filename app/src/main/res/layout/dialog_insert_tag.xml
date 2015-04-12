@@ -31,9 +31,9 @@
             android:layout_below="@id/text_view"
             android:layout_marginTop="8dp"
             android:hint="@string/dialog_insert_tag_hint"
-            app:baseColor="#009688"
-            app:floatingLabel="highlight"
-            app:primaryColor="#2196F3" />
+            app:met_baseColor="#009688"
+            app:met_floatingLabel="highlight"
+            app:met_primaryColor="#2196F3" />
 
     </RelativeLayout>
 
