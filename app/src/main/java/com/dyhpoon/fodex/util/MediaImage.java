@@ -35,7 +35,18 @@ public class MediaImage {
         }
     }
 
-    public static Bitmap loadBitmapSynchronously(Context context, Uri uri, int reqWidth, int reqHeight) {
+    public static Bitmap loadBitmapSynchronously(Context context,
+                                                 Uri uri,
+                                                 int reqWidth,
+                                                 int reqHeight) {
+        return loadBitmapSynchronously(context, uri, reqWidth, reqHeight, true);
+    }
+
+    public static Bitmap loadBitmapSynchronously(Context context,
+                                                 Uri uri,
+                                                 int reqWidth,
+                                                 int reqHeight,
+                                                 Boolean highResolution) {
         boolean isLocal = uri.toString().contains("content://");
         if (isLocal) {
             try {
@@ -47,7 +58,7 @@ public class MediaImage {
                 BitmapFactory.decodeFileDescriptor(fd.getFileDescriptor(), null, options);
 
                 // Calculate inSampleSize
-                options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+                options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight, highResolution);
 
                 // Decode bitmap with inSampleSize set
                 options.inJustDecodeBounds = false;
@@ -64,7 +75,10 @@ public class MediaImage {
         return null;
     }
 
-    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    private static int calculateInSampleSize(BitmapFactory.Options options,
+                                             int reqWidth,
+                                             int reqHeight,
+                                             boolean highResolution) {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -72,14 +86,22 @@ public class MediaImage {
 
         if (height > reqHeight || width > reqWidth) {
 
-            final int halfHeight = height/2;
-            final int halfWidth = width/2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
+            if (highResolution) {
+                final int halfHeight = height/2;
+                final int halfWidth = width/2;
+                // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+                // height and width larger than the requested height and width.
+                while ((halfHeight / inSampleSize) > reqHeight
+                        && (halfWidth / inSampleSize) > reqWidth) {
+                    inSampleSize *= 2;
+                }
+            } else {
+                final int tripeHeight = height*3;
+                final int tripeWidth = width*3;
+                while ((tripeHeight / inSampleSize) > reqHeight
+                        || (tripeWidth / inSampleSize) > reqWidth) {
+                    inSampleSize *= 2;
+                }
             }
         }
         return inSampleSize;
