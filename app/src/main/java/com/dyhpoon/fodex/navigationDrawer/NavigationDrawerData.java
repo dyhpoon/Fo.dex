@@ -1,6 +1,7 @@
 package com.dyhpoon.fodex.navigationDrawer;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.contentFragment.AllPhotosPageFragment;
@@ -32,22 +33,22 @@ public class NavigationDrawerData {
                     new NavigationDrawerInfo(
                             TAG_ALL_PHOTOS,
                             context.getString(R.string.title_all_photos),
-                            context.getResources().getDrawable(R.drawable.ic_all),
+                            ContextCompat.getDrawable(context, R.drawable.ic_all),
                             AllPhotosPageFragment.class),
                     new NavigationDrawerInfo(
                             TAG_INDEXED_PHOTOS,
                             context.getString(R.string.title_indexed_photos),
-                            context.getResources().getDrawable(R.drawable.ic_indexed),
+                            ContextCompat.getDrawable(context, R.drawable.ic_indexed),
                             IndexedPhotosPageFragment.class),
                     new NavigationDrawerInfo(
                             TAG_UNINDEXED_PHOTOS,
                             context.getString(R.string.title_unindexed_photos),
-                            context.getResources().getDrawable(R.drawable.ic_unindexed),
+                            ContextCompat.getDrawable(context, R.drawable.ic_unindexed),
                             UnindexedPhotoPageFragment.class),
                     new NavigationDrawerInfo(
                             TAG_RECENT_PHOTOS,
                             context.getString(R.string.title_shared_photos),
-                            context.getResources().getDrawable(R.drawable.ic_clock),
+                            ContextCompat.getDrawable(context, R.drawable.ic_clock),
                             SharedPhotosPageFragment.class)
             );
         }

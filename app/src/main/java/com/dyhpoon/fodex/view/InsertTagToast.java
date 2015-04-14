@@ -2,6 +2,7 @@ package com.dyhpoon.fodex.view;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import com.dyhpoon.fodex.R;
@@ -21,6 +22,6 @@ public class InsertTagToast extends CustomToast {
                 context,
                 res.getQuantityString(R.plurals.message_add_tag, number, number),
                 res.getColor(R.color.colorPrimaryDark),
-                res.getDrawable(R.drawable.ic_tag_fit_15));
+                ContextCompat.getDrawable(context, R.drawable.ic_tag_fit_15));
     }
 }

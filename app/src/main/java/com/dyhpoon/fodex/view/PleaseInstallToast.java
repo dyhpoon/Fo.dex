@@ -4,7 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import com.dyhpoon.fodex.R;
@@ -21,12 +21,7 @@ public class PleaseInstallToast extends Toast {
     @TargetApi(21)
     public static Toast make(Context context, String text) {
         Resources res = context.getResources();
-        Drawable drawable;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            drawable = res.getDrawable(R.drawable.ic_cross_fit_15, null);
-        } else {
-            drawable = res.getDrawable(R.drawable.ic_cross_fit_15);
-        }
+        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_cross_fit_15);
         return CustomToast.make(
                 context,
                 text,

@@ -2,6 +2,7 @@ package com.dyhpoon.fodex.view;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import com.dyhpoon.fodex.R;
@@ -21,6 +22,6 @@ public class ErrorToast extends CustomToast {
                 context,
                 message,
                 res.getColor(R.color.red),
-                res.getDrawable(R.drawable.ic_cross_fit_15));
+                ContextCompat.getDrawable(context, R.drawable.ic_cross_fit_15));
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -56,7 +57,7 @@ public class ImageGridItem extends LinearLayout {
 
         mSelectedImageView = new ImageView(context);
         mSelectedImageView.setScaleType(ImageView.ScaleType.CENTER);
-        mSelectedImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_selected));
+        mSelectedImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_selected));
         mSelectedImageView.setAlpha(0.8f);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
