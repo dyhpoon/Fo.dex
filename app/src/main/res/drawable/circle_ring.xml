@@ -5,5 +5,5 @@
     android:thickness="0dp">
     <stroke
         android:width="2dp"
-        android:color="#ababf2" />
+        android:color="#00000000" />
 </shape>
