@@ -38,9 +38,16 @@ public class UnindexedPhotoPageFragment extends FodexBaseFragment<FodexItem> {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        fodexCore.syncAllPhotos(getActivity());
-        mItems = fodexCore.getUnindexPhotoItems(getActivity());
-        reload();
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                fodexCore.syncAllPhotos(getActivity());
+                mItems = fodexCore.getUnindexPhotoItems(getActivity());
+                reload();
+            }
+        });
+        t.setPriority(Thread.MAX_PRIORITY);
+        t.start();
     }
 
     @Override

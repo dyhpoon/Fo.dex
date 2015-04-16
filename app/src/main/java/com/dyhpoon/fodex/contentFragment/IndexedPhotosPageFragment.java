@@ -39,10 +39,17 @@ public class IndexedPhotosPageFragment extends FodexBaseFragment<FodexItem> {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        fodexCore.syncAllPhotos(getActivity());
-        mItems = fodexCore.getIndexedPhotoItems(getActivity());
-        reload();
         mSearchedWords = "";
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                fodexCore.syncAllPhotos(getActivity());
+                mItems = fodexCore.getIndexedPhotoItems(getActivity());
+                reload();
+            }
+        });
+        t.setPriority(Thread.MAX_PRIORITY);
+        t.start();
     }
 
     @Override
