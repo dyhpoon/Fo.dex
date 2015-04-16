@@ -223,34 +223,39 @@ public abstract class FodexBaseFragment<T extends FodexItem>
     }
 
     public void reload() {
-        CacheImageManager.clear();
-        mFodexItems = itemsForAdapters();
-        if (mFodexItems == null)
-            throw new AssertionError("expect itemsForAdapters to be not null.");
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                CacheImageManager.clear();
+                mFodexItems = itemsForAdapters();
+                if (mFodexItems == null)
+                    throw new AssertionError("expect itemsForAdapters to be not null.");
 
-        List<FodexLayoutSpecItem> layoutItems = new ArrayList<>();
-        for (int i = 0; i < mFodexItems.size(); i++) {
-            int index = i % 10;
-            int columnSpan;
-            switch (index) {
-                case 0:
-                case 6:
-                    columnSpan = 2;
-                    break;
-                default:
-                    columnSpan = 1;
-                    break;
+                List<FodexLayoutSpecItem> layoutItems = new ArrayList<>();
+                for (int i = 0; i < mFodexItems.size(); i++) {
+                    int index = i % 10;
+                    int columnSpan;
+                    switch (index) {
+                        case 0:
+                        case 6:
+                            columnSpan = 2;
+                            break;
+                        default:
+                            columnSpan = 1;
+                            break;
+                    }
+                    FodexLayoutSpecItem item = new FodexLayoutSpecItem(columnSpan, 1, mFodexItems.get(i));
+                    layoutItems.add(i, item);
+                }
+                ((AsymmetricGridViewAdapter) mGridView.getAdapter()).setItems(layoutItems);
+                mFloatingActionMenu.collapse();
+
+                // notify user no photos found
+                if (layoutItems.size() == 0) {
+                    ErrorToast.make(getActivity(), getString(R.string.message_no_photos_found)).show();
+                }
             }
-            FodexLayoutSpecItem item = new FodexLayoutSpecItem(columnSpan, 1, mFodexItems.get(i));
-            layoutItems.add(i, item);
-        }
-        ((AsymmetricGridViewAdapter) mGridView.getAdapter()).setItems(layoutItems);
-        mFloatingActionMenu.collapse();
-
-        // notify user no photos found
-        if (layoutItems.size() == 0) {
-            ErrorToast.make(getActivity(), getString(R.string.message_no_photos_found)).show();
-        }
+        });
     }
 
     public void refreshComplete() {

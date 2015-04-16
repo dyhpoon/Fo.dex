@@ -20,7 +20,6 @@ public class CustomToast extends Toast {
     }
 
     protected static Toast make(Context context, CharSequence text, int backgroundColor, Drawable icon) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = View.inflate(context, R.layout.toast_custom, null);
 
         CardView cardView = (CardView) layout.findViewById(R.id.card_view);
