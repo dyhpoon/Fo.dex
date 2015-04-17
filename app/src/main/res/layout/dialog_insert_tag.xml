@@ -1,72 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundDimWhite"
-    android:orientation="vertical"
+    android:paddingBottom="@dimen/dialog_padding_bottom"
+    android:paddingLeft="@dimen/dialog_padding_left"
+    android:paddingRight="@dimen/dialog_padding_right"
+    android:paddingTop="@dimen/dialog_padding_top"
     android:theme="@style/DialogTheme">
 
-    <RelativeLayout
+    <com.dyhpoon.fodex.view.RobotoMediumTextView
+        android:id="@+id/text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dialog_padding_bottom"
-        android:paddingLeft="@dimen/dialog_padding_left"
-        android:paddingRight="@dimen/dialog_padding_right"
-        android:paddingTop="@dimen/dialog_padding_top">
+        android:layout_marginBottom="4dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-        <com.dyhpoon.fodex.view.RobotoMediumTextView
-            android:id="@+id/text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:paddingLeft="3dp"
-            android:paddingRight="3dp"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <com.rengwuxian.materialedittext.MaterialEditText xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/text_view"
-            android:layout_marginTop="8dp"
-            android:hint="@string/dialog_insert_tag_hint"
-            app:met_baseColor="#009688"
-            app:met_floatingLabel="highlight"
-            app:met_primaryColor="#2196F3" />
-
-    </RelativeLayout>
-
-    <LinearLayout
-        style="?android:attr/buttonBarStyle"
+    <com.rengwuxian.materialedittext.MaterialEditText xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="right"
-        android:orientation="horizontal">
+        android:layout_below="@id/text_view"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="8dp"
+        android:hint="@string/dialog_insert_tag_hint"
+        app:met_baseColor="#009688"
+        app:met_floatingLabel="highlight"
+        app:met_primaryColor="#2196F3" />
 
-        <Button
-            android:id="@+id/button_cancel"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            android:layout_marginTop="6dp"
-            android:background="@android:color/transparent"
-            android:text="@string/button_cancel"
-            android:textColor="@color/buttonTextColor" />
+    <Button
+        android:id="@+id/button_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/edit_text"
+        android:background="@android:color/transparent"
+        android:gravity="center_vertical|right"
+        android:minHeight="30dp"
+        android:minWidth="60dp"
+        android:text="@string/button_add"
+        android:textColor="@color/buttonTextColor" />
 
-        <Button
-            android:id="@+id/button_add"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            android:layout_marginTop="6dp"
-            android:background="@android:color/transparent"
-            android:text="@string/button_add"
-            android:textColor="@color/buttonTextColor" />
+    <Button
+        android:id="@+id/button_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_text"
+        android:layout_toLeftOf="@id/button_add"
+        android:background="@android:color/transparent"
+        android:gravity="center_vertical|right"
+        android:minHeight="30dp"
+        android:minWidth="60dp"
+        android:text="@string/button_cancel"
+        android:textColor="@color/buttonTextColor" />
 
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>
