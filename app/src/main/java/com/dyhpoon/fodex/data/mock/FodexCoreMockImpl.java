@@ -7,6 +7,7 @@ import android.net.Uri;
 
 import com.dyhpoon.fodex.data.FodexCore;
 import com.dyhpoon.fodex.data.FodexItem;
+import com.dyhpoon.fodex.data.actual.FodexContract;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,9 +59,12 @@ public class FodexCoreMockImpl implements FodexCore {
     @Override
     public Cursor getMatchedTags(Context context, String words) {
         List<String> tags = getTags();
-        String[] tagArray = new String[tags.size()];
-        tagArray = tags.toArray(tagArray);
-        return new MatrixCursor(tagArray);
+        String[] columnNames = {FodexContract.TagEntry._ID, FodexContract.TagEntry.COLUMN_TAG_NAME, FodexContract.TagEntry.COLUMN_TAG_VISIBLE};
+        MatrixCursor cursor = new MatrixCursor(columnNames);
+        for (int i = 0; i<tags.size(); i++) {
+            cursor.addRow(new Object[] {i, tags.get(i), 1});
+        }
+        return cursor;
     }
 
     @Override
