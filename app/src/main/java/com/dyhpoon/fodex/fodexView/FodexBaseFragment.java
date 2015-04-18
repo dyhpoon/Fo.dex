@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -369,6 +371,12 @@ public abstract class FodexBaseFragment<T extends FodexItem>
     }
 
     private void setupSearchView() {
+        SearchView.SearchAutoComplete autoCompleteTextView =
+                (SearchView.SearchAutoComplete) mSearchView.findViewById(R.id.search_src_text);
+        if (autoCompleteTextView != null) {
+            autoCompleteTextView.setDropDownBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        }
+
         final EditText searchText = (EditText) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         searchText.setHint(R.string.search_bar_hint);
 
