@@ -78,5 +78,6 @@ public class FodexDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + ImageEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TagEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + ShareEntry.TABLE_NAME);
+        onCreate(db);
     }
 }
