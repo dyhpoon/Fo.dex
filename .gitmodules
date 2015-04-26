@@ -4,9 +4,6 @@
 [submodule "libraries/CircularFloatingActionMenu"]
 	path = libraries/CircularFloatingActionMenu
 	url = https://github.com/dyhpoon/CircularFloatingActionMenu
-[submodule "libraries/BlurDialogFragment"]
-	path = libraries/BlurDialogFragment
-	url = https://github.com/dyhpoon/BlurDialogFragment.git
 [submodule "libraries/ViewServer"]
 	path = libraries/ViewServer
 	url = https://github.com/romainguy/ViewServer.git
