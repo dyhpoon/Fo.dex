@@ -52,7 +52,7 @@ p {
 }
 
 .bg-primary {
-    background-color: #333;
+    background-color: #222;
 }
 
 .bg-dark {
@@ -148,7 +148,7 @@ aside {
 
     .navbar-default.affix {
         border-color: rgba(34,34,34,.05);
-        background-color: #333;
+        background-color: #111;
     }
 
     .navbar-default.affix .navbar-header .navbar-brand {
@@ -235,7 +235,7 @@ header .header-content .header-content-inner p {
         margin-right: auto;
         margin-left: auto;
         max-width: 80%;
-        font-size: 18px;
+        font-size: 15px;
     }
 }
 
@@ -401,7 +401,7 @@ fieldset[disabled] .btn-default.active {
 .open > .dropdown-toggle.btn-primary {
     border-color: #ed431f;
     color: #fff;
-    background-color: #ee4b28;
+    background-color: #494A9B;
 }
 
 .btn-primary:active,
@@ -476,6 +476,6 @@ body {
 }
 
 .subfooter {
-  background-color: #fafafa;
+  background-color: #fff;
   padding: 40px 0;
 }

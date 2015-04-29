@@ -35,7 +35,7 @@
 
     <body id="page-top">
 
-        <nav id="mainNav" class="navbar navbar-default navbar-fixed-top affix">
+        <nav id="mainNav" class="navbar navbar-default navbar-fixed-top affix-top">
             <div class="container-fluid">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
@@ -63,6 +63,9 @@
                         <li class="">
                             <a class="page-scroll" href="#contact">Contact</a>
                         </li>
+                        <li class="">
+                            <a class="page-scroll" href="#team">Team</a>
+                        </li>
                     </ul>
                 </div>
                 <!-- /.navbar-collapse -->
@@ -75,7 +78,7 @@
                 <div class="header-content-inner">
                     <h1 style="font-size: 65px;">Fo.dex</h1>
                     <hr>
-                    <p>Start Bootstrap can help you build better websites using the Bootstrap CSS framework! Just download your template and start going, no strings attached!</p>
+                    <p>A smarter way to search your photos.</p>
                     <a href="#about" class="btn btn-primary btn-xl page-scroll">Find Out More</a>
                 </div>
             </div>
@@ -85,10 +88,18 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 text-center">
-                        <h2 class="section-heading">We've got what you need!</h2>
+                        <h2 class="section-heading">What is Fo.dex?</h2>
                         <hr class="light">
-                        <p class="text-faded">Start Bootstrap has everything you need to get your new website up and running in no time! All of the templates and themes on Start Bootstrap are open source, free to download, and easy to use. No strings attached!</p>
-
+                        <p class="text-faded">Fo.dex is an android client application allows you to index your photos.</p>
+                        <p class="text-faded">It is also fully open source under Apache v2.0 license on <a target="_blank" href="https://github.com/dyhpoon/Fo.dex">Github</a>.</p>
+                        <hr class="light">
+                        <h2 class="section-heading">Why?</h2>
+                        <hr class="light">
+                        <p class="text-faded">There is no special reason why we made this app, we made this app just for fun.</p>
+                        <hr class="light">
+                        <h2 class="section-heading">Will there be an IOS version?</h2>
+                        <hr class="light">
+                        <p class="text-faded">No, we do not currently have plans for IOS version.</p>
                     </div>
                 </div>
             </div>
@@ -98,7 +109,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12 text-center">
-                        <h2 class="section-heading">At Your Service</h2>
+                        <h2 class="section-heading">What can Fo.dex do?</h2>
                         <hr class="primary">
                     </div>
                 </div>
@@ -107,28 +118,28 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-6 text-center">
                         <div class="service-box">
-                            <i class="fa fa-4x fa-diamond wow bounceIn text-primary" style="visibility: hidden; -webkit-animation-name: none;"></i>
-                            <h3>Sturdy Templates</h3>
+                            <i class="fa fa-4x fa-bookmark wow bounceIn text-primary" style="visibility: visible;"></i>
+                            <h3>Indexing</h3>
                             <p class="text-muted">Our templates are updated regularly so they don't break.</p>
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6 text-center">
                         <div class="service-box">
-                            <i class="fa fa-4x fa-paper-plane wow bounceIn text-primary" data-wow-delay=".1s" style="visibility: hidden; -webkit-animation-delay: 0.1s; -webkit-animation-name: none;"></i>
-                            <h3>Ready to Ship</h3>
+                            <i class="fa fa-4x fa-share-alt wow bounceIn text-primary" data-wow-delay=".1s" style="visibility: visible; -webkit-animation-delay: 0.1s;"></i>
+                            <h3>Sharing</h3>
                             <p class="text-muted">You can use this theme as is, or you can make changes!</p>
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6 text-center">
                         <div class="service-box">
-                            <i class="fa fa-4x fa-newspaper-o wow bounceIn text-primary" data-wow-delay=".2s" style="visibility: hidden; -webkit-animation-delay: 0.2s; -webkit-animation-name: none;"></i>
-                            <h3>Up to Date</h3>
+                            <i class="fa fa-4x fa-search wow bounceIn text-primary" data-wow-delay=".2s" style="visibility: visible; -webkit-animation-delay: 0.2s;"></i>
+                            <h3>Searching</h3>
                             <p class="text-muted">We update dependencies to keep things fresh.</p>
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6 text-center">
                         <div class="service-box">
-                            <i class="fa fa-4x fa-heart wow bounceIn text-primary" data-wow-delay=".3s" style="visibility: hidden; -webkit-animation-delay: 0.3s; -webkit-animation-name: none;"></i>
+                            <i class="fa fa-4x fa-heart wow bounceIn text-primary" data-wow-delay=".3s" style="visibility: visible; -webkit-animation-delay: 0.3s;"></i>
                             <h3>Made with Love</h3>
                             <p class="text-muted">You have to make your websites with love these days!</p>
                         </div>
@@ -238,7 +249,9 @@
             <div class="container text-center">
                 <div class="call-to-action">
                     <h2>Free Download!</h2>
-                    <a href="#" class="btn btn-default btn-xl wow tada" style="visibility: visible;">Download Now!</a>
+                    <a href="https://play.google.com/store/apps/details?id=com.dyhpoon.fodex" class="btn wow tada" style="visibility: visible;">
+                        <img alt="Android app on Google Play" src="img/google_play_60.png">
+                    </a>
                 </div>
             </div>
         </aside>
@@ -266,23 +279,36 @@
             </div>
         </section>
 
+        <section class="bg-primary" id="team">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2 text-center">
+                        <h2 class="section-heading">Who are we?</h2>
+                        <hr class="light">
+                        <hr class="light">
+                        <h2 class="section-heading">What's next?</h2>
+                        <hr class="light">
+                        <p class="text-faded">Tom: I will make a dent in the universe!!!</p>
+                        <p class="text-faded">Darren: ¯\_(ツ)_/¯ </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <footer>
-            <!-- .subfooter start -->
-            <!-- ================ -->
             <div class="subfooter">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12">
-                            <p class="text-center">Fodex was created by 
+                            <p class="text-center">Fo.dex was created by 
                                 <a target="_blank" href="http://www.github.com/dyhpoon">dyhpoon</a> and 
                                 <a target="_blank" href="http://www.github.com/tomlui1019">tomlui1019</a>.
                             </p>
-                            <p class="text-center">Copyright © 2015 by Fodex.</p>
+                            <p class="text-center">Copyright © 2015 by Fo.dex Team.</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- .subfooter end -->
         </footer>
 
         <!-- jQuery -->
