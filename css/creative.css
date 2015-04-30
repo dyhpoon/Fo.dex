@@ -486,3 +486,8 @@ body {
     display: flex;
     align-items: center;
 }
+
+.profile-pic {
+    width: 70% !important;
+    border-radius: 50%;
+}
