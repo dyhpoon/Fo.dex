@@ -9,6 +9,12 @@
 <meta name="author" content="Darren Poon">
 
 <title>Fo.dex</title>
+<!--PictureFill JS-->
+<script>
+// Picture element HTML5 shiv
+document.createElement( "picture" );
+</script>
+<script src="picturefill.js" async></script>
 
 <!-- Bootstrap Core CSS -->
 <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
@@ -121,7 +127,10 @@
                     </div>
                     <div class="col-lg-6 text-center">
                         <a class="portfolio-box">
-                            <img src="img/screenshots/index.gif" class="center-block" alt="">
+                            <picture>
+                                <source srcset="img/screenshots/index.gif" media="(min-width: 768px)">
+                                <img src="img/screenshots/index-small.gif" class="center-block" alt="">
+                            </picture>
                             <div class="portfolio-box-caption">
                                 <div class="portfolio-box-caption-content">
                                     <div class="project-name">
@@ -142,7 +151,10 @@
                     </div>
                     <div class="col-lg-6 text-center">
                         <a class="portfolio-box">
-                            <img src="img/screenshots/share.gif" class="center-block" alt="">
+                            <picture>
+                                <source srcset="img/screenshots/share.gif" media="(min-width: 768px)">
+                                <img src="img/screenshots/share-small.gif" class="center-block" alt="">
+                            </picture>
                             <div class="portfolio-box-caption">
                                 <div class="portfolio-box-caption-content">
                                     <div class="project-name">
@@ -163,7 +175,10 @@
                     </div>
                     <div class="col-lg-6 text-center">
                         <a class="portfolio-box">
-                            <img src="img/screenshots/search.gif" class="center-block" alt="">
+                            <picture>
+                                <source srcset="img/screenshots/search.gif" media="(min-width: 768px)">
+                                <img src="img/screenshots/search-small.gif" class="center-block" alt="">
+                            </picture>
                             <div class="portfolio-box-caption">
                                 <div class="portfolio-box-caption-content">
                                     <div class="project-name">
