@@ -487,6 +487,13 @@ body {
     align-items: center;
 }
 
+@media(max-width:992px) {
+    .v-center {
+        min-height: 10vh;
+        margin-bottom: 20px
+    }
+}
+
 .profile-pic {
     width: 70% !important;
     border-radius: 50%;
