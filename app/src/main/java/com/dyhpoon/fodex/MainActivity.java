@@ -66,7 +66,7 @@ public class MainActivity extends ActionBarActivity
     public void onBackPressed() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
         if (fragment != null && fragment instanceof OnBackPressedHandler) {
-            boolean isHandled = ((OnBackPressedHandler)fragment).onCustomBackPressed();
+            boolean isHandled = ((OnBackPressedHandler) fragment).onCustomBackPressed();
             if (!isHandled) super.onBackPressed();
         } else {
             super.onBackPressed();
@@ -112,7 +112,6 @@ public class MainActivity extends ActionBarActivity
             fragment = (Fragment) info.classType.newInstance();
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     .replace(R.id.container, fragment)
                     .commit();
         } catch (InstantiationException e) {
