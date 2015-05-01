@@ -34,9 +34,7 @@ public class FodexCoreImpl implements FodexCore {
                 null,
                 ImageEntry.COLUMN_IMAGE_DATE_TAKEN + " DESC");
 
-        List<FodexItem> items = convertCursorToItems(cursor);
-        cursor.close();
-        return items;
+        return convertCursorToItemsAndClose(cursor);
     }
 
     @Override
@@ -48,9 +46,7 @@ public class FodexCoreImpl implements FodexCore {
                 null,
                 null);
 
-        List<FodexItem> items = convertCursorToItems(cursor);
-        cursor.close();
-        return items;
+        return convertCursorToItemsAndClose(cursor);
     }
 
     @Override
@@ -62,9 +58,7 @@ public class FodexCoreImpl implements FodexCore {
                 null,
                 ImageEntry.COLUMN_IMAGE_DATE_TAKEN + " DESC");
 
-        List<FodexItem> items = convertCursorToItems(cursor);
-        cursor.close();
-        return items;
+        return convertCursorToItemsAndClose(cursor);
     }
 
     @Override
@@ -76,9 +70,7 @@ public class FodexCoreImpl implements FodexCore {
                 null,
                 null);
 
-        List<FodexItem> items = convertCursorToItems(cursor);
-        cursor.close();
-        return items;
+        return convertCursorToItemsAndClose(cursor);
     }
 
     @Override
@@ -90,9 +82,7 @@ public class FodexCoreImpl implements FodexCore {
                 null,
                 null);
 
-        List<FodexItem> items = convertCursorToItems(cursor);
-        cursor.close();
-        return items;
+        return convertCursorToItemsAndClose(cursor);
     }
 
     @Override
@@ -285,9 +275,9 @@ public class FodexCoreImpl implements FodexCore {
         fodexCursor.close();
     }
 
-    private List<FodexItem> convertCursorToItems(Cursor cursor) {
+    private List<FodexItem> convertCursorToItemsAndClose(Cursor cursor) {
         List<FodexItem> items = new ArrayList<>();
-        if (cursor.moveToFirst()) {
+        if (cursor != null && cursor.moveToFirst()) {
             do {
                 FodexItem item = new FodexItem(
                         cursor.getLong(cursor.getColumnIndex(FodexContract.ImageEntry._ID)),
@@ -297,6 +287,7 @@ public class FodexCoreImpl implements FodexCore {
                 );
                 items.add(item);
             } while (cursor.moveToNext());
+            cursor.close();
         }
         return items;
     }
