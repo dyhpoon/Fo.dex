@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dyhpoon.fodex.data.FodexCore;
 import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.fodexView.FodexBaseFragment;
 
@@ -16,14 +15,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.inject.Inject;
-
 /**
  * Created by darrenpoon on 8/12/14.
  */
 public class AllPhotosPageFragment extends FodexBaseFragment<FodexItem> {
-
-    @Inject FodexCore fodexCore;
 
     private List<FodexItem> mItems;
     private String mSearchedWords;

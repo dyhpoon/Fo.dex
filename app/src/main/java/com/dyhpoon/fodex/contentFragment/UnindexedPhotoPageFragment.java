@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dyhpoon.fodex.data.FodexCore;
 import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.fodexView.FodexBaseFragment;
 
@@ -16,14 +15,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.inject.Inject;
-
 /**
  * Created by darrenpoon on 26/2/15.
  */
 public class UnindexedPhotoPageFragment extends FodexBaseFragment<FodexItem> {
-
-    @Inject FodexCore fodexCore;
 
     private List<FodexItem> mItems;
 

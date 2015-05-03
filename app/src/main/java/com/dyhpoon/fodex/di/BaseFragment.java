@@ -6,13 +6,17 @@ import android.support.v4.app.Fragment;
 import com.android.debug.hv.ViewServer;
 import com.dyhpoon.fodex.BuildConfig;
 import com.dyhpoon.fodex.FodexApplication;
+import com.dyhpoon.fodex.data.FodexCore;
 
-import dagger.ObjectGraph;
+import javax.inject.Inject;
 
 /**
  * Created by darrenpoon on 28/3/15.
  */
 public class BaseFragment extends Fragment {
+
+    @Inject public FodexCore fodexCore;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,7 +24,6 @@ public class BaseFragment extends Fragment {
         FodexApplication fodexApp = (FodexApplication) getActivity().getApplication();
         fodexApp.injectMock(this);
 
-        ObjectGraph.create(new FodexCoreModule()).inject(this);
         if (BuildConfig.DEBUG) {
             ViewServer.get(getActivity()).addWindow(getActivity());
         }

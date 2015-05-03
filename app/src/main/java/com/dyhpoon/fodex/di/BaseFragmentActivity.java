@@ -6,11 +6,16 @@ import android.support.v4.app.FragmentActivity;
 import com.android.debug.hv.ViewServer;
 import com.dyhpoon.fodex.BuildConfig;
 import com.dyhpoon.fodex.FodexApplication;
+import com.dyhpoon.fodex.data.FodexCore;
+
+import javax.inject.Inject;
 
 /**
  * Created by darrenpoon on 28/3/15.
  */
 public class BaseFragmentActivity extends FragmentActivity {
+
+    @Inject public FodexCore fodexCore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

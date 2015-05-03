@@ -40,7 +40,6 @@ import com.dyhpoon.fodex.BuildConfig;
 import com.dyhpoon.fodex.FodexApplication;
 import com.dyhpoon.fodex.MainActivity;
 import com.dyhpoon.fodex.R;
-import com.dyhpoon.fodex.data.FodexCore;
 import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.data.actual.FodexContract;
 import com.dyhpoon.fodex.di.BaseFragment;
@@ -57,8 +56,6 @@ import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridViewAdapter
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
@@ -84,8 +81,6 @@ public abstract class FodexBaseFragment<T extends FodexItem>
     private static final int GRID_VIEW_HORIZONTAL_SPACING = 3;
     private static final int GRID_VIEW_COLUMNS_COUNT = 3;
     private static final int PRELOAD_SIZE = 10;
-
-    @Inject FodexCore fodexCore;
 
     private SearchView mSearchView;
     private AsymmetricGridView mGridView;

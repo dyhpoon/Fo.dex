@@ -1,12 +1,6 @@
 package com.dyhpoon.fodex.di;
 
-import com.dyhpoon.fodex.contentFragment.AllPhotosPageFragment;
-import com.dyhpoon.fodex.contentFragment.IndexedPhotosPageFragment;
-import com.dyhpoon.fodex.contentFragment.SharedPhotosPageFragment;
-import com.dyhpoon.fodex.contentFragment.UnindexedPhotoPageFragment;
 import com.dyhpoon.fodex.data.FodexCore;
-import com.dyhpoon.fodex.data.actual.FodexCoreImpl;
-import com.dyhpoon.fodex.fullscreen.FullscreenActivity;
 
 import javax.inject.Singleton;
 
@@ -16,19 +10,21 @@ import dagger.Provides;
 /**
  * Created by darrenpoon on 28/3/15.
  */
-@Module(
-        injects = {
-                AllPhotosPageFragment.class,
-                IndexedPhotosPageFragment.class,
-                SharedPhotosPageFragment.class,
-                UnindexedPhotoPageFragment.class,
-                FullscreenActivity.class,
-        },
-        library = true)
+@Module
 public class FodexCoreModule {
-    @Provides
+
+    private FodexCore mFodexCore;
+
+    public FodexCoreModule(FodexCore core) {
+        if (core == null) {
+            throw new RuntimeException("Expect FodexCore to be not null");
+        }
+        mFodexCore = core;
+    }
+
     @Singleton
+    @Provides
     FodexCore provideFodexCore() {
-        return new FodexCoreImpl();
+        return mFodexCore;
     }
 }

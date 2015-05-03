@@ -15,6 +15,7 @@ buildscript {
             exclude module: 'guava'
         }
         classpath 'com.google.guava:guava:17.0'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
     }
 }
 

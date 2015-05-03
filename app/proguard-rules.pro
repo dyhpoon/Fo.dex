@@ -15,29 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
-
-#Keep the annotated things annotated
--keepattributes *Annotation*
-
-#Keep the dagger annotation classes themselves
--keep @interface dagger.*,javax.inject.*
-
-#-Keep the fields annotated with @Inject of any class that is not deleted.
--keepclassmembers class * {
-  @javax.inject.* <fields>;
-}
-
--keepclassmembers,allowobfuscation class * {
-    @javax.inject.* *;
-    @dagger.* *;
-    <init>();
-}
-
--dontwarn dagger.internal.codegen.**
-
-# Keep the generated classes by dagger-compile
--keep class javax.inject.** { *; }
--keep class **$$ModuleAdapter
--keep class **$$InjectAdapter
--keep class **$$StaticInjection
--keep class dagger.** { *; }
+-keep class com.dyhpoon.fodex.fodexView.FodexGlideModule
+-dontwarn android.support.v7.**
+-keep class android.support.v7.** { *; }
+-keep interface android.support.v7.** { *; }

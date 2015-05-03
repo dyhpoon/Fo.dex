@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
 import com.dyhpoon.fodex.R;
-import com.dyhpoon.fodex.data.FodexCore;
 import com.dyhpoon.fodex.data.FodexItem;
 import com.dyhpoon.fodex.di.BaseFragmentActivity;
 import com.dyhpoon.fodex.fodexView.FodexImageContract;
@@ -42,8 +41,6 @@ import com.ortiz.touchview.TouchImageView;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 public class FullscreenActivity extends BaseFragmentActivity {
 
     private static final int ANIM_DURATION = 250;
@@ -56,8 +53,6 @@ public class FullscreenActivity extends BaseFragmentActivity {
     public static final String WIDTH            = PREFIX + ".WIDTH";
     public static final String HEIGHT           = PREFIX + ".HEIGHT";
     public static final String ITEMS_INFO       = PREFIX + ".ITEMS_INFO";
-
-    @Inject FodexCore fodexCore;
 
     private int mImageIndex;
     private int mLeftDelta;

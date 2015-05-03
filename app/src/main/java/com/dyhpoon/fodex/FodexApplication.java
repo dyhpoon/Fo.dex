@@ -2,11 +2,14 @@ package com.dyhpoon.fodex;
 
 import android.app.Application;
 
-import com.dyhpoon.fodex.di.FodexCoreMockModule;
+import com.dyhpoon.fodex.data.actual.FodexCoreImpl;
+import com.dyhpoon.fodex.data.mock.FodexCoreMockImpl;
+import com.dyhpoon.fodex.di.BaseFragment;
+import com.dyhpoon.fodex.di.BaseFragmentActivity;
+import com.dyhpoon.fodex.di.DaggerFodexComponent;
+import com.dyhpoon.fodex.di.FodexComponent;
 import com.dyhpoon.fodex.di.FodexCoreModule;
 import com.facebook.stetho.Stetho;
-
-import dagger.ObjectGraph;
 
 /**
  * Created by darrenpoon on 19/2/15.
@@ -27,19 +30,36 @@ public class FodexApplication extends Application {
         }
     }
 
-    public <T> void injectMock(T instance) {
-        injectMock(isMockMode, instance);
+    public void injectMock(BaseFragment fragment) {
+        injectMock(isMockMode, fragment);
     }
 
-    public <T> void injectMock(boolean isMock, T instance) {
+    public void injectMock(BaseFragmentActivity activity) {
+        injectMock(isMockMode, activity);
+    }
+
+    public void injectMock(boolean isMock, BaseFragment fragment) {
+        FodexComponent component = getComponent(isMock);
+        component.inject(fragment);
+    }
+
+    public void injectMock(boolean isMock, BaseFragmentActivity activity) {
+        FodexComponent component = getComponent(isMock);
+        component.inject(activity);
+    }
+
+    public FodexComponent getComponent(boolean isMock) {
         isMockMode = isMock;
 
-        ObjectGraph objectGraph;
+        FodexCoreModule module;
         if (BuildConfig.DEBUG && isMockMode) {
-            objectGraph = ObjectGraph.create(new FodexCoreMockModule());
+            module = new FodexCoreModule(new FodexCoreMockImpl());
         } else {
-            objectGraph = ObjectGraph.create(new FodexCoreModule());
+            module = new FodexCoreModule(new FodexCoreImpl());
         }
-        objectGraph.inject(instance);
+        return DaggerFodexComponent.builder()
+                .fodexCoreModule(module)
+                .build();
     }
+
 }
