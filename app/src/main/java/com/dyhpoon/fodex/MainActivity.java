@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,14 +22,13 @@ import com.dyhpoon.fodex.navigationDrawer.NavigationDrawerInfo;
 import io.fabric.sdk.android.Fabric;
 
 
-public class MainActivity extends ActionBarActivity
+public class MainActivity extends AppCompatActivity
         implements NavigationDrawerCallbacks {
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-    private Toolbar mToolbar;
     private NavigationDrawerFragment mNavigationDrawerFragment;
     public DrawerLayout drawerLayout;
 
@@ -41,8 +40,8 @@ public class MainActivity extends ActionBarActivity
 
         getWindow().setBackgroundDrawable(null);
 
-        mToolbar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(mToolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolbar);
 
         mTitle = getTitle();
 
@@ -84,8 +83,10 @@ public class MainActivity extends ActionBarActivity
 
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setTitle(mTitle);
+        }
     }
 
     @Override
@@ -106,7 +107,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerPageItemSelected(int position) {
         // update the main content by replacing fragments
-        Fragment fragment = null;
+        Fragment fragment;
         try {
             NavigationDrawerInfo info = NavigationDrawerData.getPageItem(this, position);
             fragment = (Fragment) info.classType.newInstance();

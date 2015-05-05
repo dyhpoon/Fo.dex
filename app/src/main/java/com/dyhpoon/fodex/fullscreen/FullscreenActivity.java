@@ -153,6 +153,7 @@ public class FullscreenActivity extends BaseFragmentActivity {
     }
 
     @TargetApi(16)
+    @SuppressWarnings("deprecation")
     private void setupViewSwitcher() {
         mSwitcher = (ViewSwitcher) findViewById(R.id.switcher);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -176,7 +177,7 @@ public class FullscreenActivity extends BaseFragmentActivity {
     private void endFakeView() {
         Bitmap bitmap = ((BitmapDrawable) mFakeImageView.getDrawable()).getBitmap();
         mFakeImageView.setImageDrawable(null);
-        if (bitmap != null) {
+        if (bitmap != null && !bitmap.isRecycled()) {
             bitmap.recycle();
         }
         mSwitcher.removeViewAt(0);  // mFakeImageView is not longer used after animation, free up for more memory

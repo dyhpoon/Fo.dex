@@ -23,8 +23,6 @@ public class CacheImageManager {
     private static final int KEEP_ALIVE_TIME = 1;
     // Sets the Time Unit to seconds
     private static final TimeUnit KEEP_ALIVE_TIME_UNIT;
-    // A queue of Runnables for the image download pool
-    private final BlockingQueue<Runnable> mCacheQueue;
 
     /*
      * Creates a cache of bitmap arrays indexed by image URLs. As new items are added to the
@@ -43,14 +41,13 @@ public class CacheImageManager {
     }
 
     private CacheImageManager() {
-        mCacheQueue = new LinkedBlockingQueue<>();
+        BlockingQueue<Runnable> cacheQueue = new LinkedBlockingQueue<>();
         final int maxMemory = (int) Runtime.getRuntime().maxMemory() / 1024;
         final int cacheSize = maxMemory / 8;
         mCache = new LruCache<String, Bitmap>(cacheSize) {
             @Override
             protected int sizeOf(String key, Bitmap value) {
-                int size =  value.getByteCount() / 1024;
-                return size;
+                return value.getByteCount() / 1024;
             }
         };
 
@@ -59,7 +56,7 @@ public class CacheImageManager {
                 MAXIMUM_POOL_SIZE,
                 KEEP_ALIVE_TIME,
                 KEEP_ALIVE_TIME_UNIT,
-                mCacheQueue);
+                cacheQueue);
     }
 
     public static void cacheImage(final Uri uri, final Drawable drawable) {

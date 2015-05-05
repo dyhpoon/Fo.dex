@@ -9,6 +9,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import com.dyhpoon.fodex.data.actual.FodexContract.ImageEntry;
 import com.dyhpoon.fodex.data.actual.FodexContract.ImageTagEntry;
@@ -519,7 +520,7 @@ ON share.image_id = image._id
     }
 
     @Override
-    public int bulkInsert(Uri uri, ContentValues[] values) {
+    public int bulkInsert(Uri uri, @NonNull ContentValues[] values) {
         final SQLiteDatabase database = mOpenHelper.getWritableDatabase();
         switch (mUriMatcher.match(uri)) {
             case IMAGE: {

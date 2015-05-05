@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,11 +28,7 @@ public class InsertTagDialog extends SupportBlurDialogFragment {
     private int mNumberOfPhotos = 0;
 
     public interface OnClickListener {
-        public void onClick(DialogInterface dialog, String[] tags, int which);
-    }
-
-    public static InsertTagDialog newInstance() {
-        return newInstance(1);
+        void onClick(DialogInterface dialog, String[] tags, int which);
     }
 
     public static InsertTagDialog newInstance(int numberOfPhotos) {
@@ -44,6 +41,7 @@ public class InsertTagDialog extends SupportBlurDialogFragment {
         mListener = listener;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

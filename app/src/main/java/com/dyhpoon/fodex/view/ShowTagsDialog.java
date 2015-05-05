@@ -35,11 +35,10 @@ import fr.tvbarthel.lib.blurdialogfragment.SupportBlurDialogFragment;
 public class ShowTagsDialog extends SupportBlurDialogFragment {
 
     public interface OnDeleteListener {
-        public void onDelete(CharSequence tag);
+        void onDelete(CharSequence tag);
     }
 
     private List<String> mTags;
-    private RecyclerView mRecyclerView;
     private DialogInterface.OnClickListener mListener;
     private OnDeleteListener mDeleteListener;
 
@@ -69,10 +68,10 @@ public class ShowTagsDialog extends SupportBlurDialogFragment {
         int itemMargin = getActivity().getResources().getDimensionPixelSize(R.dimen.dialog_item_margin);
         TagAdapter adapter = new TagAdapter(getActivity(), mTags);
         adapter.setMode(Attributes.Mode.Single);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.addItemDecoration(new SpacesItemDecoration(itemMargin));
-        mRecyclerView.setAdapter(adapter);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.addItemDecoration(new SpacesItemDecoration(itemMargin));
+        recyclerView.setAdapter(adapter);
 
         // setup animation
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
@@ -140,8 +139,7 @@ public class ShowTagsDialog extends SupportBlurDialogFragment {
             View view = LayoutInflater.from(mContext).inflate(R.layout.list_removeable_item, parent, false);
 
             // setup button
-            final TagAdapter.TagViewHolder vh = new TagViewHolder(view);
-            return vh;
+            return new TagViewHolder(view);
         }
 
         @Override
@@ -209,7 +207,7 @@ public class ShowTagsDialog extends SupportBlurDialogFragment {
             outRect.bottom = space;
 
             // Add top margin only for the first item to avoid double space between items
-            if (parent.getChildPosition(view) == 0)
+            if (parent.getChildAdapterPosition(view) == 0)
                 outRect.top = space;
         }
     }

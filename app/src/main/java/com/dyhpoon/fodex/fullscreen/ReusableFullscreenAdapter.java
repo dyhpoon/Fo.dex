@@ -102,7 +102,9 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
         if (drawable instanceof BitmapDrawable) {
             Bitmap bitmap = ((BitmapDrawable)v.getDrawable()).getBitmap();
             v.setImageDrawable(null);
-            bitmap.recycle();
+            if (bitmap != null && !bitmap.isRecycled()) {
+                bitmap.recycle();
+            }
         } else {
             v.setImageDrawable(null);
         }
