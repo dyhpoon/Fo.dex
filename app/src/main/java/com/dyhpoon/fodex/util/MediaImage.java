@@ -67,8 +67,7 @@ public class MediaImage {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (OutOfMemoryError e) {
-                // When receive OOM, call GC, and try to get a smaller size of image.
-                System.gc();
+                // When receive OOM, and try to get a smaller size of image.
                 return loadBitmapSynchronously(context, uri, reqWidth / 2, reqHeight / 2);
             }
         }
