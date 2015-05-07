@@ -1,5 +1,6 @@
 package com.dyhpoon.fodex.contentFragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -22,6 +23,7 @@ public class AllPhotosPageFragment extends FodexBaseFragment<FodexItem> {
 
     private List<FodexItem> mItems;
     private String mSearchedWords;
+    private Activity mActivity;
 
     @Nullable
     @Override
@@ -29,6 +31,12 @@ public class AllPhotosPageFragment extends FodexBaseFragment<FodexItem> {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         setHasOptionsMenu(true);
         return view;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = activity;
     }
 
     @Override
@@ -54,7 +62,7 @@ public class AllPhotosPageFragment extends FodexBaseFragment<FodexItem> {
 
     @Override
     protected void onQueryTagsSubmitted(List<String> tags) {
-        mItems = fodexCore.getSearchedPhotoItems(getActivity(), tags);
+        mItems = fodexCore.getSearchedPhotoItems(mActivity, tags);
         mSearchedWords = TextUtils.join(" ", tags);
         reload();
     }
@@ -62,7 +70,7 @@ public class AllPhotosPageFragment extends FodexBaseFragment<FodexItem> {
     @Override
     protected void onSearchEnd() {
         if (!mSearchedWords.equals("")) {
-            mItems = fodexCore.getAllPhotoItems(getActivity());
+            mItems = fodexCore.getAllPhotoItems(mActivity);
             reload();
             mSearchedWords = "";
         }
@@ -83,8 +91,8 @@ public class AllPhotosPageFragment extends FodexBaseFragment<FodexItem> {
             }
         }, 1300);   // set minimum loading time
 
-        fodexCore.syncAllPhotos(getActivity());
-        mItems = fodexCore.getAllPhotoItems(getActivity());
+        fodexCore.syncAllPhotos(mActivity);
+        mItems = fodexCore.getAllPhotoItems(mActivity);
         isTaskCompleted.set(true);
         if (isTimeIsUp.get()) {
             refreshComplete();

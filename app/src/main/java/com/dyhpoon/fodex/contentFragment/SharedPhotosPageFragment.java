@@ -1,5 +1,6 @@
 package com.dyhpoon.fodex.contentFragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -23,6 +24,7 @@ public class SharedPhotosPageFragment extends FodexBaseFragment<FodexItem> {
 
     private List<FodexItem> mItems;
     private String mSearchedWords;
+    private Activity mActivity;
 
     @Nullable
     @Override
@@ -33,14 +35,20 @@ public class SharedPhotosPageFragment extends FodexBaseFragment<FodexItem> {
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = activity;
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mSearchedWords = "";
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                fodexCore.syncAllPhotos(getActivity());
-                mItems = fodexCore.getSharedPhotoItems(getActivity());
+                fodexCore.syncAllPhotos(mActivity);
+                mItems = fodexCore.getSharedPhotoItems(mActivity);
                 reload();
             }
         });
@@ -56,8 +64,8 @@ public class SharedPhotosPageFragment extends FodexBaseFragment<FodexItem> {
     @Override
     protected void onQueryTagsSubmitted(List<String> tags) {
         // get intersection of shared and tagged photos
-        List<FodexItem> left = fodexCore.getSearchedPhotoItems(getActivity(), tags);
-        List<FodexItem> right = fodexCore.getSharedPhotoItems(getActivity());
+        List<FodexItem> left = fodexCore.getSearchedPhotoItems(mActivity, tags);
+        List<FodexItem> right = fodexCore.getSharedPhotoItems(mActivity);
         mItems = getIntersection(left, right);
         mSearchedWords = TextUtils.join(" ", tags);
         reload();
@@ -66,7 +74,7 @@ public class SharedPhotosPageFragment extends FodexBaseFragment<FodexItem> {
     @Override
     protected void onSearchEnd() {
         if (!mSearchedWords.equals("")) {
-            mItems = fodexCore.getSharedPhotoItems(getActivity());
+            mItems = fodexCore.getSharedPhotoItems(mActivity);
             reload();
             mSearchedWords = "";
         }
@@ -87,8 +95,8 @@ public class SharedPhotosPageFragment extends FodexBaseFragment<FodexItem> {
             }
         }, 1300);   // set minimum loading time
 
-        fodexCore.syncAllPhotos(getActivity());
-        mItems = fodexCore.getSharedPhotoItems(getActivity());
+        fodexCore.syncAllPhotos(mActivity);
+        mItems = fodexCore.getSharedPhotoItems(mActivity);
         isTaskCompleted.set(true);
         if (isTimeIsUp.get()) {
             refreshComplete();

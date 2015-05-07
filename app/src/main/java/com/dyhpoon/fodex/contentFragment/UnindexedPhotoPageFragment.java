@@ -1,5 +1,6 @@
 package com.dyhpoon.fodex.contentFragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class UnindexedPhotoPageFragment extends FodexBaseFragment<FodexItem> {
 
     private List<FodexItem> mItems;
+    private Activity mActivity;
 
     @Nullable
     @Override
@@ -31,13 +33,19 @@ public class UnindexedPhotoPageFragment extends FodexBaseFragment<FodexItem> {
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = activity;
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                fodexCore.syncAllPhotos(getActivity());
-                mItems = fodexCore.getUnindexPhotoItems(getActivity());
+                fodexCore.syncAllPhotos(mActivity);
+                mItems = fodexCore.getUnindexPhotoItems(mActivity);
                 reload();
             }
         });
@@ -81,8 +89,8 @@ public class UnindexedPhotoPageFragment extends FodexBaseFragment<FodexItem> {
             }
         }, 1300);   // set minimum loading time
 
-        fodexCore.syncAllPhotos(getActivity());
-        mItems = fodexCore.getUnindexPhotoItems(getActivity());
+        fodexCore.syncAllPhotos(mActivity);
+        mItems = fodexCore.getUnindexPhotoItems(mActivity);
         isTaskCompleted.set(true);
         if (isTimeIsUp.get()) {
             refreshComplete();
