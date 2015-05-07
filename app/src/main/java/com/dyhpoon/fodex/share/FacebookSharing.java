@@ -22,9 +22,6 @@ public class FacebookSharing extends Sharing {
             shareIntent.setType("image/*");
             shareIntent.setPackage(FACEBOOK_PACKAGE);
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-            shareIntent.putExtra(
-                    "com.facebook.platform.extra.APPLICATION_ID",
-                    context.getResources().getString(R.string.facebook_app_id));
 
             listener.didComplete();
             context.startActivity(Intent.createChooser(shareIntent, "Share"));
