@@ -2,6 +2,7 @@ package com.dyhpoon.fodex.fodexView;
 
 import android.content.DialogInterface;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 
 import com.dyhpoon.fodex.R;
 import com.dyhpoon.fodex.data.FodexCore;
@@ -19,7 +20,16 @@ import java.util.List;
  */
 public class FodexWidget {
 
+    private static final String DIALOG_TAG = "fodex_dialog";
+
     public static void showTags(final FragmentActivity activity, final FodexCore fodexCore, final long fodexId) {
+        FragmentManager manager = activity.getSupportFragmentManager();
+
+        // do nothing, if manager is null or a dialog is already shown
+        if (manager == null || manager.findFragmentByTag(DIALOG_TAG) != null) {
+            return;
+        }
+
         List<String> tags = fodexCore.getTags(activity, fodexId);
         if (tags.size() > 0) {
             final ShowTagsDialog dialog = ShowTagsDialog.newInstance(tags);
@@ -39,13 +49,20 @@ public class FodexWidget {
                     }
                 }
             });
-            dialog.show(activity.getSupportFragmentManager(), "show_tag");
+            dialog.show(manager, DIALOG_TAG);
         } else {
             ErrorToast.make(activity, activity.getString(R.string.message_no_tag)).show();
         }
     }
 
     public static void addTags(final FragmentActivity activity, final FodexCore fodexCore, final long[] imageIds, final OnCompleteListener listener) {
+        FragmentManager manager = activity.getSupportFragmentManager();
+
+        // do nothing, if manager is null or a dialog is already shown
+        if (manager == null || manager.findFragmentByTag(DIALOG_TAG) != null) {
+            return;
+        }
+
         InsertTagDialog dialog = InsertTagDialog.newInstance(imageIds.length);
         dialog.setOnClickListener(new InsertTagDialog.OnClickListener() {
             @Override
@@ -76,6 +93,6 @@ public class FodexWidget {
                 }
             }
         });
-        dialog.show(activity.getSupportFragmentManager(), "insert_tag");
+        dialog.show(manager, DIALOG_TAG);
     }
 }
