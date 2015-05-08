@@ -28,6 +28,11 @@
     public <init>(android.content.Context);
 }
 
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+-keep class android.support.v8.renderscript.** { *; }
+
 # Keep the BuildConfig
 -keep class com.example.BuildConfig { *; }
 
