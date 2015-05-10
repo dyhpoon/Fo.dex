@@ -89,8 +89,8 @@ public class FullscreenActivity extends BaseFragmentActivity {
         mFodexItems = getIntent().getParcelableArrayListExtra(ITEMS_INFO);
 
         setupViewSwitcher();
-        setupFullscreenPager(mFodexItems, mImageIndex);
         setupFakeView(url);
+        setupFullscreenPager(mFodexItems, mImageIndex);
         setupShareActionMenu();
         if (savedInstanceState == null) {
             mBackground.setAlpha(0);    // prevent flashing
@@ -221,7 +221,7 @@ public class FullscreenActivity extends BaseFragmentActivity {
                 return !getCurrentPagerView().isZoomed();
             }
         });
-        mPager.setAdapter(new ReusableFullscreenAdapter(this) {
+        ReusableFullscreenAdapter adapter = new ReusableFullscreenAdapter(this) {
             @Override
             public int getCount() {
                 return items.size();
@@ -241,7 +241,12 @@ public class FullscreenActivity extends BaseFragmentActivity {
             public void onClick(int position) {
                 mFullscreenActionMenu.close();
             }
-        });
+        };
+        Bitmap bm = ((BitmapDrawable) mFakeImageView.getDrawable()).getBitmap();
+        if (bm != null) {
+            adapter.addCacheImage(position, bm);
+        }
+        mPager.setAdapter(adapter);
         mPager.setCurrentItem(position);
         mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override

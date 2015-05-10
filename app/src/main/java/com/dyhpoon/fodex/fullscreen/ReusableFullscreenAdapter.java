@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -30,13 +31,19 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
     public abstract void onLongClick(int position);
     public abstract void onClick(int position);
 
-    private int mWidth, mHeight;
+    private int mWidth, mHeight, mCacheIndex;
     private Stack<View> mRecycledViews = new Stack<>();
+    private Bitmap mCacheBitmap;
 
     public ReusableFullscreenAdapter(Context context) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         mWidth = metrics.widthPixels;
         mHeight = metrics.heightPixels;
+    }
+
+    public void addCacheImage(int index, @NonNull Bitmap bitmap) {
+        mCacheIndex = index;
+        mCacheBitmap = bitmap;
     }
 
     @Override
@@ -52,6 +59,10 @@ public abstract class ReusableFullscreenAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
         final ImageView photoView = (ImageView) createOrRecycleView(container.getContext());
+        if (mCacheBitmap != null && position == mCacheIndex) {
+            photoView.setImageBitmap(mCacheBitmap);
+            mCacheBitmap = null;
+        }
         Uri uri = imageUriAtPosition(position);
         MediaImage.loadBitmapAsynchronously(photoView, uri, mWidth, mHeight);
         container.addView(photoView, 0);
