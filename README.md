@@ -1,6 +1,13 @@
 ##Fo.dex
 An Android client application allows you to index your photos.
+
 ![](screenshots/intro.gif)
+
+##Download
+<a href="https://play.google.com/store/apps/details?id=com.dyhpoon.fodex">
+  <img alt="Get it on Google Play"
+       src="https://developer.android.com/images/brand/en_generic_rgb_wo_45.png" />
+</a>
 
 ##How to install
 	git clone https://github.com/dyhpoon/Fo.dex.git
@@ -17,10 +24,13 @@ An Android client application allows you to index your photos.
 ##More Screenshots
 ![](screenshots/main.png)
 ![](screenshots/tag.png)
+
 ![](screenshots/fullscreen.png)
 ![](screenshots/share.png)
+
 ![](screenshots/fullscreen.gif)
 ![](screenshots/index.gif)
+
 ![](screenshots/multiple-index.gif)
 ![](screenshots/search.gif)
 
