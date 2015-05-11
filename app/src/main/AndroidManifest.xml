@@ -65,11 +65,11 @@
             android:exported="false" />
 
         <meta-data
-            android:name="com.crashlytics.ApiKey"
-            android:value="2a2e349920a9b0113302bc093def54421149f6e8" />
-        <meta-data
             android:name="com.dyhpoon.fodex.fodexView.FodexGlideModule"
             android:value="GlideModule" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="9ce7fd6890f572217e3d4c209f41cf4a558bffa6" />
     </application>
 
 </manifest>
