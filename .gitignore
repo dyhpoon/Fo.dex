@@ -39,3 +39,4 @@ build/
 com_crashlytics_export_strings.xml
 crashlytics-build.properties
 crashlytics.properties
+fabric.properties
