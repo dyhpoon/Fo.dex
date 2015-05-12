@@ -18,9 +18,6 @@ An Android client application allows you to index your photos.
 ##Facebook page
 [Fodex Facebook Page](https://www.facebook.com/pages/Fodex/733509560068437)
 
-##Contributor
-[tomlui1019](https://github.com/tomlui1019)
-
 ##More Screenshots
 ![](screenshots/main.png)
 ![](screenshots/tag.png)
@@ -50,6 +47,10 @@ An Android client application allows you to index your photos.
 * [Dagger](https://github.com/square/dagger)
 * [android-Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh)
 * [TouchImageView](https://github.com/MikeOrtiz/TouchImageView)
+
+##Contributors
+* [tomlui1019](https://github.com/tomlui1019)
+* [mankatcheung](https://github.com/mankatcheung)
 
 ##License
     Copyright 2015 Darren Poon. All rights reserved.
