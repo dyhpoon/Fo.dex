@@ -1,4 +1,6 @@
 ##Fo.dex
+[![Build Status](https://travis-ci.org/dyhpoon/Fo.dex.svg?branch=master)](https://travis-ci.org/dyhpoon/Fo.dex)
+
 An Android client application allows you to index your photos.
 
 ![](screenshots/intro.gif)
