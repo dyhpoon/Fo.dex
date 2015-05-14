@@ -15,7 +15,7 @@ import android.widget.ImageView;
 
 import com.dyhpoon.fodex.fodexView.FodexImageContract;
 import com.dyhpoon.fodex.util.MediaImage;
-import com.ortiz.touchview.TouchImageView;
+import com.dyhpoon.fodex.view.TouchImageView;
 
 import java.util.Stack;
 

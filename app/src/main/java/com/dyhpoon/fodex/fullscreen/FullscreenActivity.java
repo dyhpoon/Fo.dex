@@ -36,8 +36,8 @@ import com.dyhpoon.fodex.view.FullscreenActionMenu;
 import com.dyhpoon.fodex.view.FullscreenActionMenu.ActionType;
 import com.dyhpoon.fodex.view.PagerContainer;
 import com.dyhpoon.fodex.view.PleaseInstallToast;
+import com.dyhpoon.fodex.view.TouchImageView;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
-import com.ortiz.touchview.TouchImageView;
 
 import java.util.List;
 
