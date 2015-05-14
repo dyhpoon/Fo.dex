@@ -18,6 +18,9 @@ repositories {
     maven { url 'https://github.com/tvbarthel/maven/raw/master/' }
 }
 
+def isTravis = "true".equals(System.getenv("TRAVIS"))
+def preDexEnabled = "true".equals(System.getProperty("pre-dex", "true"))
+
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
@@ -42,6 +45,19 @@ android {
     }
     testOptions {
         unitTests.returnDefaultValues = true
+    }
+    dexOptions {
+        preDexLibraries = preDexEnabled && !isTravis
+    }
+
+    if(project.hasProperty("excludeScreenshots")) {
+        sourceSets {
+            androidTest {
+                java {
+                    exclude '**/ScreenshotTest.java'
+                }
+            }
+        }
     }
 }
 
