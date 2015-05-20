@@ -46,7 +46,7 @@ An Android client application allows you to index your photos.
 * [android-Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh)
 * [AsymmetricGridView](https://github.com/felipecsl/AsymmetricGridView)
 * [AARLinkSources](https://github.com/xujiaao/AARLinkSources)
-* [Dagger](https://github.com/square/dagger)
+* [Dagger2](https://github.com/google/dagger)
 * [android-Ultra-Pull-To-Refresh](https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh)
 * [TouchImageView](https://github.com/MikeOrtiz/TouchImageView)
 
